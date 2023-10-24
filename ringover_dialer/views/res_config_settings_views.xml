@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">ringover.dialer.settings.view.ringover_dialer</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="90"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+
+                    <div class="app_settings_block" data-string="Ringover" id="ringover_dialer"
+                         string="Ringover" data-key="ringover_dialer">
+                        <h2>Ringover dialer Setting</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane" title="Show tray icon when the dialer is minified.">
+                                    <field name="ringover_dialer_tray_icon"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label string="Tray icon" for="ringover_dialer_tray_icon"/>
+                                    <div class="text-muted">
+                                        Show tray icon when the dialer is minified
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <label string="Size" for="ringover_dialer_size"/>
+                                    <div class="text-muted">
+                                        Dialer window size
+                                    </div>
+                                    <div class="mt8" attrs="{'invisible': [('ringover_dialer_size','=','sth')]}">
+                                        <field name="ringover_dialer_size" class="o_light_label" widget="radio" required="True"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <label string="Position" for="ringover_dialer_position"/>
+                                    <div class="text-muted">
+                                        Dialer position in browser
+                                    </div>
+                                    <div class="mt8">
+                                        <field name="ringover_dialer_position" class="o_light_label" widget="radio" required="True"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="ringover_dialer_config_settings_action" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'ringover_dialer', 'bin_size': False}</field>
+        </record>
+
+        <!--<menuitem id="ringover_dialer_config_settings_menu"
+                  name="Settings"
+                  parent="ringover_dialer.configuration_menu"
+                  sequence="0"
+                  action="ringover_dialer_config_settings_action"
+                  groups="base.group_system"/>-->
+    </data>
+</odoo>

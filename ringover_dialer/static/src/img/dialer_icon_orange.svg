@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="20"
+   height="20"
+   viewBox="0 0 20 20"
+   version="1.1"
+   id="svg19"
+   sodipodi:docname="logo20x20_orange.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata23">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>icon</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1322"
+     inkscape:window-height="1018"
+     id="namedview21"
+     showgrid="false"
+     inkscape:zoom="27.245257"
+     inkscape:cx="-6.0193963"
+     inkscape:cy="13.158254"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Artboard"
+     inkscape:pagecheckerboard="0" />
+  <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+  <title
+     id="title2">icon</title>
+  <desc
+     id="desc4">Created with Sketch.</desc>
+  <defs
+     id="defs11">
+    <linearGradient
+       x1="0.10642537"
+       y1="0.10782346"
+       x2="0.96471292"
+       y2="1"
+       id="linearGradient-1">
+      <stop
+         stop-color="#40E0CF"
+         offset="0%"
+         id="stop6" />
+      <stop
+         stop-color="#36CDCF"
+         offset="100%"
+         id="stop8" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient-1"
+       id="linearGradient4580"
+       x1="158.11063"
+       y1="431.70389"
+       x2="198.56148"
+       y2="473.75192"
+       gradientTransform="scale(0.98186928,1.0184655)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="logo"
+     style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1"
+     transform="matrix(0.41141751,0,0,0.41141751,0.38771367,-0.05370474)">
+    <g
+       id="Artboard"
+       transform="translate(-150,-434)"
+       style="fill:url(#linearGradient4580)">
+      <g
+         id="logo-square-color"
+         transform="translate(134,434)"
+         style="fill:#f5a623;fill-opacity:1">
+        <g
+           id="Group-Copy-3"
+           transform="translate(15.5,0.5)"
+           style="fill:#f5a623;fill-opacity:1">
+          <g
+             id="Group-2"
+             transform="translate(0.45283)"
+             style="fill:#f5a623;fill-opacity:1">
+            <path
+               d="M 23.503893,48 C 11.878206,48 2.7508184,40.211656 0.68887084,28.921859 0.66321086,28.781363 0.62719274,28.569408 0.58081648,28.285994 l 11.51970052,2.07e-4 c 0.0505,0.169768 0.0892,0.296381 0.116093,0.379838 1.707938,5.299523 6.346905,8.039843 11.287283,8.039843 4.948604,0 9.594792,-2.692172 11.29579,-8.031077 0.0272,-0.08539 0.0663,-0.214991 0.117299,-0.388811 H 46.42697 C 46.38845,28.522931 46.35869,28.700212 46.3377,28.817837 44.312957,40.163788 35.165253,48 23.503893,48 Z m 0,-48 c 12.159912,0 21.586645,8.4431106 23.054074,20.637175 0.02103,0.17474 0.04888,0.438567 0.08354,0.791483 H 35.290852 c -0.03271,-0.200378 -0.05827,-0.349821 -0.07667,-0.44833 -1.202844,-6.437377 -6.274092,-9.68621 -11.710285,-9.68621 -5.374027,0 -10.391408,3.174953 -11.667507,9.466616 -0.02959,0.145913 -0.06941,0.368555 -0.119451,0.667924 H 0.36627724 C 0.41642707,20.933199 0.45767606,20.563314 0.49002422,20.319004 2.0818763,8.2964896 11.450027,0 23.503893,0 Z"
+               id="icon"
+               inkscape:connector-curvature="0"
+               style="fill:#f5a623;fill-opacity:1" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
