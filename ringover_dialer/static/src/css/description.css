@@ -1,0 +1,33 @@
+.ro_spaced_lat_sm {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.ro_image {
+    max-height: inherit !important;
+}
+
+.ro_image_main {
+    max-height: 700px !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.ro_u-inline-link,
+.ro_u-inline-link:active,
+.ro_u-inline-link:focus,
+.ro_u-inline-link:visited {
+    text-decoration: underline;
+    color: inherit;
+    cursor: pointer;
+    outline: 0;
+}
+
+
+
+.ro_u-inline-link:hover {
+    background-color: #27c9d6;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important
+}
