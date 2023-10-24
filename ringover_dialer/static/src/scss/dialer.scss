@@ -1,0 +1,20 @@
+.o_MessagingMenu {
+    #ringover_dialer_icon {
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        background: url('../img/dialer_icon_gray.svg');
+        &.generated {
+            background: url('../img/dialer_icon_orange.svg');
+        }
+        &.logged_in {
+            background: url('../img/dialer_icon.svg');
+        }
+    }
+}
+
+div[id^='ringover-cross-'] {
+    box-sizing: content-box !important;
+}

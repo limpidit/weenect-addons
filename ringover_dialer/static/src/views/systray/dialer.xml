@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ringover.dialer.systray" owl="1">
+        <div class="o_MessagingMenu">
+                <a class="o_MessagingMenu_toggler dropdown-toggle o-no-caret o-dropdown--narrow"
+                   href="#"
+                   title="Ringover Dialer"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false"
+                   t-on-click="toggleDialer"
+                >
+                <!-- <i class="o_MessagingMenu_icon fa fa-lg fa fa-phone" role="img" aria-label="Phone"></i> -->
+                <i id="ringover_dialer_icon" t-att-class="state.dialer_status"/>
+            </a>
+        </div>
+    </t>
+
+</templates>
