@@ -1,18 +1,15 @@
 {
-    "name":"Vehicules",
-    "summary":"Vehicules",
+    "name":"Products",
+    "summary":"Products",
     "version":"16.0",
     "author":"Limpid IT",
     "depends":[
-        "base","fleet",'web_studio', "crm", "sale","rentabilite"
+        "base",'web_studio', "crm", "sale"
     ],
     "installable":True,
     "data":[
-        "views/fleet_vehicle_views.xml",
+        "views/product_template_views.xml",
         "security/ir.model.access.csv",
-        "data/fleet_vehicle_options_data.xml",
-        "data/sale_order_server_actions.xml",
-        "data/proposition_commerciale_data.xml"
     ],
     "license":"LGPL-3",
 }

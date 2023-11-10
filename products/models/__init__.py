@@ -1,1 +1,1 @@
-from . import sale_order,ir_http,fleet_vehicle, modele_camion, fleet_vehicle_model, ir_attachment, fleet_vehicle_options, fleet_vehicle_tachy, crm_lead, fleet_vehicle_reservation, fleet_vehicle_provision
+from . import product_template
