@@ -1,0 +1,10 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_modele_camion,modele.camion.user,model_modele_camion,base.group_user,1,1,1,1
+access_fleet_vehicle_model,fleet.vehicle.model.user,model_fleet_vehicle_model,base.group_user,1,1,1,1
+access_ir_attachment,ir.attachment.user,model_ir_attachment,base.group_user,1,1,1,1
+access_fleet_vehicle_options,fleet.vehicle.options.user,model_fleet_vehicle_options,base.group_user,1,1,1,1
+access_fleet_vehicle_tachy,fleet.vehicle.tachy.user,model_fleet_vehicle_tachy,base.group_user,1,1,1,1
+access_crm_lead,crm.lead.user,model_crm_lead,base.group_user,1,1,1,1
+access_fleet_vehicle_reservation,fleet.vehicle.reservation.user,model_fleet_vehicle_reservation,base.group_user,1,1,1,1
+access_fleet_vehicle_provision,fleet.vehicle.provision.user,model_fleet_vehicle_provision,base.group_user,1,1,1,1
+
