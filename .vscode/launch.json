@@ -9,7 +9,7 @@
     "cwd": "/users/guillaume/src/odoo-dev",
     "args": [
     "--database=weenect",  
-    "--update=products",
+    "--init=products",
     "--addons-path=${config:odoo.addonsPath}",
     "--limit-time-cpu=0",
     "--limit-time-real=0",
