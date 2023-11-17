@@ -10,5 +10,7 @@ class ResPartner(models.Model):
     date_ouverture=fields.Date("Date d'ouverture")
     joom1_effectue=fields.Boolean("JOOM1 effectué")
     derniere_activite_tl=fields.Date("Dernière activité TL")
+    province=fields.Date("Province")
+    tva_tl=fields.Char("TVA TL")
 
 
