@@ -14,11 +14,28 @@
         <field name="derniere_activite_tl"/>
       </xpath>
       <xpath expr="//field[@name='industry_id']" position="after">
-        <field name="code_bic"/>
-        <field name="code_ape"/>
-        <field name="date_ouverture"/>
-        <field name="joom1_effectue"/>
+
       </xpath>
+      <xpath expr="//form/sheet/notebook/page[1]" position="after">
+          <page string="Divers Weenect">
+            <group>
+              <group>
+                <field name="code_bic"/>
+                <field name="code_ape"/>
+                <field name="date_ouverture"/>
+                <field name="joom1_effectue"/>
+              </group>
+              <group>
+                <field name="imei_traceur"/>
+                <field name="traceur_demo"/>
+                <field name="cartes_antivol"/>
+                <field name="pack_communication"/>
+                <field name="posters"/>
+                <field name="presentoir_orange"/>
+              </group>
+            </group>
+          </page>
+        </xpath>
     </field>
   </record>
 </odoo>
