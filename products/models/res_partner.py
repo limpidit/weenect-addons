@@ -13,4 +13,12 @@ class ResPartner(models.Model):
     province=fields.Char("Province")
     tva_tl=fields.Char("TVA TL")
 
+    imei_traceur=fields.Char("IMEI traceur")
+    traceur_demo=fields.Boolean("Traceur de démo")
+
+    cartes_antivol=fields.Boolean("Cartes antivol")
+    pack_communication=fields.Boolean("Pack communication")
+    posters=fields.Boolean("Posters")
+    presentoir_orange=fields.Boolean("Présentoir Orange")
+
 
