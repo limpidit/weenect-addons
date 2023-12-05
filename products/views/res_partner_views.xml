@@ -24,6 +24,7 @@
                 <field name="code_ape"/>
                 <field name="date_ouverture"/>
                 <field name="joom1_effectue"/>
+                <field name="lien_tl"/>
               </group>
               <group>
                 <field name="imei_traceur"/>
