@@ -21,4 +21,6 @@ class ResPartner(models.Model):
     posters=fields.Boolean("Posters")
     presentoir_orange=fields.Boolean("Présentoir Orange")
 
+    lien_tl=fields.Char("Lien fiche TL")
+
 
