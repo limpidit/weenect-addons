@@ -37,6 +37,12 @@
             </group>
           </page>
         </xpath>
+        <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Traceurs">
+                    <field name="traceurs_sav_ids"/>
+                </page>
+            </xpath>
     </field>
   </record>
+
 </odoo>

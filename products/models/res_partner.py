@@ -23,4 +23,9 @@ class ResPartner(models.Model):
 
     lien_tl=fields.Char("Lien fiche TL")
 
+    traceurs_sav_ids = fields.One2many(
+        'traceurs.sav', 
+        'client_id', 
+        string='Traceurs')
+
 
