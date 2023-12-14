@@ -11,6 +11,7 @@
         "views/product_template_views.xml",
         "views/res_partner_views.xml",
         "views/traceurs_sav.xml",
+        "views/account_move_views.xml",
         "security/ir.model.access.csv",
     ],
     "license":"LGPL-3",
