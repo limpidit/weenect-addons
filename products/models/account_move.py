@@ -22,5 +22,3 @@ class AccountMove(models.Model):
 
             record.tracking_numbers = ', '.join(tracking_numbers_set)
 
-
-
