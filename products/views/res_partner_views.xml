@@ -11,7 +11,6 @@
       </xpath>
       <xpath expr="//field[@name='vat']" position="after">
         <field name="num_retailer"/>
-        <field name="derniere_activite_tl"/>
       </xpath>
       <xpath expr="//field[@name='industry_id']" position="after">
 
