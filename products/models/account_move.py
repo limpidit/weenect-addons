@@ -5,6 +5,12 @@ class AccountMove(models.Model):
 
     tracking_numbers = fields.Char(string='Numéros de Tracking', compute='_compute_tracking_numbers')
 
+    order_date = fields.Date(compute='_compute_order_date', string='Date de la Commande')
+
+    def _compute_order_date(self):
+        for record in self:
+            record.order_date = record.invoice_origin and self.env['sale.order'].search([('name', '=', record.invoice_origin)], limit=1).date_order
+
     @api.depends('invoice_line_ids')
     def _compute_tracking_numbers(self):
         for record in self:
