@@ -4,7 +4,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     tracking_number = fields.Char(string='Numéro de Tracking')
-    imei_filled = fields.Boolean(string='IMEI Renseignés')
+    imei_filled = fields.Boolean(string='IMEI Enregistrés')
 
     def write(self, values):
         res = super(StockPicking, self).write(values)
