@@ -27,5 +27,5 @@ class ResPartner(models.Model):
         'traceurs.sav', 
         'client_id', 
         string='Traceurs')
-
-
+    
+    last_note_date = fields.Date(string="Date dernière note")

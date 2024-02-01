@@ -8,7 +8,7 @@
     "program": "odoo/odoo-bin",
     "cwd": "/users/guillaume/src/odoo-dev",
     "args": [
-    "--database=weenect5",  
+    "--database=weenect7",  
     "--init=products",
     "--addons-path=${config:odoo.addonsPath}",
     "--limit-time-cpu=0",

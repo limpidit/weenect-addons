@@ -5,3 +5,5 @@ access_traceurs_sav,traceurs.sav.user,model_traceurs_sav,base.group_user,1,1,1,1
 access_stock_picking,stock.picking.user,model_stock_picking,base.group_user,1,1,1,1
 access_account_move,account.move.user,model_account_move,base.group_user,1,1,1,1
 access_sale_order,sale.order.user,model_sale_order,base.group_user,1,1,1,1
+access_mail_thread,mail.thread.user,model_mail_thread,base.group_user,1,1,1,1
+access_sale_order_line,sale.order.line.user,model_sale_order_line,base.group_user,1,1,1,1
