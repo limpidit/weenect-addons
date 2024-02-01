@@ -18,6 +18,8 @@
                     <field name="name" type="row"/>
                     <field name="order_id" type="col"/>
                     <field name="product_uom_qty" type="measure"/>
+                    <field name="country_id" type="row"/>
+                    <field name="language_id" type="row"/>
                     <!-- Ajoutez ici d'autres champs si nécessaire -->
                 </pivot>
             </field>
