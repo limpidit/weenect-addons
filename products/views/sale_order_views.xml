@@ -16,9 +16,7 @@
                 <pivot string="Analyse des Ventes">
                     <field name="product_id" type="row"/>
                     <field name="name" type="row"/>
-                    <field name="order_id" type="col"/>
                     <field name="product_uom_qty" type="measure"/>
-                    <field name="order_date" type="row"/>
                 </pivot>
             </field>
         </record>
