@@ -13,7 +13,6 @@
         "views/traceurs_sav.xml",
         "views/account_move_views.xml",
         "views/sale_order_views.xml",
-        "views/sale_report_views.xml",
         "security/ir.model.access.csv",
     ],
     "license":"LGPL-3",
