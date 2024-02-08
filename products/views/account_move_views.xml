@@ -7,6 +7,7 @@
     <field name="arch" type="xml">
       <xpath expr="//field[@name='partner_shipping_id']" position="after">
         <field name="tracking_numbers"/>
+        <field name="delivery_order_numbers"/>
       </xpath>
     </field>
   </record>
@@ -30,6 +31,7 @@
     <field name="arch" type="xml">
         <xpath expr="//field[@name='payment_term_id']" position="after">
             <field name="imei_filled"/>
+              <field name="commitment_date"/>
         </xpath>
     </field>
 </record>
