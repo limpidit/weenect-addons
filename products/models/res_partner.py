@@ -28,4 +28,9 @@ class ResPartner(models.Model):
         'client_id', 
         string='Traceurs')
 
+    department = fields.Char(string="Département", compute='_compute_department', store="True")
 
+    @api.depends('zip')
+    def _compute_department(self):
+        for record in self:
+            record.department = record.zip[:2] if record.zip else ''
