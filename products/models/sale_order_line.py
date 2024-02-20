@@ -11,7 +11,7 @@ class SaleOrderLine(models.Model):
     customer_language = fields.Char(compute='_compute_customer_language', string='Langue du client', store=True, readonly=True)
 
     # Ajout du champ effective_date lié à la commande de vente
-    commitment_date = fields.Datetime(related='order_id.commitment_date', string='Date de Livraison Annoncée', store=True, readonly=True)
+    commitment_date = fields.Datetime(related='order_id.commitment_date', string='Date de Livraison annoncée', store=True, readonly=True)
 
     # Supposons que le champ department est un champ Char dans res.partner
     partner_department = fields.Char(compute='_compute_partner_department', string='Département du Client', store=True, readonly=True)
