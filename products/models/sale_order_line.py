@@ -10,6 +10,18 @@ class SaleOrderLine(models.Model):
 
     customer_language = fields.Char(compute='_compute_customer_language', string='Langue du client', store=True, readonly=True)
 
+    # Ajout du champ effective_date lié à la commande de vente
+    effective_date = fields.Datetime(related='order_id.effective_date', string='Date de Livraison Réelle', store=True, readonly=True)
+
+    # Supposons que le champ department est un champ Char dans res.partner
+    partner_department = fields.Char(compute='_compute_partner_department', string='Département du Client', store=True, readonly=True)
+
+    @api.depends('order_id.partner_id.department')
+    def _compute_partner_department(self):
+        for record in self:
+            # Copier la valeur du champ department du partenaire
+            record.partner_department = record.order_id.partner_id.department
+
     @api.depends('order_id.partner_id.lang')
     def _compute_customer_language(self):
         for record in self:
