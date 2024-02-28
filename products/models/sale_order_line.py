@@ -3,6 +3,10 @@ from odoo import models, fields, api
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    traceur_sav = fields.Boolean(string='Traceur SAV', default=False, store=True)
+    traceur_demo = fields.Boolean(string='Traceur Demo', default=False, store=True)
+
+
     order_date = fields.Datetime(related='order_id.date_order', string='Date de la commande', store=True, readonly=True)
 
     # Récupération du pays du client de la commande
