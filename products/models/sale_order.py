@@ -10,22 +10,14 @@ class SaleOrder(models.Model):
 
     imei_filled = fields.Boolean(string='IMEI enregistrés',store=True)
 
-    @api.model
-    def create(self, vals):
-        # Création de l'enregistrement sale.order
-        order = super(SaleOrder, self).create(vals)
-        # Appel de la méthode pour traiter les traceurs SAV
-        order._check_and_handle_traceurs_sav()
-        return order
-
     @api.onchange('partner_id')
-    def _check_and_handle_traceurs_sav(self):
+    def _onchange_partner_id_check_sav(self):
         if not self.partner_id:
             return
         
         new_lines = []
+        messages = []
 
-        
         traceurs_sav = self.env['traceurs.sav'].search([
             ('client_id', '=', self.partner_id.id),
             ('type', '=', 'sav'),
@@ -61,13 +53,7 @@ class SaleOrder(models.Model):
             for traceur in traceurs_sav_a_envoyer:
                 product_name = traceur.product_id.name_get()[0][1] if traceur.product_id else _('Produit non spécifié')
                 message += _("Produit : %s\n" % product_name)
-            
-            return {
-                'warning': {
-                    'title': _("Attention"),
-                    'message': message,
-                }
-            }
+            messages.append(message)
             
         if traceurs_sav:
             model_name = 'traceurs.sav'  # Assurez-vous que cela correspond au nom technique de votre modèle de traceur
@@ -87,14 +73,18 @@ class SaleOrder(models.Model):
                 'res_model_id': self.env['ir.model']._get('res.partner').id,
                 'date_deadline': date_deadline,
             })
+            message = _("Il y a des traceurs SAV non retournés. Veuillez vérifier.")
+            messages.append(message)
+
+                # Gestion des messages d'avertissement
+        if messages:
+            warning_message = ' '.join(messages)
             return {
                 'warning': {
                     'title': _("Attention"),
-                    'message': _("Il y a des traceurs SAV non retournés. Ne pas envoyer le traceur et contacter le client."),
+                    'message': warning_message,
                 }
             }
-        
-
             
     def write(self, vals):
         res = super(SaleOrder, self).write(vals)
@@ -126,8 +116,3 @@ class SaleOrder(models.Model):
                             })
 
         return res
-
-
-
-
-
