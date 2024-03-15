@@ -66,14 +66,16 @@ class SaleOrder(models.Model):
             
             # Création d'une activité "A faire" pour le client, 8 jours plus tard
             date_deadline = fields.Date.today() + timedelta(days=8)
+            activity_type_todo = self.env.ref('mail.mail_activity_data_todo')
             self.env['mail.activity'].create({
-                'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
+                'activity_type_id': activity_type_todo.id,
                 'note': note,
                 'res_id': self.partner_id.id,
                 'res_model_id': self.env['ir.model']._get('res.partner').id,
                 'date_deadline': date_deadline,
+                'user_id': self.env.user.id,  # Assigner l'activité à l'utilisateur actuel ou à un utilisateur spécifique
             })
-            message = _("Il y a des traceurs SAV non retournés. Veuillez vérifier.")
+            message = _("Il y a des traceurs SAV non retournés. Veuillez contacter votre client pour demander le retour.")
             messages.append(message)
 
                 # Gestion des messages d'avertissement
