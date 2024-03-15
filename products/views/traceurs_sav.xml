@@ -15,6 +15,7 @@
                         <group>
                             <field name="traceur_sav_a_envoyer"/>
                             <field name="traceur_sav_recu"/>
+                            <field name="traceur_sav_termine"/>
                         </group>
                     </group>
                 </sheet>

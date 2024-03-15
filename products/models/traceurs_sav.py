@@ -11,8 +11,13 @@ class TraceursSAV(models.Model):
     imei = fields.Char(string='IMEI')
     traceur_sav_a_envoyer=fields.Boolean("A envoyer")
     traceur_sav_recu=fields.Boolean("Reçu")
+    traceur_sav_termine=fields.Boolean("Terminé")
     type = fields.Selection([
         ('demo', 'Démo'),
         ('sav', 'SAV')
     ], string='Type')
 
+    @api.onchange('traceur_sav_termine')
+    def _onchange_traceur_sav_termine(self):
+        if self.traceur_sav_termine and self.traceur_sav_a_envoyer:
+            self.traceur_sav_a_envoyer = False
