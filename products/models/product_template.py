@@ -4,5 +4,5 @@ from odoo.exceptions import UserError
 class ProductTemplate(models.Model):
     _inherit = "product.template"
     
-    client_friendly_name=fields.Char(string="Dénomination client")
+    client_friendly_name=fields.Char(string="Dénomination client", translate=True)
     ean_weenect=fields.Char(string="EAN Weenect")
