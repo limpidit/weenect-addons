@@ -20,6 +20,7 @@
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="tracking_number"/>
         <field name="imei_filled"/>
+        <field name="avoir_genere"/>
       </xpath>
     </field>
   </record>
