@@ -5,6 +5,8 @@ class StockPicking(models.Model):
 
     tracking_number = fields.Char(string='Numéro de Tracking')
     imei_filled = fields.Boolean(string='IMEI Enregistrés')
+    avoir_genere = fields.Boolean(string="Avoir généré", default=False)
+
 
     def write(self, values):
         res = super(StockPicking, self).write(values)

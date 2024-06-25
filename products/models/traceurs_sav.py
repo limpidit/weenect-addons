@@ -9,8 +9,8 @@ class TraceursSAV(models.Model):
     client_id = fields.Many2one('res.partner', string='Nom client')
     product_id = fields.Many2one('product.product', string='Produit')
     imei = fields.Char(string='IMEI')
-    traceur_sav_a_envoyer=fields.Boolean("A envoyer")
-    traceur_sav_recu=fields.Boolean("Reçu")
+    traceur_sav_a_envoyer=fields.Boolean("A envoyer par Weenect (après réception)")
+    traceur_sav_recu=fields.Boolean("Reçu par Weenect (envoyé par le client)")
     traceur_sav_termine=fields.Boolean("Terminé")
     type = fields.Selection([
         ('demo', 'Démo'),

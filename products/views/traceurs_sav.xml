@@ -13,8 +13,8 @@
                             <field name="type"/>
                         </group>
                         <group>
-                            <field name="traceur_sav_a_envoyer"/>
                             <field name="traceur_sav_recu"/>
+                            <field name="traceur_sav_a_envoyer"/>
                             <field name="traceur_sav_termine"/>
                         </group>
                     </group>
@@ -36,8 +36,8 @@
             <field name="client_id"/>
             <field name="product_id"/>
             <field name="imei"/>
-            <field name="traceur_sav_a_envoyer"/>
             <field name="traceur_sav_recu"/>
+            <field name="traceur_sav_a_envoyer"/>
             <field name="type"/>
         </tree>
     </field>
