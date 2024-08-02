@@ -8,8 +8,8 @@
     "program": "odoo/odoo-bin",
     "cwd": "/users/guillaume/src/odoo-dev",
     "args": [
-    "--database=weenect11",  
-    "--init=products",
+    "--database=weenect20",  
+    "--update=crosslog",
     "--addons-path=${config:odoo.addonsPath}",
     "--limit-time-cpu=0",
     "--limit-time-real=0",
