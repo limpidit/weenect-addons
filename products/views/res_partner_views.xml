@@ -10,6 +10,7 @@
         <field name="tva_tl"/>
       </xpath>
       <xpath expr="//field[@name='vat']" position="after">
+        <field name="groupe_retailer"/>  
         <field name="num_retailer"/>
         <field name="department"/>
       </xpath>
