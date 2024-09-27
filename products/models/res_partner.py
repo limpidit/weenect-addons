@@ -12,6 +12,7 @@ class ResPartner(models.Model):
     derniere_activite_tl=fields.Date("Dernière activité TL")
     province=fields.Char("Province")
     tva_tl=fields.Char("TVA TL")
+    groupe_retailer=fields.Char("Groupe Retailer")
 
     imei_traceur=fields.Char("IMEI traceur")
     traceur_demo=fields.Boolean("Traceur de démo")
