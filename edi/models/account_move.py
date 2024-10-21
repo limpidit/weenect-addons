@@ -51,11 +51,15 @@ class AccountMove(models.Model):
         # Référence commande (RFF)
         buffer.write(f"RFF+ON:SO45786'\n")
 
-        # Fournisseur NAD (exemple)
-        buffer.write(f"NAD+SU+4399901102626::9++HAREAU SAS:nom société+rue fournisseur+ville fournisseur++12345+FR'\n")
+        # Fournisseur NAD (exemple ajusté pour l'usage)
+        buffer.write(f"NAD+SU+{self.company_id.vat}::9++{self.company_id.name}:"
+                    f"{self.company_id.street}+{self.company_id.city}++{self.company_id.zip}+{self.company_id.country_id.code}'\n")
 
-        # Client (NAD+BY)
-        buffer.write(f"NAD+BY+4399901860919::9++Client_{client}:Adresse client+rue client+ville client++54321+DE'\n")
+
+        # Client (NAD+BY ajusté pour l'usage)
+        buffer.write(f"NAD+BY+{self.partner_id.vat}::9++{self.partner_id.name}:"
+                    f"{self.partner_id.street}+{self.partner_id.city}++{self.partner_id.zip}+{self.partner_id.country_id.code}'\n")
+
 
         # Numéro fiscal (RFF)
         buffer.write(f"RFF+VA:DE123456789'\n")
