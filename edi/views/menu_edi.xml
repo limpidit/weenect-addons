@@ -1,0 +1,11 @@
+<odoo><!-- Action pour afficher la liste des articles EDI -->
+    <!-- Menu principal pour EDI -->
+    <menuitem id="menu_edi_root" 
+              name="EDI"
+              sequence="10"/>
+
+    <menuitem id="menu_edi_mapping" name="Paramètres EDI" parent="menu_edi_root" action="action_edi_param" sequence="20"/>
+
+
+
+</odoo>
