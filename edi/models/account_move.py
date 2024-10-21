@@ -6,7 +6,9 @@ from datetime import datetime
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    delivery_date = fields.Date(string="Date de livraison", compute="_compute_delivery_date", store=True)
+    delivery_date = fields.Date(string="Date de livraison", compute="_compute_delivery_info", store=True)
+    delivery_order_number = fields.Char(string="Numéro de bon de livraison", compute="_compute_delivery_info", store=True)
+    note=fields.Text("Notes")
 
     def generate_edifact_sagaflor(self):
         """Générer un fichier EDIFACT pour Sagaflor"""
@@ -23,7 +25,7 @@ class AccountMove(models.Model):
         buffer = StringIO()
 
         # En-tête du message UNH
-        buffer.write(f"UNH+{self.id}+INVOIC:D:96A:EDIFACT:EAN008'\n")
+        buffer.write(f"UNH+{self.id}+INVOIC:D:96A:UN:EAN008'\n")
 
         # Segment BGM (En-tête de la facture)
         buffer.write(f"BGM+380+{self.name}+9'\n")
@@ -40,29 +42,41 @@ class AccountMove(models.Model):
 
 
         # Texte libre FTX (exemple de texte)
-        buffer.write(f"FTX+ZZZ+++PAIEMENT ANTICIPE ACCEPTE'\n")
+        buffer.write(f"FTX+ZZZ+++{self.note}'\n")
 
+        if self.delivery_order_number:
         # Référence bon de livraison (RFF)
-        buffer.write(f"RFF+DQ:WH/OUT/0999'\n")
+            buffer.write(f"RFF+DQ:{self.delivery_order_number}'\n")
 
+        if self.delivery_date:
         # Date de livraison (répétée pour exemple)
-        buffer.write(f"DTM+35:{self.invoice_date.strftime('%Y%m%d')}:102'\n")
+            buffer.write(f"DTM+35:{self.delivery_date.strftime('%Y%m%d')}:102'\n")
 
         # Référence commande (RFF)
-        buffer.write(f"RFF+ON:SO45786'\n")
+        if self.invoice_origin:
+            buffer.write(f"RFF+ON:{self.invoice_origin}'\n")
 
+        gln_client = self.env['edi.param'].search([('key', '=', 'gln_client')], limit=1).value
+        
         # Fournisseur NAD (exemple ajusté pour l'usage)
-        buffer.write(f"NAD+SU+{self.company_id.vat}::9++{self.company_id.name}:"
+        buffer.write(f"NAD+SU+{gln_client}::9++{self.company_id.name}:"
                     f"{self.company_id.street}+{self.company_id.city}++{self.company_id.zip}+{self.company_id.country_id.code}'\n")
-
+        # Numéro fiscal (RFF)
+        buffer.write(f"RFF+VA:{self.company_id.vat}'\n")
 
         # Client (NAD+BY ajusté pour l'usage)
         buffer.write(f"NAD+BY+{self.partner_id.vat}::9++{self.partner_id.name}:"
                     f"{self.partner_id.street}+{self.partner_id.city}++{self.partner_id.zip}+{self.partner_id.country_id.code}'\n")
 
+        # Numéro fiscal (RFF)
+        buffer.write(f"RFF+VA:{self.partner_id.vat}'\n")
+
+        # Client (NAD+DP ajusté pour l'usage)
+        buffer.write(f"NAD+DP+{self.partner_id.gln}::9++{self.partner_id.name}:"
+                    f"{self.partner_id.street}+{self.partner_id.city}++{self.partner_id.zip}+{self.partner_id.country_id.code}'\n")
 
         # Numéro fiscal (RFF)
-        buffer.write(f"RFF+VA:DE123456789'\n")
+        buffer.write(f"RFF+VA:{self.partner_id.vat}'\n")
 
         # Devise CUX
         buffer.write(f"CUX+2:EUR:4'\n")
@@ -76,16 +90,16 @@ class AccountMove(models.Model):
         # Lignes de facture (LIN, PIA, IMD, QTY, MOA)
         for line in self.invoice_line_ids:
             buffer.write(f"LIN+{line.id}++{line.product_id.barcode}:EAN'\n")
-            buffer.write(f"PIA+1+{line.product_id.default_code}:SA'\n")
+            #buffer.write(f"PIA+1+{line.product_id.default_code}:SA'\n")
             buffer.write(f"IMD+A++::: {line.name}'\n")
             buffer.write(f"QTY+47:{int(line.quantity)}:PCE'\n")
             buffer.write(f"MOA+203:{line.price_subtotal}'\n")
             if line.discount:
                 buffer.write(f"MOA+131:-{line.price_subtotal * line.discount / 100}'\n")
             buffer.write(f"PRI+AAB:{line.price_unit}'\n")
+            for tax in line.tax_ids:
+                buffer.write(f"TAX+7+{tax.tax_group_id.name}+++:::{int(tax.amount)}'\n")
 
-        # TVA et montants globaux (TAX, MOA)
-        buffer.write(f"TAX+7+VAT+++:::19'\n")
         buffer.write(f"MOA+124:{self.amount_tax}'\n")
         buffer.write(f"MOA+77:{self.amount_total}'\n")
         buffer.write(f"MOA+125:{self.amount_untaxed}'\n")
@@ -118,23 +132,27 @@ class AccountMove(models.Model):
         }
 
     @api.depends('delivery_order_numbers')
-    def _compute_delivery_date(self):
-        """Récupérer la date de livraison depuis les bons de livraison dans le champ delivery_order_numbers."""
+    def _compute_delivery_info(self):
+        """Calculer la date et les numéros de bon de livraison à partir des bons de livraison liés."""
         for move in self:
             delivery_date = False
+            delivery_order_number = False
 
             if move.delivery_order_numbers:
-                # Rechercher les bons de livraison (stock.picking) en utilisant les numéros dans delivery_order_numbers
+                # Rechercher les bons de livraison (stock.picking) liés à la facture
                 picking_ids = self.env['stock.picking'].search([
                     ('name', 'in', move.delivery_order_numbers.split(','))
                 ])
-                
-                # Filtrer les pickings terminés
+
+                # Filtrer les bons de livraison terminés
                 completed_pickings = picking_ids.filtered(lambda p: p.state == 'done')
 
                 if completed_pickings:
                     # Récupérer la date de livraison du premier picking terminé
                     delivery_date = completed_pickings[0].scheduled_date.date()
+                    # Récupérer les numéros des bons de livraison terminés
+                    delivery_order_number = ', '.join(completed_pickings.mapped('name'))
 
-            # Mettre à jour la date de livraison
+            # Mettre à jour les champs de la facture
             move.delivery_date = delivery_date
+            move.delivery_order_number = delivery_order_number

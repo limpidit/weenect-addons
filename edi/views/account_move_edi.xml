@@ -16,6 +16,9 @@
                         class="btn-primary"
                         icon="fa-download"/>
             </xpath>
+            <xpath expr="//field[@name='to_check']" position="after">
+                    <field name="note"/>
+            </xpath>
         </field>
     </record>
 </odoo>
