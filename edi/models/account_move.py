@@ -23,98 +23,118 @@ class AccountMove(models.Model):
     def _generate_edifact_content(self, client):
         """Créer le contenu EDIFACT en fonction des spécifications du client"""
         buffer = StringIO()
+        segment_count = 0  # Initialiser le compteur de segments
 
         # En-tête du message UNH
         buffer.write(f"UNH+{self.id}+INVOIC:D:96A:UN:EAN008'\n")
+        segment_count += 1  # Incrémenter le compteur de segments
 
         # Segment BGM (En-tête de la facture ou avoir)
         if self.move_type == 'out_invoice':
             buffer.write(f"BGM+380+{self.name}+9'\n")  # Facture
         elif self.move_type == 'out_refund':
             buffer.write(f"BGM+381+{self.name}+9'\n")  # Avoir
+        segment_count += 1
 
         # Segment DTM (Date de la facture)
         buffer.write(f"DTM+137:{self.invoice_date.strftime('%Y%m%d')}:102'\n")
+        segment_count += 1
 
-    # Vérifier si la date de livraison est disponible avant d'utiliser strftime
+        # Date de livraison
         if self.delivery_date:
             buffer.write(f"DTM+35:{self.delivery_date.strftime('%Y%m%d')}:102'\n")
         else:
-            # Si la date de livraison est indisponible, utiliser la date de la facture comme fallback
             buffer.write(f"DTM+35:{self.invoice_date.strftime('%Y%m%d')}:102'\n")
+        segment_count += 1
 
-
-        # Texte libre FTX (exemple de texte)
+        # Texte libre FTX
         if self.note:
             buffer.write(f"FTX+ZZZ+++{self.note}'\n")
+            segment_count += 1
 
         if self.move_type == 'out_refund' and self.ref:
             buffer.write(f"FTX+ZZZ+++{self.ref}'\n")
+            segment_count += 1
 
         if self.delivery_order_number:
-        # Référence bon de livraison (RFF)
             buffer.write(f"RFF+DQ:{self.delivery_order_number}'\n")
+            segment_count += 1
 
-        if self.delivery_date:
-        # Date de livraison (répétée pour exemple)
-            buffer.write(f"DTM+35:{self.delivery_date.strftime('%Y%m%d')}:102'\n")
-
-        # Référence commande (RFF)
+        # Référence commande
         if self.invoice_origin:
             buffer.write(f"RFF+ON:{self.invoice_origin}'\n")
+            segment_count += 1
 
         gln_client = self.env['edi.param'].search([('key', '=', 'gln_client')], limit=1).value
-        
-        # Fournisseur NAD (exemple ajusté pour l'usage)
+
+        # Fournisseur NAD
         buffer.write(f"NAD+SU+{gln_client}::9++{self.company_id.name}:"
                     f"{self.company_id.street}+{self.company_id.city}++{self.company_id.zip}+{self.company_id.country_id.code}'\n")
-        # Numéro fiscal (RFF)
-        buffer.write(f"RFF+VA:{self.company_id.vat}'\n")
+        segment_count += 1
 
-        # Client (NAD+BY ajusté pour l'usage)
+        # Numéro fiscal du fournisseur
+        buffer.write(f"RFF+VA:{self.company_id.vat}'\n")
+        segment_count += 1
+
+        # Client NAD
         buffer.write(f"NAD+BY+{self.partner_id.vat}::9++{self.partner_id.name}:"
                     f"{self.partner_id.street}+{self.partner_id.city}++{self.partner_id.zip}+{self.partner_id.country_id.code}'\n")
+        segment_count += 1
 
-        # Numéro fiscal (RFF)
+        # Numéro fiscal du client
         buffer.write(f"RFF+VA:{self.partner_id.vat}'\n")
+        segment_count += 1
 
         if self.partner_shipping_id:
-            # Client (NAD+DP ajusté pour l'usage)
             buffer.write(f"NAD+DP+{self.partner_shipping_id.gln}::9++{self.partner_shipping_id.name}:"
                         f"{self.partner_shipping_id.street}+{self.partner_shipping_id.city}++{self.partner_shipping_id.zip}+{self.partner_shipping_id.country_id.code}'\n")
+            segment_count += 1
 
-            # Numéro fiscal (RFF)
+            # Numéro fiscal du destinataire
             buffer.write(f"RFF+VA:{self.partner_shipping_id.vat}'\n")
+            segment_count += 1
 
         # Devise CUX
         buffer.write(f"CUX+2:EUR:4'\n")
+        segment_count += 1
 
-        # Conditions de paiement (PAT)
+        # Conditions de paiement
         buffer.write(f"PAT+3'\n")
+        segment_count += 1
 
         # Date d'échéance
         buffer.write(f"DTM+35:{self.invoice_date_due.strftime('%Y%m%d')}:102'\n")
+        segment_count += 1
 
-        # Lignes de facture (LIN, PIA, IMD, QTY, MOA)
+        # Lignes de facture
         for line in self.invoice_line_ids:
             buffer.write(f"LIN+{line.id}++{line.product_id.barcode}:EAN'\n")
-            #buffer.write(f"PIA+1+{line.product_id.default_code}:SA'\n")
+            segment_count += 1
             buffer.write(f"IMD+A++::: {line.name}'\n")
+            segment_count += 1
             buffer.write(f"QTY+47:{int(line.quantity)}:PCE'\n")
+            segment_count += 1
             buffer.write(f"MOA+203:{line.price_subtotal}'\n")
+            segment_count += 1
             if line.discount:
                 buffer.write(f"MOA+131:-{line.price_subtotal * line.discount / 100}'\n")
+                segment_count += 1
             buffer.write(f"PRI+AAB:{line.price_unit}'\n")
+            segment_count += 1
             for tax in line.tax_ids:
                 buffer.write(f"TAX+7+VAT+++:::{int(tax.amount)}'\n")
+                segment_count += 1
 
+        # Totaux
         buffer.write(f"MOA+124:{self.amount_tax}'\n")
+        segment_count += 1
         buffer.write(f"MOA+77:{self.amount_total}'\n")
+        segment_count += 1
         buffer.write(f"MOA+125:{self.amount_untaxed}'\n")
+        segment_count += 1
 
         # Fin du message UNT
-        buffer.write(f"UNT+21+1'\n")
-
+        buffer.write(f"UNT+{segment_count}+{self.id}'\n")  # Remplacer 21 par le nombre de segments
         return buffer.getvalue()
 
     def _download_file(self, content, filename):
