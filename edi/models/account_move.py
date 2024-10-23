@@ -27,8 +27,11 @@ class AccountMove(models.Model):
         # En-tête du message UNH
         buffer.write(f"UNH+{self.id}+INVOIC:D:96A:UN:EAN008'\n")
 
-        # Segment BGM (En-tête de la facture)
-        buffer.write(f"BGM+380+{self.name}+9'\n")
+        # Segment BGM (En-tête de la facture ou avoir)
+        if self.move_type == 'out_invoice':
+            buffer.write(f"BGM+380+{self.name}+9'\n")  # Facture
+        elif self.move_type == 'out_refund':
+            buffer.write(f"BGM+381+{self.name}+9'\n")  # Avoir
 
         # Segment DTM (Date de la facture)
         buffer.write(f"DTM+137:{self.invoice_date.strftime('%Y%m%d')}:102'\n")
@@ -42,7 +45,11 @@ class AccountMove(models.Model):
 
 
         # Texte libre FTX (exemple de texte)
-        buffer.write(f"FTX+ZZZ+++{self.note}'\n")
+        if self.note:
+            buffer.write(f"FTX+ZZZ+++{self.note}'\n")
+
+        if self.move_type == 'out_refund' and self.ref:
+            buffer.write(f"FTX+ZZZ+++{self.ref}'\n")
 
         if self.delivery_order_number:
         # Référence bon de livraison (RFF)
@@ -71,12 +78,13 @@ class AccountMove(models.Model):
         # Numéro fiscal (RFF)
         buffer.write(f"RFF+VA:{self.partner_id.vat}'\n")
 
-        # Client (NAD+DP ajusté pour l'usage)
-        buffer.write(f"NAD+DP+{self.partner_id.gln}::9++{self.partner_id.name}:"
-                    f"{self.partner_id.street}+{self.partner_id.city}++{self.partner_id.zip}+{self.partner_id.country_id.code}'\n")
+        if self.partner_shipping_id:
+            # Client (NAD+DP ajusté pour l'usage)
+            buffer.write(f"NAD+DP+{self.partner_shipping_id.gln}::9++{self.partner_shipping_id.name}:"
+                        f"{self.partner_shipping_id.street}+{self.partner_shipping_id.city}++{self.partner_shipping_id.zip}+{self.partner_shipping_id.country_id.code}'\n")
 
-        # Numéro fiscal (RFF)
-        buffer.write(f"RFF+VA:{self.partner_id.vat}'\n")
+            # Numéro fiscal (RFF)
+            buffer.write(f"RFF+VA:{self.partner_shipping_id.vat}'\n")
 
         # Devise CUX
         buffer.write(f"CUX+2:EUR:4'\n")
@@ -98,7 +106,7 @@ class AccountMove(models.Model):
                 buffer.write(f"MOA+131:-{line.price_subtotal * line.discount / 100}'\n")
             buffer.write(f"PRI+AAB:{line.price_unit}'\n")
             for tax in line.tax_ids:
-                buffer.write(f"TAX+7+{tax.tax_group_id.name}+++:::{int(tax.amount)}'\n")
+                buffer.write(f"TAX+7+VAT+++:::{int(tax.amount)}'\n")
 
         buffer.write(f"MOA+124:{self.amount_tax}'\n")
         buffer.write(f"MOA+77:{self.amount_total}'\n")
