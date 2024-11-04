@@ -184,3 +184,5 @@ class AccountMove(models.Model):
             # Mettre à jour les champs de la facture
             move.delivery_date = delivery_date
             move.delivery_order_number = delivery_order_number
+
+            #
