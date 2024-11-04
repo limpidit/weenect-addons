@@ -68,7 +68,7 @@ class AccountMove(models.Model):
         gln_client = self.env['edi.param'].search([('key', '=', 'gln_client')], limit=1).value
 
         # Fournisseur NAD
-        buffer.write(f"NAD+SU+{gln_client}::9++{self.company_id.name}:"
+        buffer.write(f"NAD+SU+{gln_client}::9++{self.company_id.name}+"
                     f"{self.company_id.street}+{self.company_id.city}++{self.company_id.zip}+{self.company_id.country_id.code}'\n")
         segment_count += 1
 
@@ -77,7 +77,7 @@ class AccountMove(models.Model):
         segment_count += 1
 
         # Client NAD
-        buffer.write(f"NAD+BY+{self.partner_id.vat}::9++{self.partner_id.name}:"
+        buffer.write(f"NAD+BY+{self.partner_id.vat}::9++{self.partner_id.name}+"
                     f"{self.partner_id.street}+{self.partner_id.city}++{self.partner_id.zip}+{self.partner_id.country_id.code}'\n")
         segment_count += 1
 
@@ -86,7 +86,7 @@ class AccountMove(models.Model):
         segment_count += 1
 
         if self.partner_shipping_id:
-            buffer.write(f"NAD+DP+{self.partner_shipping_id.gln}::9++{self.partner_shipping_id.name}:"
+            buffer.write(f"NAD+DP+{self.partner_shipping_id.gln}::9++{self.partner_shipping_id.name}+"
                         f"{self.partner_shipping_id.street}+{self.partner_shipping_id.city}++{self.partner_shipping_id.zip}+{self.partner_shipping_id.country_id.code}'\n")
             segment_count += 1
 
@@ -103,12 +103,12 @@ class AccountMove(models.Model):
         segment_count += 1
 
         # Date d'échéance
-        buffer.write(f"DTM+35:{self.invoice_date_due.strftime('%Y%m%d')}:102'\n")
+        buffer.write(f"DTM+209:{self.invoice_date_due.strftime('%Y%m%d')}:102'\n")
         segment_count += 1
 
         # Lignes de facture
-        for line in self.invoice_line_ids:
-            buffer.write(f"LIN+{line.id}++{line.product_id.barcode}:EAN'\n")
+        for line in self.invoice_line_ids.filtered(lambda r: r.display_type == "product"):
+            buffer.write(f"LIN+{line.id}++{line.product_id.ean_weenect}:EAN'\n")
             segment_count += 1
             buffer.write(f"IMD+A++::: {line.name}'\n")
             segment_count += 1
