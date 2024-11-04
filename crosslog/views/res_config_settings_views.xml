@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- Extending the base config settings view -->
+        <record id="view_res_config_settings_form_inherit_crosslog" model="ir.ui.view">
+            <field name="name">res.config.settings.inherit.crosslog</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="crosslog_username" class="form-control"/>
+                    <field name="crosslog_password" class="form-control" password="True"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

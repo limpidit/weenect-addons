@@ -1,0 +1,9 @@
+<odoo>
+    <!-- Mappage pour l'en-tête (entete) -->
+    <record id="gln_client" model="edi.param">
+        <field name="key">gln_client</field>
+        <field name="value">123456789</field>
+    </record>
+
+</odoo>
+

@@ -1,0 +1,60 @@
+<odoo>
+    <record id="view_traceurs_sav_form" model="ir.ui.view">
+        <field name="name">traceurs.sav.form</field>
+        <field name="model">traceurs.sav</field>
+        <field name="arch" type="xml">
+            <form string="Traceurs SAV">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="client_id"/>
+                            <field name="product_id"/>
+                            <field name="imei"/>
+                            <field name="type"/>
+                        </group>
+                        <group>
+                            <field name="traceur_sav_recu"/>
+                            <field name="traceur_sav_a_envoyer"/>
+                            <field name="traceur_sav_termine"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_traceurs_sav_tree" model="ir.ui.view">
+    <field name="name">traceurs.sav.tree</field>
+    <field name="model">traceurs.sav</field>
+    <field name="arch" type="xml">
+        <tree string="Traceurs">
+            <field name="client_id"/>
+            <field name="product_id"/>
+            <field name="imei"/>
+            <field name="traceur_sav_recu"/>
+            <field name="traceur_sav_a_envoyer"/>
+            <field name="type"/>
+        </tree>
+    </field>
+    </record>
+
+    <record id="action_traceurs_sav" model="ir.actions.act_window">
+        <field name="name">Traceurs</field>
+        <field name="res_model">traceurs.sav</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_traceurs_sav_tree"/>
+    </record>
+
+    <menuitem id="menu_traceurs_sav_contacts" name="Traceurs"
+            action="action_traceurs_sav"
+            parent="contacts.menu_contacts"/>
+
+    <menuitem id="menu_traceurs_sav_inventory" name="Traceurs"
+            action="action_traceurs_sav"
+            parent="stock.menu_stock_root"/>
+</odoo>

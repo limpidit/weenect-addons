@@ -1,0 +1,52 @@
+{
+    "configurations": [
+    {
+    "name": "Run DB",
+    "type": "python",
+    "request": "launch",
+    "console": "integratedTerminal",
+    "program": "odoo/odoo-bin",
+    "cwd": "/users/guillaume/src/odoo-dev",
+    "args": [
+    "--database=weenect22",  
+    "--init=edi",
+    "--addons-path=${config:odoo.addonsPath}",
+    "--limit-time-cpu=0",
+    "--limit-time-real=0",
+    "--dev=xml",
+    ]
+    },
+    {
+    "name": "Run Shell",
+    "type": "python",
+    "request": "launch",
+    "console": "integratedTerminal",
+    "program": "odoo/odoo-bin",
+    "cwd": "/users/guillaume/src/odoo-dev",
+    "args": [
+    "shell",
+    "--database=estate-demo",
+    "--addons-path=${config:odoo.addonsPath},${workspaceFolder}",
+    "--limit-time-cpu=0",
+    "--limit-time-real=0"
+    ]
+    },
+    {
+    "name": "Run Tests",
+    "type": "python",
+    "request": "launch",
+    "console": "integratedTerminal",
+    "program": "odoo/odoo-bin",
+    "cwd": "/users/guillaume/src/odoo-dev",
+    "args": [
+    "--database=estate-demo-test",
+    "--addons-path=${config:odoo.addonsPath},${workspaceFolder}",
+    "--limit-time-cpu=0",
+    "--limit-time-real=0",
+    // "--test-tags=workflow",
+    "--test-tags=crm_fitness_park:TestCRMLead",
+    //"--test-enable",
+    ]
+    },
+    ]
+    }

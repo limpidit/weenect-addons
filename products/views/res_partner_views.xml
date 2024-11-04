@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="view_partner_form_inherit" model="ir.ui.view">
+    <field name="name">res.partner.form.inherit</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='vat']" position="before">
+        <field name="province"/>
+        <field name="tva_tl"/>
+      </xpath>
+      <xpath expr="//field[@name='vat']" position="after">
+        <field name="groupe_retailer"/>  
+        <field name="num_retailer"/>
+        <field name="department"/>
+      </xpath>
+      <xpath expr="//field[@name='industry_id']" position="after">
+
+      </xpath>
+      <xpath expr="//form/sheet/notebook/page[1]" position="after">
+          <page string="Divers Weenect">
+            <group>
+              <group>
+                <field name="code_bic"/>
+                <field name="code_ape"/>
+                <field name="date_ouverture"/>
+                <field name="joom1_effectue"/>
+                <field name="lien_tl"/>
+              </group>
+              <group>
+                <field name="imei_traceur"/>
+                <field name="traceur_demo"/>
+                <field name="cartes_antivol"/>
+                <field name="pack_communication"/>
+                <field name="posters"/>
+                <field name="presentoir_orange"/>
+              </group>
+            </group>
+          </page>
+        </xpath>
+        <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Traceurs">
+                    <field name="traceurs_sav_ids"/>
+                </page>
+            </xpath>
+    </field>
+  </record>
+
+</odoo>

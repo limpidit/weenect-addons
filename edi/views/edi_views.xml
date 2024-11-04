@@ -1,0 +1,43 @@
+<!-- views/edi_mapping_views.xml -->
+<odoo>
+    <!-- Définition de l'action pour afficher la vue de la table edi.mapping -->
+    <record id="action_edi_param" model="ir.actions.act_window">
+        <field name="name">Paramètres EDI</field>
+        <field name="res_model">edi.param</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>
+                Paramètres EDI            
+            </p>
+        </field>
+    </record>
+
+    <!-- Vue liste pour la table edi.mapping -->
+    <record id="view_edi_param_tree" model="ir.ui.view">
+        <field name="name">edi.mapping.tree</field>
+        <field name="model">edi.param</field>
+        <field name="arch" type="xml">
+            <tree string="Param EDI">
+                <field name="key"/>
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue formulaire pour la table edi.param -->
+    <record id="view_edi_param_form" model="ir.ui.view">
+        <field name="name">edi.param.form</field>
+        <field name="model">edi.param</field>
+        <field name="arch" type="xml">
+            <form string="Param EDI">
+                <group>
+                <field name="key"/>
+                <field name="value"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menu pour accéder à la vue de mappage EDI -->
+    <menuitem id="menu_edi_mapping" name="Paramètres EDI" parent="sale.menu_sale_config" action="action_edi_param"/>
+</odoo>
