@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="salesupply_menu_root"
+        name="Salesupply"
+        action="salesupply_shop_action"
+        web_icon="weenect_salesupply,static/description/icon.png"
+        groups="stock.group_stock_manager,stock.group_stock_user"/>
+
+    <menuitem
+        id="salesupply_menu_operations"
+        name="Operations"
+        groups="stock.group_stock_manager"
+        action="salesupply_shop_action"
+        parent="weenect_salesupply.salesupply_menu_root"
+        sequence="10"/>
+
+    <menuitem
+        id="salesupply_menu_configs"
+        name="Configuration"
+        groups="stock.group_stock_manager"
+        parent="weenect_salesupply.salesupply_menu_root"
+        sequence="90">
+
+        <menuitem
+            id="stock_salesupply_shop_menu"
+            name="Shops"
+            action="weenect_salesupply.salesupply_shop_action"
+            sequence="10"/>
+    
+    </menuitem>
+
+    <menuitem
+        id="stock_salesupply_menu"
+        name="Salesupply"
+        parent="stock.menu_stock_root"
+        groups="stock.group_stock_manager"
+        sequence="90">
+
+        <menuitem
+            id="stock_salesupply_shops_menu"
+            name="Shops"
+            action="salesupply_shop_action"
+            sequence="10"/>
+
+    </menuitem>
+
+</odoo>
