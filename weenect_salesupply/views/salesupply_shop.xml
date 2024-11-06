@@ -6,9 +6,6 @@
         <field name="model">salesupply.shop</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" string="Shops">
-                <header>
-                    <button name="synchronize_shops" type="object" string="Synchronize Shops" class="oe_highlight"/>
-                </header>
                 <field name="name" />
                 <field name="id_salesupply" />
                 <field name="shop_owner_id_salesupply" />

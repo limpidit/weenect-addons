@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="salesupply_connection_view_tree" model="ir.ui.view">
+        <field name="name">salesupply.connection.view.tree</field>
+        <field name="model">salesupply.connection</field>
+        <field name="arch" type="xml">
+            <tree string="Salesupply API configs">
+                <field name="name" />
+                <field name="api_username" />
+                <field name="api_password" password="True"/>
+                <field name="environment" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="salesupply_connection_view_form" model="ir.ui.view">
+        <field name="name">salesupply.connection.view.form</field>
+        <field name="model">salesupply.connection</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Test API connection" type="object" name="connection_test" class="btn-primary"/>
+                    <button string="Synchronize shops" type="object" name="synchronize_shops" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. API connection"/></h1>
+                    </div>
+                    <group>
+                        <group string="API connection">
+                            <field name="api_host" />
+                            <field name="api_username" />
+                            <field name="api_password" password="True" />
+                        </group>
+                        <group string="Environment">
+                            <field name="environment" />
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="salesupply_connection_action" model="ir.actions.act_window">
+        <field name="name">Salesupply API configs</field>
+        <field name="res_model">salesupply.connection</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Define Salesupply API configuration here</p>
+        </field>
+    </record>
+
+</odoo>

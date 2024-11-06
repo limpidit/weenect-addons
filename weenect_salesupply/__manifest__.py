@@ -8,11 +8,14 @@
         'stock'
     ],
     "data": [
+        # Data
+        'data/ir_cron.xml',
         # Security 
         'security/ir.model.access.csv',
         # Views
-        'views/res_config_settings.xml',
+        'views/salesupply_connection.xml',
         'views/salesupply_shop.xml',
+        'views/salesupply_synchronization.xml',
         # Menus
         'views/menu.xml',
     ],
