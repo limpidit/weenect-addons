@@ -42,7 +42,7 @@ class SalesupplyConnection(models.Model):
             return self.display_enabling_connection_message()
         salesupply = SalesupplyRequest(self)
         connection_test = salesupply._get_api_user_info()
-        if not connection_test:
+        if isinstance(connection_test, dict) and 'error_message' in connection_test:
             raise UserError(_(f"Connection test failed : {connection_test['error_message']}"))
         message = _("Connection Test Successful!")
         return {

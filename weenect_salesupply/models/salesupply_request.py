@@ -31,22 +31,19 @@ class SalesupplyRequest:
         return res
     
     def _process_errors(self, res_body):
-        err_msgs = []
-        response = res_body.get('response')
+        response = res_body.get('Message')
         if response:
-            for err in response.get('errors', []):
-                err_msgs.append(err['message'])
-        return ','.join(err_msgs)
+            return response
+        return _("Undefined error")
     
     def _get_api_user_info(self):
         url = "/v1/Me"
         response = self._send_request(url)
         if response.status_code == 200:
             return True
-        else:
-            return {
-                'error_message': self._process_errors(response.json())
-            }
+        return {
+            'error_message': self._process_errors(response.json())
+        }
     
     def _get_shops(self):
         url = "/v1/Shops"
