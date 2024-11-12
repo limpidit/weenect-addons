@@ -1,0 +1,4 @@
+[submodule "edi"]
+	path = edi
+	url = git@github.com:OCA/edi.git
+	branch = 16.0
