@@ -239,7 +239,7 @@ class AccountMove(models.Model):
             number += 1
             product_tax = 0
             product = line.product_id
-            discount = line.price_unit * line.quantity - line.price_subtotal
+            discount = round(line.price_unit * line.quantity - line.price_subtotal, 2)
             if line.tax_ids and line.tax_ids.amount_type == "percent":
                 product_tax = line.tax_ids.amount
                 if product_tax not in tax:
@@ -288,11 +288,11 @@ class AccountMove(models.Model):
                     ("TAX", "7", "VAT", ["", "", "", product_tax])
                 )
                 # Taxed amount
-                tax_list.append(("MOA", ["79", price_total]))
+                tax_list.append(("MOA", ["79", round(price_total, 2)]))
                 # Tax amount
-                tax_list.append(("MOA", ["124", price_total * product_tax / 100]))
+                tax_list.append(("MOA", ["124", round(price_total * product_tax / 100, 2)]))
                 # Taxed amount
-                tax_list.append(("MOA", ["125", price_total]))
+                tax_list.append(("MOA", ["125", round(price_total, 2)]))
                 
         summary = [
             ("UNS", "S"),
