@@ -1,0 +1,9 @@
+[submodule "edi"]
+	path = edi
+	url = git@github.com:OCA/edi.git
+	branch = 16.0
+
+[submodule "partner-contact"]
+	path = partner-contact
+	url = git@github.com:OCA/partner-contact.git
+	branch = 16.0
