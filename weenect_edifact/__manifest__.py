@@ -6,6 +6,7 @@
     "depends": [
         'account_invoice_edifact',
         'base',
+        'products',
     ],
     "data": [
         'views/account_move.xml',
