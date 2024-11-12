@@ -93,12 +93,13 @@ class AccountMove(models.Model):
             term_lines.discount_percentage,
             term_lines.discount_days if len(term_lines) == 1 else 0,
         )
-        
 
         header = [
             ("UNH", str(self.id), ["INVOIC", "D", "96A", "UN", "EAN008"]),
             # Commercial invoice
             ("BGM", move_type_code, self.payment_reference, "9"),
+            # Document/message date/time
+            ("DTM", ["137", today, "102"]),
             # 35: Delivery date/time, actual
             (
                 "DTM",
@@ -132,8 +133,6 @@ class AccountMove(models.Model):
                     "102",
                 ],
             ),
-            # Document/message date/time
-            ("DTM", ["137", today, "102"]),
             # Delivery note number
             ("RFF", ["DQ", self.id]),
             # Reference date/time
