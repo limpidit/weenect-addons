@@ -64,4 +64,14 @@ class SalesupplyRequest:
             return {
                 'error_message': self._process_errors(response.json())
             }
+            
+    def _get_shop_group_products(self, shop_group_id):
+        url = f"/v1/ShopGroup/{shop_group_id}/Products"
+        response = self._send_request(url)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {
+                'error_message': self._process_errors(response.json())
+            }
     

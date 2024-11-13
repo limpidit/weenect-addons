@@ -5,7 +5,7 @@
     "author": "Limpid IT",
     "depends": [
         'base',
-        'stock'
+        'stock',
     ],
     "data": [
         # Data
@@ -13,7 +13,9 @@
         # Security 
         'security/ir.model.access.csv',
         # Views
+        'views/product_template.xml',
         'views/salesupply_connection.xml',
+        'views/salesupply_log.xml',
         'views/salesupply_shop.xml',
         'views/salesupply_synchronization.xml',
         'views/stock_warehouse.xml',

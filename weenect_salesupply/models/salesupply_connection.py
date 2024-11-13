@@ -78,6 +78,7 @@ class SalesupplyConnection(models.Model):
                 new_shop = shop_object.create({
                     'id_salesupply': element['Id'],
                     'name': element['Name'],
+                    'connection_id': self.id,
                     'shop_owner_id_salesupply': element['ShopOwnerId'],
                     'shop_group_id_salesupply': element['ShopGroupId'],
                     'active': element['Active']
