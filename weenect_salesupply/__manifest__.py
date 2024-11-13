@@ -16,6 +16,7 @@
         'views/salesupply_connection.xml',
         'views/salesupply_shop.xml',
         'views/salesupply_synchronization.xml',
+        'views/stock_warehouse.xml',
         # Menus
         'views/menu.xml',
     ],

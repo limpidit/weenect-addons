@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="salesupply_view_warehouse" model="ir.ui.view">
+        <field name="name">salesupply.view.warehouse</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="is_salesupply" />
+            </field>
+            <notebook position="inside">
+                <page name="salesupply_info" string="Salesupply" attrs="{'invisible': [('is_salesupply', '=', False)]}">
+                    <group>
+                        <group string="General Information">
+                            <field name="id_salesupply" />
+                            <field name="name_salesupply" />
+                            <field name="shop_id" />
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>
