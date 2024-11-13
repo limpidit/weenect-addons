@@ -47,22 +47,13 @@
             name="Shops"
             action="weenect_salesupply.salesupply_shop_action"
             sequence="20"/>
-    
-    </menuitem>
-
-    <menuitem
-        id="stock_salesupply_menu"
-        name="Salesupply"
-        parent="stock.menu_stock_root"
-        groups="stock.group_stock_manager"
-        sequence="90">
 
         <menuitem
-            id="stock_salesupply_shops_menu"
-            name="Shops"
-            action="salesupply_shop_action"
-            sequence="10"/>
-
+            id="stock_warehouse_menu"
+            name="Warehouses"
+            action="weenect_salesupply.salesupply_action_warehouse_form"
+            sequence="30"/>
+    
     </menuitem>
 
 </odoo>

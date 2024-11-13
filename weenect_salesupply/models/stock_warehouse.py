@@ -1,5 +1,5 @@
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class StockWarehouse(models.Model):
@@ -10,3 +10,10 @@ class StockWarehouse(models.Model):
     id_salesupply = fields.Integer(string="Salesupply id")
     name_salesupply = fields.Char(string="Salesupply name")
     shop_id = fields.Many2one(comodel_name='salesupply.shop', string="Shop")
+    
+    @api.model
+    def default_get(self, fields_list):
+        res = super(StockWarehouse, self).default_get(fields_list)
+        if self.env.context.get('salesupply'):
+            res['is_salesupply'] = True
+        return res

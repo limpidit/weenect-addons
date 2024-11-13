@@ -23,4 +23,18 @@
         </field>
     </record>
 
+    <record id="salesupply_action_warehouse_form" model="ir.actions.act_window">
+        <field name="name">Salesupply warehouses</field>
+        <field name="res_model">stock.warehouse</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="stock.view_warehouse_tree"/>
+        <field name="domain">[('is_salesupply', '=', True)]</field>
+        <field name="context">{'salesupply': True}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Define a new Salesupply warehouse
+          </p>
+        </field>
+    </record>
+
 </odoo>
