@@ -16,6 +16,7 @@
         'views/product_template.xml',
         'views/salesupply_connection.xml',
         'views/salesupply_log.xml',
+        'views/salesupply_sale_status.xml',
         'views/salesupply_shop.xml',
         'views/salesupply_synchronization.xml',
         'views/stock_warehouse.xml',

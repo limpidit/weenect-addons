@@ -65,6 +65,21 @@
     </menuitem>
 
     <menuitem
+        id="salesupply_menu_sale"
+        name="Sales"
+        groups="stock.group_stock_manager,stock.group_stock_user"
+        parent="weenect_salesupply.salesupply_menu_root"
+        sequence="30">
+
+        <menuitem
+            id="salesupply_sale_status_menu"
+            name="Order statuses"
+            action="weenect_salesupply.salesupply_sale_status_action"
+            sequence="10"/>
+    
+    </menuitem>
+
+    <menuitem
         id="salesupply_menu_configs"
         name="Configuration"
         groups="stock.group_stock_manager"
