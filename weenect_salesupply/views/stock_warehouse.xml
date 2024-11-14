@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="salesupply_view_warehouse" model="ir.ui.view">
+        <field name="name">salesupply.view.warehouse</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="is_salesupply" />
+            </field>
+            <notebook position="inside">
+                <page name="salesupply_info" string="Salesupply" attrs="{'invisible': [('is_salesupply', '=', False)]}">
+                    <group>
+                        <group string="General Information">
+                            <field name="id_salesupply" />
+                            <field name="name_salesupply" />
+                            <field name="shop_id" />
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="salesupply_action_warehouse_form" model="ir.actions.act_window">
+        <field name="name">Salesupply warehouses</field>
+        <field name="res_model">stock.warehouse</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="stock.view_warehouse_tree"/>
+        <field name="domain">[('is_salesupply', '=', True)]</field>
+        <field name="context">{'salesupply': True}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Define a new Salesupply warehouse
+          </p>
+        </field>
+    </record>
+
+</odoo>
