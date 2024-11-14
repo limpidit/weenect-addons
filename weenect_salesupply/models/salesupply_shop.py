@@ -1,11 +1,8 @@
 
 from odoo import models, fields, _
 from odoo.exceptions import ValidationError
-import logging
 
 from .salesupply_request import SalesupplyRequest
-
-_logger = logging.getLogger()
 
 
 class SalesupplyShop(models.Model):
@@ -20,14 +17,13 @@ class SalesupplyShop(models.Model):
     active = fields.Boolean(string="Active")
     
     def retrieve_products(self, manual_execution=True):
-        _logger.info("SALESUPPLY : Starting retrieving products")
-        
         product_object = self.env['product.template']
         salesupply_shop_product_object = self.env['salesupply.shop.product']
         log_object = self.env['salesupply.log']
         
         salesupply = SalesupplyRequest(self.connection_id)
         shop_groups = self.mapped(lambda r: r.shop_group_id_salesupply)
+        message = []
         
         for shop_group in shop_groups:
             response = salesupply._get_shop_group_products(shop_group)
@@ -58,16 +54,20 @@ class SalesupplyShop(models.Model):
                         'id_salesupply': id_product,
                         'id_shop_group': shop_group
                     })
+                    message.append(_(f"Product synchronized -> {existing_product.name}")) 
                 existing_product.available_on_salesupply = True
-                
-        log_object.log_success(_("Products retrieved successfully from Salesupply"))
         
+        if len(message) == 0:
+            message.append(_("No new link between Odoo and Salesupply products."))
+        end_log = log_object.log_success(_("Products retrieved successfully from Salesupply"), "\n".join(message))
+
         if manual_execution:
             return {
                 'type': 'ir.actions.act_window',
-                'view_mode': 'tree',
-                'res_model': 'product.template',
-                'id': self.env.ref('weenect_salesupply.salesupply_product_template_action').id,
+                'view_mode': 'form',
+                'res_model': 'salesupply.log',
+                'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,
+                'res_id': end_log.id,
                 'target': 'current',
             }
         
