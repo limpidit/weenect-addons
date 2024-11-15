@@ -16,32 +16,27 @@ class SalesupplyShop(models.Model):
     shop_group_id_salesupply = fields.Integer(string="ID shop group")
     active = fields.Boolean(string="Active")
     
-    def retrieve_products(self, manual_execution=True):
+    # Shippings synchronization
+    sale_done_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', string="Delivered picking states")
+    
+    def get_products_from_salesupply(self, manual_execution=True):
         product_object = self.env['product.template']
         salesupply_shop_product_object = self.env['salesupply.shop.product']
         log_object = self.env['salesupply.log']
         
+        shop_group = self.shop_group_id_salesupply
+        logs = log_object
         salesupply = SalesupplyRequest(self.connection_id)
-        shop_groups = self.mapped(lambda r: r.shop_group_id_salesupply)
-        message = []
+        response = salesupply._get_shop_group_products(shop_group)
         
-        for shop_group in shop_groups:
-            response = salesupply._get_shop_group_products(shop_group)
-            if 'error_message' in response:
-                new_log = log_object.log_error(
-                    _("Error while retrieving products"), 
-                    response['error_message']
-                )
-                return {
-                    'type': 'ir.actions.act_window',
-                    'name': "Log message",
-                    'view_mode': 'form',
-                    'res_model': 'salesupply.log',
-                    'res_id': new_log.id,
-                    'target': 'current',
-                }
-                
-            for product in response:
+        if 'error_message' in response:
+            return log_object.log_and_open_error(
+                _("Error while retrieving products"), 
+                response['error_message']
+            )
+            
+        for product in response:
+            try:
                 if not product['Code']:
                     continue
                 id_product = product['Id']
@@ -54,21 +49,28 @@ class SalesupplyShop(models.Model):
                         'id_salesupply': id_product,
                         'id_shop_group': shop_group
                     })
-                    message.append(_(f"Product synchronized -> {existing_product.name}")) 
+                    logs = logs | log_object.log_info(_(f"Product synchronized -> {existing_product.name}"))
                 existing_product.available_on_salesupply = True
+            except Exception as exception:
+                logs = logs | log_object.log_error(_(f"Could not synchronize a product"), str(exception))
         
-        if len(message) == 0:
-            message.append(_("No new link between Odoo and Salesupply products."))
-        end_log = log_object.log_success(_("Products retrieved successfully from Salesupply"), "\n".join(message))
+        if len(logs) == 0:
+            logs = logs | log_object.log_info(_("No new link between Odoo and Salesupply products."))
+        elif logs.filtered(lambda r: r.type == 'error'):
+            logs = logs | log_object.log_warning(_("Product synchronization done with failures"))
+        else:
+            logs = logs | log_object.log_info(_("Products retrieved successfully from Salesupply"))
 
         if manual_execution:
             return {
                 'type': 'ir.actions.act_window',
-                'view_mode': 'form',
+                'name': "Linking Salesupply and Odoo products logs",
+                'view_mode': 'tree,form',
                 'res_model': 'salesupply.log',
+                'target': 'new',
                 'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,
-                'res_id': end_log.id,
-                'target': 'current',
+                'context': {'create': False},
+                'domain': [('id', 'in', logs.ids)]
             }
         
         return

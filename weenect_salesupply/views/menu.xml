@@ -4,16 +4,23 @@
     <menuitem
         id="salesupply_menu_root"
         name="Salesupply"
-        action="salesupply_synchronization_action"
+        action="weenect_salesupply.salesupply_shop_action"
         web_icon="weenect_salesupply,static/description/icon.png"
         groups="stock.group_stock_manager,stock.group_stock_user"/>
+
+    <menuitem
+        id="stock_salesupply_shop_menu"
+        name="Shops"
+        parent="weenect_salesupply.salesupply_menu_root"
+        action="weenect_salesupply.salesupply_shop_action"
+        sequence="10"/>
 
     <menuitem
         id="salesupply_menu_synchronization"
         name="Synchronization"
         groups="stock.group_stock_manager,stock.group_stock_user"
         parent="weenect_salesupply.salesupply_menu_root"
-        sequence="10">
+        sequence="15">
 
         <menuitem
             id="salesupply_upload"
@@ -93,16 +100,10 @@
             sequence="10"/>
 
         <menuitem
-            id="stock_salesupply_shop_menu"
-            name="Shops"
-            action="weenect_salesupply.salesupply_shop_action"
-            sequence="20"/>
-
-        <menuitem
             id="stock_warehouse_menu"
             name="Warehouses"
             action="weenect_salesupply.salesupply_action_warehouse_form"
-            sequence="30"/>
+            sequence="20"/>
     
     </menuitem>
 

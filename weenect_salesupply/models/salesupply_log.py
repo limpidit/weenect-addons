@@ -3,8 +3,9 @@ from odoo import models, fields, api
 
 from datetime import datetime, timedelta
 
-STATES = [
-    ('success', "Success"),
+TYPES = [
+    ('info', "Information"),
+    ('warning', "Warning"),
     ('error', "Error")
 ]
 
@@ -15,15 +16,15 @@ class SalesupplyLog(models.Model):
     _order = 'execution_date desc'
 
     name = fields.Char(string="name")
-    state = fields.Selection(selection=STATES, string="State")
+    type = fields.Selection(selection=TYPES, string="Type")
     execution_date = fields.Datetime(string="Synchronization execution date")
     message = fields.Text(string="Additional information")
     
     @api.model
-    def log_message(self, title, message, state):
+    def log_message(self, title, message, type):
         new_log = self.create({
             'name': title,
-            'state': state,
+            'type': type,
             'execution_date': datetime.now(),
             'message': message
         })
@@ -34,8 +35,24 @@ class SalesupplyLog(models.Model):
         return self.log_message(title, message, 'error')
         
     @api.model
-    def log_success(self, title, message=""):
-        return self.log_message(title, message, 'success')
+    def log_info(self, title, message=""):
+        return self.log_message(title, message, 'info')
+    
+    @api.model
+    def log_warning(self, title, message=""):
+        return self.log_message(title, message, 'warning')
+    
+    @api.model
+    def log_and_open_error(self, title, message=""):
+        new_log = self.log_error(title, message)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': title,
+            'view_mode': 'form',
+            'res_model': 'salesupply.log',
+            'res_id': new_log.id,
+            'target': 'current',
+        }
         
     def remove_older_logs(self):
         date_limit = datetime.today() - timedelta(days=30)
