@@ -1,11 +1,7 @@
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
 
 from .salesupply_request import SalesupplyRequest
-
-import traceback
-
 
 class SalesupplyShop(models.Model):
     _name = 'salesupply.shop'
