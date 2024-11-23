@@ -1,0 +1,1 @@
+from . import salesupply_inventory_wizard

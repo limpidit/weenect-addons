@@ -6,7 +6,7 @@
         <field name="model">salesupply.shop</field>
         <field name="arch" type="xml">
             <tree string="Shops">
-                <field name="name" />
+                <field name="name"/>
                 <button name="get_products_from_salesupply" 
                     groups="stock.group_stock_manager" type="object" 
                     string="Link products" class="btn btn-link" 
@@ -22,6 +22,9 @@
             <form>
                 <header>
                     <button string="Link products" name="get_products_from_salesupply" 
+                        groups="stock.group_stock_manager"
+                        type="object" class="oe_highlight"/>
+                    <button string="Synchronize inventory" name="action_open_inventory_wizard" 
                         groups="stock.group_stock_manager"
                         type="object" class="oe_highlight"/>
                 </header>
@@ -40,8 +43,11 @@
                     <notebook>
                         <page name="deliveries" string="Deliveries synchronization">
                             <group>
-                                <field name="sale_done_status_ids" widget="many2many_tags"
-                                    domain="[('shop_id', '=', id)]"/>
+                                <group>
+                                    <field name="sale_done_status_ids" widget="many2many_tags"/>
+                                    <field name="default_customer_id" />
+                                    <field name="last_orders_synchronization_date" />
+                                </group>
                             </group>
                         </page>
                     </notebook>

@@ -14,3 +14,6 @@ access_salesupply_shop_product_user,access.salesupply.shop.product.user,weenect_
 access_salesupply_sale_status_manager,access.salesupply.sale.status.manager,weenect_salesupply.model_salesupply_sale_status,stock.group_stock_manager,1,1,1,1
 access_salesupply_sale_status_user,access.salesupply.sale.status.user,weenect_salesupply.model_salesupply_sale_status,stock.group_stock_user,1,0,0,0
 
+access_salesupply_inventory_wizard,access.salesupply.inventory.wizard,weenect_salesupply.model_salesupply_inventory_wizard,stock.group_stock_manager,1,1,1,1
+
+

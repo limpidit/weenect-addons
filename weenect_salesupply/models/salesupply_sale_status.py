@@ -7,7 +7,6 @@ class SalesupplySaleStatus(models.Model):
     _description = "Define sale orders statuses on Salesupply"
 
     name = fields.Char(string="Name")
-    shop_id = fields.Many2one(comodel_name='salesupply.shop', string="Shop")
 
     id_salesupply = fields.Integer(string="Salesupply Id")
     id_base_status = fields.Integer(string="Salesupply base status Id")

@@ -10,7 +10,6 @@
                 <field name="id_salesupply" />
                 <field name="id_base_status" />
                 <field name="id_type_status" />
-                <field name="shop_id" />
             </tree>
         </field>
     </record>

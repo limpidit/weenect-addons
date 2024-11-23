@@ -5,6 +5,7 @@
     "author": "Limpid IT",
     "depends": [
         'base',
+        'sale', 
         'stock',
     ],
     "data": [
@@ -22,6 +23,8 @@
         'views/stock_warehouse.xml',
         # Menus
         'views/menu.xml',
+        # Wizard
+        'wizard/salesupply_inventory_wizard.xml',
     ],
     "installable": True,
     "application": True,
