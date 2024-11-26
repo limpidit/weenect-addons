@@ -185,12 +185,6 @@ class AccountMove(models.Model):
                 "102",
             ]),
             
-            # Free text
-            ("FTX", "ZZZ", "", "", self.note if self.note else ""),
-            
-            # Payment ref for SAGAFLOR
-            ("FTX", "ZZZ", "", "", self.ref if self.ref and partner == "sagaflor" and move_type_code == "381" else ""),
-            
             # 35: Delivery date/time, actual
             ("DTM", [
                 "171",
@@ -320,7 +314,7 @@ class AccountMove(models.Model):
             ("MOA", ["125", self.amount_untaxed]),
             
             # Segments count
-            ("UNT", 25 + 11 * total_line_item + 4 * len(vals["tax"]), self.id),
+            ("UNT", 23 + 11 * total_line_item + 4 * len(vals["tax"]), self.id),
         ]
         
         summary = summary[:-1] + tax_list + summary[-1:]
