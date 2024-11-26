@@ -153,7 +153,7 @@ class AccountMove(models.Model):
                 shipper.zip,
                 shipper.country_id.code,
             ),
-            ("RFF", ["VA", ""]),
+            ("RFF", ["VA", shipper.vat]),
         ]
         
     def _edifact_invoice_get_header(self, partner):
@@ -170,13 +170,30 @@ class AccountMove(models.Model):
         header = [
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             # Commercial invoice
-            ("BGM", move_type_code, self.payment_reference, "9"),
+            ("BGM", move_type_code, self.name, "9"),
             # Document/message date/time
             ("DTM", ["137", today, "102"]),
-            
             # 35: Delivery date/time, actual
             ("DTM", [
                 "35",
+                max((
+                    picking.date_done.date().strftime("%Y%m%d")
+                    for order in source_orders
+                    for picking in order.picking_ids
+                    if picking.date_done
+                ), default=""),
+                "102",
+            ]),
+            
+            # Free text
+            ("FTX", "ZZZ", "", "", self.note if self.note else ""),
+            
+            # Payment ref for SAGAFLOR
+            ("FTX", "ZZZ", "", "", self.ref if self.ref and partner == "sagaflor" and move_type_code == "381" else ""),
+            
+            # 35: Delivery date/time, actual
+            ("DTM", [
+                "171",
                 max((
                     picking.date_done.date().strftime("%Y%m%d")
                     for order in source_orders
@@ -195,9 +212,6 @@ class AccountMove(models.Model):
                     if picking.date_done
                 ), default=""),
             ]),
-            
-            # Free text
-            ("FTX", "ZZZ", "", "", self.note if self.note else ""),
             
             # Reference currency
             ("CUX", ["2", "EUR", "4"]),
@@ -220,11 +234,11 @@ class AccountMove(models.Model):
             ),
         ]
         header = (
-            header[:6]
+            header[:7]
             + self._edifact_invoice_get_supplier()
             + self._edifact_invoice_get_buyer(partner)
             + self._edifact_invoice_get_shipper()
-            + header[6:]
+            + header[7:]
         )
         return header
     
@@ -306,7 +320,7 @@ class AccountMove(models.Model):
             ("MOA", ["125", self.amount_untaxed]),
             
             # Segments count
-            ("UNT", 23 + 11 * total_line_item + 4 * len(vals["tax"]), self.id),
+            ("UNT", 25 + 11 * total_line_item + 4 * len(vals["tax"]), self.id),
         ]
         
         summary = summary[:-1] + tax_list + summary[-1:]
