@@ -158,8 +158,12 @@ class AccountMove(models.Model):
         
     def _edifact_invoice_get_header(self, partner):
         source_orders = self.line_ids.sale_line_ids.order_id
-        today = datetime.now().date().strftime("%Y%m%d")
         move_type_code = "380" if self.move_type in ['in_invoice', 'out_invoice'] else "381"
+        
+        if not self.delivery_order_numbers:
+            raise UserError("Il n'y a pas de bon de livraison associé à cette pièce, l'envoi à l'EDI est impossible")
+            
+        today = datetime.now().date().strftime("%Y%m%d")
 
         term_lines = self.invoice_payment_term_id.line_ids
         discount_percentage, discount_days = (
@@ -181,7 +185,7 @@ class AccountMove(models.Model):
                     for order in source_orders
                     for picking in order.picking_ids
                     if picking.date_done
-                ), default=""),
+                ), default=today),
                 "102",
             ]),
 
