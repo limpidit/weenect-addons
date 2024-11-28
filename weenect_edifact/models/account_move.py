@@ -184,7 +184,17 @@ class AccountMove(models.Model):
                 ), default=""),
                 "102",
             ]),
-            
+
+            # Delivery note number
+            ("RFF", [
+                "DQ",
+                max((
+                    picking.name
+                    for order in source_orders
+                    for picking in order.picking_ids
+                    if picking.date_done
+                ), default=""),
+            ]),
             # 35: Delivery date/time, actual
             ("DTM", [
                 "171",
@@ -195,16 +205,6 @@ class AccountMove(models.Model):
                     if picking.date_done
                 ), default=""),
                 "102",
-            ]),
-            # Delivery note number
-            ("RFF", [
-                "DQ",
-                max((
-                    picking.name
-                    for order in source_orders
-                    for picking in order.picking_ids
-                    if picking.date_done
-                ), default=""),
             ]),
             
             # Reference currency
