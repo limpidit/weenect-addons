@@ -72,6 +72,8 @@ class SalesupplyShop(models.Model):
                 response['error_message']
             )
             
+        logs = logs | log_object.log_info(title=_("Retrieving products from Salesupply"), message=str(response))
+            
         for product in response:
             try:
                 if not product['Code']:
@@ -90,9 +92,10 @@ class SalesupplyShop(models.Model):
                 existing_product.available_on_salesupply = True
             except Exception as exception:
                 logs = logs | log_object.log_error(_(f"Could not synchronize a product"), str(exception))
-        
-        if len(logs) == 0:
-            logs = logs | log_object.log_info(_("No new link between Odoo and Salesupply products."))
+                
+                
+        if len(logs) == 1:
+            logs = logs | log_object.log_warning(_("No link created between Odoo and Salesupply, check your products"))
         elif logs.filtered(lambda r: r.type == 'error'):
             logs = logs | log_object.log_warning(_("Product synchronization done with failures"))
         else:

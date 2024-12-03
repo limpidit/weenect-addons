@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="salesupply_product_template_view_tree" model="ir.ui.view">
+        <field name="name">salesupply.product.template.view.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard"/>
+            </header>
+        </field>
+    </record>
+
     <record id="salesupply_product_template_form_view" model="ir.ui.view">
         <field name="name">salesupply.product.template.form.view</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
+            <header position="inside">
+                <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard" attrs="{'invisible': [('available_on_salesupply', '=', True)]}"/>
+            </header>
             <div name="options" position="inside">
                 <span class="d-inline-block">
-                    <field name="available_on_salesupply"/>
+                    <field name="available_on_salesupply" readonly="1"/>
                     <label for="available_on_salesupply"/>
                 </span>
             </div>

@@ -5,6 +5,4 @@ from . import salesupply_log
 from . import salesupply_sale_status
 from . import salesupply_shop_product
 from . import salesupply_shop
-from . import salesupply_synchronization_message
-from . import salesupply_synchronization
 from . import stock_warehouse

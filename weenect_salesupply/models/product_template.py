@@ -1,5 +1,5 @@
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class ProductTemplate(models.Model):
@@ -14,3 +14,17 @@ class ProductTemplate(models.Model):
         if self.env.context.get('salesupply'):
             res['available_on_salesupply'] = True
         return res
+            
+    def action_open_send_product_wizard(self):
+        """Open window assistant to execute Odoo -> Salesupply products synchronization"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Create products in Salesupply"),
+            'res_model': 'salesupply.send.product.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'products_to_send': self.ids
+            },
+        }
+        

@@ -40,6 +40,8 @@ class SalesupplyConnection(models.Model):
         self.ensure_one()
         if not self.active:
             return self.display_enabling_connection_message()
+        if not self.api_host:
+            raise UserError(_(f"Connection test failed : Check your configuration"))
         salesupply = SalesupplyRequest(self)
         connection_test = salesupply._get_api_user_info()
         if isinstance(connection_test, dict) and 'error_message' in connection_test:

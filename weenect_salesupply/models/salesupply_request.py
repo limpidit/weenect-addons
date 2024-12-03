@@ -2,9 +2,9 @@
 import requests
 from requests.exceptions import RequestException
 from werkzeug.urls import url_join
-from datetime import datetime
+import json
 
-from odoo import fields, _
+from odoo import _
 from odoo.exceptions import ValidationError
 
 class SalesupplyRequest:
@@ -33,14 +33,8 @@ class SalesupplyRequest:
             if res.status_code == 200:
                 res = res.json()
             else:
-                res = {'error_message': self._process_errors(res.json())}
+                res = {'error_message': res.json()}
         return res
-    
-    def _process_errors(self, res_body):
-        response = res_body.get('Message')
-        if response:
-            return response
-        return _("Undefined error")
     
     def _get_api_user_info(self):
         url = "/v1/Me"
@@ -67,3 +61,14 @@ class SalesupplyRequest:
         response = self._send_request(url)
         return response
     
+    def _post_product(self, product_data):
+        url = self.base_url + "/v1/Products"
+        auth = (self.api_username, self.api_password)
+        headers = {
+            "Content-type": "application/json"
+        }
+        response = requests.post(url, auth=auth, headers=headers, data=product_data)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise ValidationError(response.text)
