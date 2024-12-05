@@ -4,18 +4,9 @@
     <data noupdate="1">
 
         <!-- Cleaning -->
-        <record id="cron_remove_salesupply_finished_synchronizations" model="ir.cron">
-            <field name="name">SALESUPPLY : Removing finished synchronizations</field>
-            <field name="model_id" ref="model_salesupply_synchronization"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="state">code</field>
-            <field name="code">model.remove_finished_syncrhonizations()</field>
-        </record>
-        <record id="cron_remove_salesupply_finished_synchronizations" model="ir.cron">
+        <record id="cron_remove_salesupply_older_logs" model="ir.cron">
             <field name="name">SALESUPPLY : Removing older logs</field>
-            <field name="model_id" ref="model_salesupply_synchronization"/>
+            <field name="model_id" ref="model_salesupply_log"/>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>

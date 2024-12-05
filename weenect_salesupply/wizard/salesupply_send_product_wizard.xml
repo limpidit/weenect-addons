@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_salesupply_send_product_wizard" model="ir.ui.view">
+        <field name="name">salesupply.send.product.wizard.form</field>
+        <field name="model">salesupply.send.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Synchronize products">
+                <group>
+                    <field name="shop_ids" widget="many2many_tags" />
+                </group>
+                <footer>
+                    <button string="Execute" type="object" name="send_products_to_salesupply" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>    
+
+</odoo>
