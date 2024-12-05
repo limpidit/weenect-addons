@@ -62,6 +62,7 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
                             continue
                         moves.append((0, 0, {
                             'product_uom_qty': int(row['ItemQuantity']),
+                            'location_id': warehouse.lot_stock_id.id,
                             'product_id': shop_product.product_tmpl_id.product_variant_id.id
                         }))
                     picking_vals['move_ids_without_package'] = moves
@@ -69,7 +70,7 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
                     existing_shipment.action_confirm()
                     logs |= log_object.log_info(title=_(f"New shipment created {existing_shipment.name}"))
                     
-                if existing_shipment and salesupply_json_shipment['ShippedTimestamp']:
+                if existing_shipment and salesupply_json_shipment['ShippedTimestamp'] and existing_shipment.state == 'assigned':
                     try:
                         existing_shipment.button_validate()
                         existing_shipment.salesupply_shipped = True
