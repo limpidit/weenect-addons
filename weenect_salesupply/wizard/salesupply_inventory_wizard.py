@@ -3,6 +3,8 @@ from odoo import models, fields, api, _
 
 from ..models.salesupply_request import SalesupplyRequest
 
+import datetime
+
 
 class SalesupplyInventoryWizard(models.TransientModel):
     _name = 'salesupply.inventory.wizard'
@@ -14,6 +16,7 @@ class SalesupplyInventoryWizard(models.TransientModel):
         default=lambda self: self.env.context.get('default_shop_id'))
     
     def synchronize_inventory(self):
+        self.ensure_one()
         stock_quant_object = self.env['stock.quant']
         log_object = self.env['salesupply.log']
         salesupply = SalesupplyRequest(self.shop_id.connection_id)
@@ -60,6 +63,11 @@ class SalesupplyInventoryWizard(models.TransientModel):
                 inventory_lines = inventory_lines | inventory_line
                 
         inventory_lines.action_apply_inventory()
+        date_today = datetime.datetime.now()
+        self.shop_id.write({
+            'last_internal_transfers_synchronization_date': date_today,
+            'last_orders_synchronization_date': date_today
+        })
         
         return {
             'type': 'ir.actions.act_window',

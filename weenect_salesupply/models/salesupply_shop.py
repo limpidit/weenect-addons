@@ -1,5 +1,5 @@
 
-from odoo import models, fields, api, _
+from odoo import models, fields, _
 
 from .salesupply_request import SalesupplyRequest
 
@@ -16,8 +16,11 @@ class SalesupplyShop(models.Model):
     
     # Shippings synchronization
     sale_done_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', string="Delivered picking states")
-    default_customer_id = fields.Many2one(comodel_name='res.partner', string="Default orders customer")
+    shippings_default_customer_id = fields.Many2one(comodel_name='res.partner', string="Default orders customer")
     last_orders_synchronization_date = fields.Datetime(string="Last synchronization")
+    
+    # Internal transfers synchronization
+    last_internal_transfers_synchronization_date = fields.Datetime(string="Last synchronization")
     
     def get_products_from_salesupply(self, manual_execution=True):
         """
@@ -93,7 +96,6 @@ class SalesupplyShop(models.Model):
             except Exception as exception:
                 logs = logs | log_object.log_error(_(f"Could not synchronize a product"), str(exception))
                 
-                
         if len(logs) == 1:
             logs = logs | log_object.log_warning(_("No link created between Odoo and Salesupply, check your products"))
         elif logs.filtered(lambda r: r.type == 'error'):
@@ -129,12 +131,33 @@ class SalesupplyShop(models.Model):
             },
         }
     
-    def get_deliveries_from_salesupply(self, manual_execution=True):
-        return
-        
-
-            
+    def action_open_shipment_synchronization_wizard(self):
+        """Open window assistant to execute shipments synchronization"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Synchronize shipments from Salesupply"),
+            'res_model': 'salesupply.shipment.synchronization',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_shop_id': self.id
+            },
+        }
     
+    def action_open_internal_transfer_synchronization_wizard(self):
+        """Open window assistant to execute receptions synchronization"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Synchronize receptions from Salesupply"),
+            'res_model': 'salesupply.internal.transfer.validate.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_shop_id': self.id
+            },
+        }
     
         
         

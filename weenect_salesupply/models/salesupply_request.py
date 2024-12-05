@@ -2,7 +2,7 @@
 import requests
 from requests.exceptions import RequestException
 from werkzeug.urls import url_join
-import json
+from datetime import datetime
 
 from odoo import _
 from odoo.exceptions import ValidationError
@@ -72,3 +72,32 @@ class SalesupplyRequest:
             return response.json()
         else:
             raise ValidationError(response.text)
+        
+    def _get_receptions(self, shop_owner_id, warehouse_id, date_from=False):
+        url = f"/v1/ShopOwners/{shop_owner_id}/PurchaseOrders?warehouseId={warehouse_id}"
+        if date_from:
+            url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        response = self._send_request(url)
+        return response
+    
+    def _get_reception_details(self, reception_id):
+        url = f"/v1/PurchaseOrders/{reception_id}"
+        response = self._send_request(url)
+        return response
+    
+    def _get_shipments(self, warehouse_id, date_from=False):
+        url = f"/v1/Warehouses/{warehouse_id}/Shipments"
+        if date_from:
+            url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        response = self._send_request(url)
+        return response
+    
+    def _get_shipment_details(self, shipment_id):
+        url=f"/v1/Shipments/{shipment_id}"
+        response = self._send_request(url)
+        return response
+    
+    def _get_order_rows(self, order_id):
+        url = f"v1/Orders/{order_id}/Rows"
+        response = self._send_request(url)
+        return response

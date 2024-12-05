@@ -23,10 +23,22 @@
         sequence="20">
 
         <menuitem
+            id="salesupply_receptions_menu"
+            name="Salesupply receptions"
+            action="salesupply_receptions_action"
+            sequence="10"/>
+
+        <menuitem
+            id="salesupply_deliveries_menu"
+            name="Salesupply deliveries"
+            action="salesupply_deliveries_action"
+            sequence="15"/>
+
+        <menuitem
             id="salesupply_product_menu"
             name="Products"
             action="weenect_salesupply.salesupply_product_template_action"
-            sequence="10"/>
+            sequence="20"/>
     
     </menuitem>
 
