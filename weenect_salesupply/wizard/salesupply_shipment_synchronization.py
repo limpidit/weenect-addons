@@ -64,7 +64,7 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
                         customer_location = location_object.search([('usage', '=', 'customer')], limit=1)
                         moves.append((0, 0, {
                             'product_id': shop_product.product_tmpl_id.product_variant_id.id,
-                            'description': shop_product.product_tmpl_id.name,
+                            'name': shop_product.product_tmpl_id.name,
                             'product_uom_qty': int(row['ItemQuantity']),
                             'location_id': warehouse.lot_stock_id.id,
                             'location_dest_id': customer_location.id,
