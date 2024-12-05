@@ -16,6 +16,7 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
     
     def synchronize_shipments(self):
         picking_object = self.env['stock.picking']
+        move_object = self.env['stock.move']
         shop_product_object = self.env['salesupply.shop.product']
         log_object = self.env['salesupply.log']
         logs = log_object
@@ -54,19 +55,19 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
                         'tracking_number': shipping_salesupply_code,
                         'salesupply_synchronized': True
                     }
-                    moves = []
+                    existing_shipment = picking_object.create(picking_vals)
+                    move_vals = []
                     for row in shipment_rows:
                         shop_product = shop_product_object.search([('id_salesupply', '=', row['ProductId'])])
                         if not shop_product:
                             logs |= log_object.log_warning(title=_(f"Product not found in Odoo {row['ProductCode']}"))
                             continue
-                        moves.append((0, 0, {
+                        move_vals.append({
                             'product_uom_qty': int(row['ItemQuantity']),
-                            'location_id': warehouse.lot_stock_id.id,
-                            'product_id': shop_product.product_tmpl_id.product_variant_id.id
-                        }))
-                    picking_vals['move_ids_without_package'] = moves
-                    existing_shipment = picking_object.create(picking_vals)
+                            'product_id': shop_product.product_tmpl_id.product_variant_id.id,
+                            'picking_id': existing_shipment.id
+                        })
+                    move_object.create(move_vals)
                     existing_shipment.action_confirm()
                     logs |= log_object.log_info(title=_(f"New shipment created {existing_shipment.name}"))
                     
