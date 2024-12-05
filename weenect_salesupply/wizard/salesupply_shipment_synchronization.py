@@ -16,6 +16,7 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
     
     def synchronize_shipments(self):
         picking_object = self.env['stock.picking']
+        location_object = self.env['stock.location']
         shop_product_object = self.env['salesupply.shop.product']
         log_object = self.env['salesupply.log']
         logs = log_object
@@ -60,9 +61,11 @@ class SalesupplyShipmentSynchronization(models.TransientModel):
                         if not shop_product:
                             logs |= log_object.log_warning(title=_(f"Product not found in Odoo {row['ProductCode']}"))
                             continue
+                        customer_location = location_object.search([('usage', '=', 'customer')], limit=1)
                         moves.append((0, 0, {
                             'product_uom_qty': int(row['ItemQuantity']),
                             'location_id': warehouse.lot_stock_id.id,
+                            'location_dest_id': customer_location.id,
                             'product_id': shop_product.product_tmpl_id.product_variant_id.id
                         }))
                     picking_vals['move_ids_without_package'] = moves
