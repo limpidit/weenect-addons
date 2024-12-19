@@ -15,7 +15,7 @@ class SalesupplyInventoryWizard(models.TransientModel):
     shop_id = fields.Many2one(comodel_name='salesupply.shop', string="Shop", required=True,
         default=lambda self: self.env.context.get('default_shop_id'))
     
-    def synchronize_inventory(self):
+    def synchronize_inventory(self, manual_execution=True):
         self.ensure_one()
         stock_quant_object = self.env['stock.quant']
         log_object = self.env['salesupply.log']
@@ -63,20 +63,21 @@ class SalesupplyInventoryWizard(models.TransientModel):
                 inventory_lines = inventory_lines | inventory_line
                 
         inventory_lines.action_apply_inventory()
-        date_today = datetime.datetime.now()
-        self.shop_id.write({
-            'last_internal_transfers_synchronization_date': date_today,
-            'last_orders_synchronization_date': date_today
-        })
         
-        return {
-            'type': 'ir.actions.act_window',
-            'name': "Inventory synchronization logs",
-            'view_mode': 'tree,form',
-            'res_model': 'salesupply.log',
-            'target': 'new',
-            'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,
-            'context': {'create': False},
-            'domain': [('id', 'in', logs.ids)]
-        }
+        if manual_execution:
+            date_today = datetime.datetime.now()
+            self.shop_id.write({
+                'last_internal_transfers_synchronization_date': date_today,
+                'last_orders_synchronization_date': date_today
+            })
+            return {
+                'type': 'ir.actions.act_window',
+                'name': "Inventory synchronization logs",
+                'view_mode': 'tree,form',
+                'res_model': 'salesupply.log',
+                'target': 'new',
+                'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,
+                'context': {'create': False},
+                'domain': [('id', 'in', logs.ids)]
+            }
             
