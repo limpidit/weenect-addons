@@ -14,6 +14,23 @@ class ProductTemplate(models.Model):
         if self.env.context.get('salesupply'):
             res['available_on_salesupply'] = True
         return res
+    
+    @api.model
+    def action_open_products(self):
+        warehouses = self.env['stock.warehouse'].search([('is_salesupply', '=', True)])
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Products available on Salesupply',
+            'res_model': 'product.template',
+            'view_mode': 'tree,form',
+            'domain': [('available_on_salesupply', '=', True)],
+            'context': {
+                'salesupply': True,
+                'warehouse': warehouses.ids,
+                'search_default_consumable': 1,
+                'default_detailed_type': 'product',
+            },
+        }
             
     def action_open_send_product_wizard(self):
         """Open window assistant to execute Odoo -> Salesupply products synchronization"""

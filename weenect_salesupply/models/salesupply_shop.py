@@ -3,6 +3,8 @@ from odoo import models, fields, _
 
 from .salesupply_request import SalesupplyRequest
 
+from datetime import datetime, timedelta
+
 class SalesupplyShop(models.Model):
     _name = 'salesupply.shop'
     _description = 'Salesupply shop'
@@ -21,6 +23,9 @@ class SalesupplyShop(models.Model):
     
     # Internal transfers synchronization
     last_internal_transfers_synchronization_date = fields.Datetime(string="Last synchronization")
+    
+    def open_sync_wizard(self):
+        return
     
     def get_products_from_salesupply(self, manual_execution=True):
         """
@@ -158,6 +163,43 @@ class SalesupplyShop(models.Model):
                 'default_shop_id': self.id
             },
         }
-    
+        
+    def cron_execute_synchronization(self):
+        warehouse_object = self.env['stock.warehouse']
+        reception_wizard_object = self.env['salesupply.internal.transfer.validate.wizard']
+        delivery_wizard_object = self.env['salesupply.shipment.synchronization']
+        inventory_wizard_object = self.env['salesupply.inventory.wizard']
+        log_object = self.env['salesupply.log']
+        
+        for shop in self:
+            if not shop.last_internal_transfers_synchronization_date or not shop.last_orders_synchronization_date:
+                log_object.log_error(
+                    _(f"Could not synchronize inventory of {shop.name}"), 
+                    _("A date to specify from when we want to synchronize inventory is needed"))
+                continue
+            
+            warehouses = warehouse_object.search([('is_salesupply', '=', True), ('shop_id', '=', shop.id)])
+
+            reception_wizard = reception_wizard_object.create({
+                'shop_id': shop.id,
+                'warehouse_ids': warehouses.ids,
+                'date_from_synchronization': shop.last_internal_transfers_synchronization_date - timedelta(hours=1),
+            })
+            reception_wizard.synchronize_receptions(manual_execution=False)
+            shop.last_internal_transfers_synchronization_date = datetime.now()
+            
+            delivery_wizard = delivery_wizard_object.create({
+                'shop_id': shop.id,
+                'warehouse_ids': warehouses.ids,
+                'date_from_synchronization': shop.last_orders_synchronization_date - timedelta(hours=1),
+            })
+            delivery_wizard.synchronize_shipments(manual_execution=False)
+            shop.last_orders_synchronization_date = datetime.now()
+            
+            inventory_wizard = inventory_wizard_object.create({
+                'shop_id': shop.id,
+                'warehouse_ids': warehouses.ids,
+            })
+            inventory_wizard.synchronize_inventory(manual_execution=False)
         
         

@@ -37,7 +37,7 @@
         <menuitem
             id="salesupply_product_menu"
             name="Products"
-            action="weenect_salesupply.salesupply_product_template_action"
+            action="weenect_salesupply.salesupply_product_template_action_server"
             sequence="20"/>
     
     </menuitem>

@@ -48,14 +48,14 @@
                                 <group>
                                     <field name="sale_done_status_ids" widget="many2many_tags"/>
                                     <field name="shippings_default_customer_id" />
-                                    <field name="last_orders_synchronization_date" />
+                                    <field name="last_orders_synchronization_date" readonly="1"/>
                                 </group>
                             </group>
                         </page>
                         <page name="receptions" string="Receptions synchronization">
                             <group>
                                 <group>
-                                    <field name="last_internal_transfers_synchronization_date" />
+                                    <field name="last_internal_transfers_synchronization_date" readonly="1"/>
                                 </group>
                             </group>
                         </page>

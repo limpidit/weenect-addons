@@ -14,7 +14,7 @@ class SalesupplyInternalTransferValidateWizard(models.TransientModel):
         string="Warehouses to synchronize", required=True, domain="[('is_salesupply', '=', True), ('shop_id', '=', shop_id)]")
     date_from_synchronization = fields.Date(string="Date from wich pickings should be synchronized")
 
-    def synchronize_receptions(self):
+    def synchronize_receptions(self, manual_execution=True):
         picking_object = self.env['stock.picking']
         log_object = self.env['salesupply.log']
         logs = log_object
@@ -38,14 +38,15 @@ class SalesupplyInternalTransferValidateWizard(models.TransientModel):
                 if assigned_reception:
                     reception_details_json = salesupply._get_reception_details(salesupply_json_reception['Id'])
                     logs |= assigned_reception._validate_internal_transfer_from_salesupply(reception_details_json)
-                    
-        return {
-            'type': 'ir.actions.act_window',
-            'name': "Synchronization of receptions",
-            'view_mode': 'tree,form',
-            'res_model': 'salesupply.log',
-            'target': 'new',
-            'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,
-            'context': {'create': False},
-            'domain': [('id', 'in', logs.ids)]
-        }
+        
+        if manual_execution:            
+            return {
+                'type': 'ir.actions.act_window',
+                'name': "Synchronization of receptions",
+                'view_mode': 'tree,form',
+                'res_model': 'salesupply.log',
+                'target': 'new',
+                'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,
+                'context': {'create': False},
+                'domain': [('id', 'in', logs.ids)]
+            }
