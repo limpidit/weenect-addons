@@ -43,7 +43,9 @@ class SalesupplyInventoryWizard(models.TransientModel):
                     logs = logs | log_object.log_info(_(f"Product {product_id} not existing in Odoo"))
                     continue
                 product = shop_product.product_tmpl_id.product_variant_id
-                inventory_line = stock_quant_object.search([('product_id', '=', product.id), ('location_id', '=', location.id)], limit=1)
+                inventory_line = stock_quant_object.search([
+                    ('product_id', '=', product.id), ('location_id', '=', location.id), ('lot_id', '=' ,False)
+                ], limit=1)
                 if inventory_line:
                     if inventory_line.inventory_quantity == qty_on_hand:
                         continue
