@@ -17,7 +17,8 @@ class AccountMove(models.Model):
         
     def generate_sagaflor_edifact_attachment(self):
         partner = "sagaflor"
-        self._generate_edifact_attachment(partner)
+        for record in self:
+            record._generate_edifact_attachment(partner)
         
     def _generate_edifact_attachment(self, partner):
         self.ensure_one()
@@ -67,6 +68,8 @@ class AccountMove(models.Model):
                 recipient = sagaflor_id_numbers[0]
         if not recipient:
             partner_numbers = self.partner_id.id_numbers
+            if not partner_numbers and self.partner_id.parent_id:
+                partner_numbers = self.partner_id.parent_id.id_numbers
             if partner_numbers:
                 recipient = partner_numbers[0]
             
@@ -81,19 +84,7 @@ class AccountMove(models.Model):
             sender_edifact, recipient_edifact, self.id, syntax_identifier
         )
         
-    def _edifact_invoice_get_buyer(self, partner):
-        if partner == 'futterhaus' and self.company_id.futterhaus_edifact_invoiced_partner_id:
-            buyer = self.company_id.futterhaus_edifact_invoiced_partner_id
-        elif partner == 'sagaflor' and self.company_id.sagaflor_edifact_invoiced_partner_id:
-            buyer = self.company_id.sagaflor_edifact_invoiced_partner_id
-        else:
-            buyer = self.partner_id
-            
-        buyer_id_number = buyer.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
-        if buyer_id_number:
-            buyer_id_number = buyer_id_number[0]
-        street = self._edifact_invoice_get_address(buyer)
-
+    def _edifact_invoice_get_buyer(self, buyer, buyer_id_number):
         return [
             # Buyer information
             (
@@ -102,7 +93,7 @@ class AccountMove(models.Model):
                 [buyer_id_number.name, "", "9"],
                 "",
                 buyer.commercial_company_name,
-                [street, ""],
+                [buyer.street, ""],
                 buyer.city,
                 "",
                 buyer.zip,
@@ -112,10 +103,11 @@ class AccountMove(models.Model):
         ]
         
     def _edifact_invoice_get_supplier(self):
-        id_number = self.env["res.partner.id_number"]
         supplier = self.company_id.partner_id
-        supplier_id_number = id_number.search([("partner_id", "=", supplier.id)], limit=1)
-        street = self._edifact_invoice_get_address(supplier)
+        supplier_id_number = supplier.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
+        if supplier_id_number:
+            supplier_id_number = supplier_id_number[0]
+            
         return [
             # Seller information
             (
@@ -124,7 +116,7 @@ class AccountMove(models.Model):
                 [supplier_id_number.name, "", "9"],
                 "",
                 supplier.commercial_company_name,
-                [street, ""],
+                [supplier.street, ""],
                 supplier.city,
                 "",
                 supplier.zip,
@@ -134,10 +126,13 @@ class AccountMove(models.Model):
             ("RFF", ["VA", supplier.vat])
         ]
 
-    def _edifact_invoice_get_shipper(self):
+    def _edifact_invoice_get_shipper(self, buyer_id_number):
         id_number = self.env["res.partner.id_number"]
         shipper = self.partner_shipping_id
         shipper_id_number = id_number.search([("partner_id", "=", shipper.id)], limit=1)
+        if not shipper_id_number:
+            shipper_id_number = buyer_id_number
+        
         return [
             # Delivery party Information
             (
@@ -169,6 +164,19 @@ class AccountMove(models.Model):
             term_lines.discount_percentage,
             term_lines.discount_days if len(term_lines) == 1 else 0,
         )
+        
+        if partner == 'futterhaus' and self.company_id.futterhaus_edifact_invoiced_partner_id:
+            buyer = self.company_id.futterhaus_edifact_invoiced_partner_id
+        elif partner == 'sagaflor' and self.company_id.sagaflor_edifact_invoiced_partner_id:
+            buyer = self.company_id.sagaflor_edifact_invoiced_partner_id
+        else:
+            buyer = self.partner_id
+            
+        buyer_id_number = buyer.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
+        if not buyer_id_number and buyer.parent_id.id_numbers:
+            buyer_id_number = buyer.parent_id.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
+        if buyer_id_number:
+            buyer_id_number = buyer_id_number[0]
 
         header = [
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
@@ -233,8 +241,8 @@ class AccountMove(models.Model):
         header = (
             header[:7]
             + self._edifact_invoice_get_supplier()
-            + self._edifact_invoice_get_buyer(partner)
-            + self._edifact_invoice_get_shipper()
+            + self._edifact_invoice_get_buyer(buyer, buyer_id_number)
+            + self._edifact_invoice_get_shipper(buyer_id_number)
             + header[7:]
         )
         return header
