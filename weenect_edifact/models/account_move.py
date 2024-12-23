@@ -3,7 +3,10 @@ from odoo import models, fields, _
 from odoo.exceptions import UserError
 
 from datetime import datetime
+import logging
 import base64
+
+_logger = logging.getLogger(__name__)
 
 
 class AccountMove(models.Model):
@@ -11,10 +14,6 @@ class AccountMove(models.Model):
 
     edifact_attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Edifact attachment")
     note = fields.Text(string="Notes")
-    
-    def generate_futterhaus_edifact_attachment(self):
-        partner = "futterhaus"
-        self._generate_edifact_attachment(partner)
         
     def generate_sagaflor_edifact_attachment(self):
         partner = "sagaflor"
@@ -22,10 +21,9 @@ class AccountMove(models.Model):
         
     def _generate_edifact_attachment(self, partner):
         self.ensure_one()
-        if partner == "futterhaus":
-            data = self.edifact_invoice_generate_data(partner)
-        elif partner == "sagaflor":
-            data = self.edifact_invoice_generate_data(partner)
+        data = self.edifact_invoice_generate_data(partner)
+        _logger.info(f"Generated edifact invoice for move {self.name}")
+        _logger.info(data)
         edifact_content = base64.b64encode(data.encode('utf-8'))   
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",
@@ -47,6 +45,7 @@ class AccountMove(models.Model):
         product, vals = self._edifact_invoice_get_product()
         summary = self._edifact_invoice_get_summary(vals)
         lines += header + product + summary
+        
         for segment in lines:
             interchange.add_segment(edifact_model.create_segment(*segment))
         return interchange.serialize()
@@ -83,8 +82,6 @@ class AccountMove(models.Model):
         )
         
     def _edifact_invoice_get_buyer(self, partner):
-        id_number = self.env["res.partner.id_number"]
-        
         if partner == 'futterhaus' and self.company_id.futterhaus_edifact_invoiced_partner_id:
             buyer = self.company_id.futterhaus_edifact_invoiced_partner_id
         elif partner == 'sagaflor' and self.company_id.sagaflor_edifact_invoiced_partner_id:
@@ -92,7 +89,9 @@ class AccountMove(models.Model):
         else:
             buyer = self.partner_id
             
-        buyer_id_number = id_number.search([('partner_id', '=', buyer.id)], limit=1)
+        buyer_id_number = buyer.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
+        if buyer_id_number:
+            buyer_id_number = buyer_id_number[0]
         street = self._edifact_invoice_get_address(buyer)
 
         return [
