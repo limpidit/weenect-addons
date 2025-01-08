@@ -1,2 +1,10 @@
 
 weenect_salesupply/
+
+products/__pycache__/
+
+products/models/__pycache__/
+
+weenect_edifact/__pycache__/
+
+weenect_edifact/models/__pycache__/

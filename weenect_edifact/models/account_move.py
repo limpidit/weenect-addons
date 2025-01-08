@@ -15,16 +15,20 @@ class AccountMove(models.Model):
     edifact_attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Edifact attachment")
     note = fields.Text(string="Notes")
         
-    def generate_sagaflor_edifact_attachment(self):
-        partner = "sagaflor"
-        for record in self:
-            record._generate_edifact_attachment(partner)
-        
-    def _generate_edifact_attachment(self, partner):
+    def generate_edifact_attachment(self):
         self.ensure_one()
-        data = self.edifact_invoice_generate_data(partner)
+        
+        try:
+            data = self.edifact_invoice_generate_data()
+        except Exception as e:
+            raise UserError(_("Error while generating EDIFACT: %s" % e))
+        
         _logger.info(f"Generated edifact invoice for move {self.name}")
         _logger.info(data)
+        
+        if self.edifact_attachment_id:
+            self.edifact_attachment_id.unlink()
+        
         edifact_content = base64.b64encode(data.encode('utf-8'))   
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",
@@ -34,45 +38,21 @@ class AccountMove(models.Model):
             'res_id': self.id,
             'mimetype': 'text/plain'
         })
+        
         self.edifact_attachment_id = attachment.id
         
-    def edifact_invoice_generate_data(self, partner):
-        self.ensure_one()
-        edifact_model = self.env["base.edifact"]
-        lines = []
-        interchange = self._edifact_invoice_get_interchange(partner)
-
-        header = self._edifact_invoice_get_header(partner)
-        product, vals = self._edifact_invoice_get_product()
-        summary = self._edifact_invoice_get_summary(vals)
-        lines += header + product + summary
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'self',
+        }
         
-        for segment in lines:
-            interchange.add_segment(edifact_model.create_segment(*segment))
-        return interchange.serialize()
-    
-    def _edifact_invoice_get_interchange(self, partner):
-        sender = None
-        company_numbers = self.company_id.partner_id.id_numbers
-        if company_numbers:
-            sender = company_numbers[0]
+    def _edifact_invoice_get_interchange(self):
+        sender = self.env.company.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        sender.ensure_one()
+        recipient = self.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        recipient.ensure_one()
         
-        recipient = None
-        if partner == "futterhaus" and self.company_id.futterhaus_edifact_invoiced_partner_id:
-            futterhaus_id_numbers = self.company_id.futterhaus_edifact_invoiced_partner_id.id_numbers
-            if futterhaus_id_numbers:
-                recipient = futterhaus_id_numbers[0]
-        if partner == "sagaflor" and self.company_id.sagaflor_edifact_invoiced_partner_id:
-            sagaflor_id_numbers = self.company_id.sagaflor_edifact_invoiced_partner_id.id_numbers
-            if sagaflor_id_numbers:
-                recipient = sagaflor_id_numbers[0]
-        if not recipient:
-            partner_numbers = self.partner_id.id_numbers
-            if not partner_numbers and self.partner_id.parent_id:
-                partner_numbers = self.partner_id.parent_id.id_numbers
-            if partner_numbers:
-                recipient = partner_numbers[0]
-            
         if not sender or not recipient:
             raise UserError(_("Partner is not allowed to use the feature."))
         
@@ -84,249 +64,179 @@ class AccountMove(models.Model):
             sender_edifact, recipient_edifact, self.id, syntax_identifier
         )
         
-    def _edifact_invoice_get_buyer(self, buyer, buyer_id_number):
-        return [
-            # Buyer information
-            (
-                "NAD",
-                "BY",
-                [buyer_id_number.name, "", "9"],
-                "",
-                buyer.commercial_company_name,
-                [buyer.street, ""],
-                buyer.city,
-                "",
-                buyer.zip,
-                buyer.country_id.code,
-            ),
-            ("RFF", ["VA", buyer.vat])
-        ]
+    def edifact_invoice_generate_data(self):
+        self.ensure_one()
+        edifact_model = self.env["base.edifact"]
+
+        lines = []
+        interchange = self._edifact_invoice_get_interchange()
         
+        header = self._edifact_invoice_get_header()
+        product, taxes = self._edifact_invoice_get_product()
+        summary = self._edifact_invoice_get_summary(taxes)
+        lines += header + product + summary
+        lines.append(("UNT", len(lines) + 1, self.id))
+        
+        for segment in lines:
+            interchange.add_segment(edifact_model.create_segment(*segment))
+            
+        return interchange.serialize()
+    
+    
+    
+    
+    ################### HEADER ###################
+    
+    def _edifact_invoice_get_bgm_segment(self):
+        move_type_code = {
+            "out_invoice": "380",
+            "in_invoice": "381"
+        }.get(self.move_type, "381")
+        return ("BGM", move_type_code, self.payment_reference, "9")
+
     def _edifact_invoice_get_supplier(self):
-        supplier = self.company_id.partner_id
-        supplier_id_number = supplier.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
-        if supplier_id_number:
-            supplier_id_number = supplier_id_number[0]
-            
-        return [
-            # Seller information
-            (
-                "NAD",
-                "SU",
-                [supplier_id_number.name, "", "9"],
-                "",
-                supplier.commercial_company_name,
-                [supplier.street, ""],
-                supplier.city,
-                "",
-                supplier.zip,
-                supplier.country_id.code,
-            ),
-            # VAT registration number
-            ("RFF", ["VA", supplier.vat])
-        ]
+        return self._get_partner_segment(self.company_id.partner_id, "SU")
 
-    def _edifact_invoice_get_shipper(self, buyer_id_number):
-        id_number = self.env["res.partner.id_number"]
-        shipper = self.partner_shipping_id
-        shipper_id_number = id_number.search([("partner_id", "=", shipper.id)], limit=1)
-        if not shipper_id_number:
-            shipper_id_number = buyer_id_number
-        
-        return [
-            # Delivery party Information
-            (
-                "NAD",
-                "DP",
-                [shipper_id_number.name, "", "9"],
-                "",
-                shipper.commercial_company_name,
-                [shipper.street, ""],
-                shipper.city,
-                "",
-                shipper.zip,
-                shipper.country_id.code,
-            ),
-            ("RFF", ["VA", shipper.vat]),
-        ]
-        
-    def _edifact_invoice_get_header(self, partner):
-        source_orders = self.line_ids.sale_line_ids.order_id
-        move_type_code = "380" if self.move_type in ['in_invoice', 'out_invoice'] else "381"
-        
-        if not self.delivery_order_numbers:
-            raise UserError("Il n'y a pas de bon de livraison associé à cette pièce, l'envoi à l'EDI est impossible")
-            
-        today = datetime.now().date().strftime("%Y%m%d")
+    def _edifact_invoice_get_buyer(self):
+        return self._get_partner_segment(self.partner_id, "BY")
 
+    def _edifact_invoice_get_delivery_address(self):
+        return self._get_partner_segment(self.partner_shipping_id, "DP")
+    
+    def _get_partner_segment(self, partner, segment_code):
+        partner_gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        partner_gln.ensure_one()
+        
+        return (
+            "NAD",
+            segment_code,
+            [partner_gln.name, "", "9"],
+            "",
+            partner.name,
+            partner.street,
+            partner.city,
+            "",
+            partner.zip,
+            partner.country_id.code
+        )
+        
+    def _edifact_invoice_get_header(self):
+        source_order = self.line_ids.sale_line_ids.order_id
+        source_order.ensure_one()
+        picking = source_order.picking_ids.filtered(lambda x: x.state != 'cancel')
+        picking.ensure_one()
+        
+        today_date_str = datetime.now().date().strftime("%Y%m%d")
+        buyer = self.partner_id
+        delivery_address = self.partner_shipping_id
         term_lines = self.invoice_payment_term_id.line_ids
         discount_percentage, discount_days = (
             term_lines.discount_percentage,
             term_lines.discount_days if len(term_lines) == 1 else 0,
         )
         
-        if partner == 'futterhaus' and self.company_id.futterhaus_edifact_invoiced_partner_id:
-            buyer = self.company_id.futterhaus_edifact_invoiced_partner_id
-        elif partner == 'sagaflor' and self.company_id.sagaflor_edifact_invoiced_partner_id:
-            buyer = self.company_id.sagaflor_edifact_invoiced_partner_id
-        else:
-            buyer = self.partner_id
-            
-        buyer_id_number = buyer.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
-        if not buyer_id_number and buyer.parent_id.id_numbers:
-            buyer_id_number = buyer.parent_id.id_numbers.filtered(lambda i: i.category_id.code == 'gln_id_number')
-        if buyer_id_number:
-            buyer_id_number = buyer_id_number[0]
-
         header = [
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
-            # Commercial invoice
-            ("BGM", move_type_code, self.name, "9"),
-            # Document/message date/time
-            ("DTM", ["137", today, "102"]),
-            # 35: Delivery date/time, actual
-            ("DTM", [
-                "35",
-                max((
-                    picking.date_done.date().strftime("%Y%m%d")
-                    for order in source_orders
-                    for picking in order.picking_ids
-                    if picking.date_done
-                ), default=today),
-                "102",
-            ]),
-
-            # Delivery note number
-            ("RFF", [
-                "DQ",
-                max((
-                    picking.name
-                    for order in source_orders
-                    for picking in order.picking_ids
-                    if picking.date_done
-                ), default=""),
-            ]),
-            # 35: Delivery date/time, actual
-            ("DTM", [
-                "171",
-                max((
-                    picking.date_done.date().strftime("%Y%m%d")
-                    for order in source_orders
-                    for picking in order.picking_ids
-                    if picking.date_done
-                ), default=""),
-                "102",
-            ]),
-            
-            # Reference currency
-            ("CUX", ["2", "EUR", "4"]),
-            ("PAT", "3"),
-            # Terms net due date
-            ("DTM", ["209", self.invoice_date_due.strftime('%Y%m%d'), "102"]),
-            # Discount terms
-            (
-                "PAT",
-                "22",
-                "",
-                ["5", "3", "D", discount_days],
-            ),
-            # Discount percentage
-            (
-                "PCD",
-                "12",
-                discount_percentage,
-                "13",
-            ),
-        ]
-        header = (
-            header[:7]
-            + self._edifact_invoice_get_supplier()
-            + self._edifact_invoice_get_buyer(buyer, buyer_id_number)
-            + self._edifact_invoice_get_shipper(buyer_id_number)
-            + header[7:]
-        )
-        return header
-    
-    def _edifact_invoice_get_product(self):
-        number = 0
-        segments = []
-        vals = {}
-        tax = {}
-        for line in self.line_ids:
-            if line.display_type != "product":
-                continue
-            number += 1
-            product_tax = 0
-            product = line.product_id
-            discount = round(line.price_unit * line.quantity - line.price_subtotal, 2)
-            if line.tax_ids and line.tax_ids.amount_type == "percent":
-                product_tax = line.tax_ids.amount
-                if product_tax not in tax:
-                    tax[product_tax] = line.price_total
-                else:
-                    tax[product_tax] += line.price_total
-            product_seg = [
-                # Line item number
-                ("LIN", number, "", [product.ean_weenect, "EAN"]),
-                # Product identification of supplier's article number
-                ("PIA", "1", [product.default_code, "SA"]),
-                # Item description of product
-                (
-                    "IMD",
-                    "A",
-                    ["", "", "", product.name],
-                ),
-                # Invoiced quantity
-                ("QTY", "47", line.quantity, "PCE"),
-                # Line item amount
-                ("MOA", ["203", line.price_total]),
-                # Line item discount
-                ("MOA", ["131", discount]),
-                # Calculation net
-                ("PRI", ["AAB", round(line.price_total / line.quantity, 2)]),
-                # Tax information
-                ("TAX", "7", "VAT", "", "", ["", "", "", product_tax]),
-                
-                # Discount information
-                ("ALC", "A", "", "", "1", "DI"),
-                ("PCD", ["3", line.discount]),
-                ("MOA", ["8", discount])
-            ]
-            segments.extend(product_seg)
-        vals["tax"] = tax
-        vals["total_line_item"] = number
-        return segments, vals
-    
-    def _edifact_invoice_get_summary(self, vals):
-        tax_list = []
-        total_line_item = vals["total_line_item"]
-        if "tax" in vals:
-            for product_tax, price_total in vals["tax"].items():
-                # Tax Information
-                tax_list.append(
-                    ("TAX", "7", "VAT", ["", "", "", product_tax])
-                )
-                # Taxed amount
-                tax_list.append(("MOA", ["79", round(price_total, 2)]))
-                # Tax amount
-                tax_list.append(("MOA", ["124", round(price_total * product_tax / 100, 2)]))
-                # Taxed amount
-                tax_list.append(("MOA", ["125", round(price_total, 2)]))
-                
-        summary = [
-            ("UNS", "S"),
-            # Total amount
-            ("MOA", ["77", self.amount_total]),
-            # Total amount
-            ("MOA", ["79", self.amount_total]),
-            # Tax amount
-            ("MOA", ["124", self.amount_tax]),
-            # Taxable amount
-            ("MOA", ["125", self.amount_untaxed]),
-            
-            # Segments count
-            ("UNT", 23 + 11 * total_line_item + 4 * len(vals["tax"]), self.id),
+            self._edifact_invoice_get_bgm_segment(),
+            ("DTM", ["137", today_date_str, "102"]),
+            ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
         ]
         
-        summary = summary[:-1] + tax_list + summary[-1:]
+        if self.note:
+            header.append(("FTX", "ZZZ", "", "", self.note))
+            
+        header.extend([
+            ("RFF", ["ON", source_order.name]),
+            ("DTM", ["171", source_order.date_order.date().strftime("%Y%m%d"), "102"]),
+            ("RFF", ["DQ", picking.name]),
+            ("DTM", ["171", picking.date_done.date().strftime("%Y%m%d"), "102"]),
+            self._edifact_invoice_get_supplier(),
+            ("RFF", ["VA", self.company_id.vat]),
+            self._edifact_invoice_get_buyer(),
+            ("RFF", ["VA", buyer.vat]),
+        ])
+        
+        if delivery_address != buyer:
+            header.extend([
+                self._edifact_invoice_get_delivery_address(),
+                ("RFF", ["VA", delivery_address.vat]),
+            ])
+            
+        header.extend([
+            ("CUX", ["2", "EUR", "4"]),
+            ("PAT", "3"),
+            ("DTM", ["13", self.invoice_date_due.strftime("%Y%m%d"), "102"]),
+            ("PAT", "22", "", ["5", "3", "D", discount_days]),
+            ("PCD", "12", discount_percentage),
+        ])
+        
+        return header
+    
+    
+    
+    
+    
+    ################### PRODUCT ###################
+    
+    def _edifact_invoice_get_product(self):
+        lines = []
+        taxes = {}
+        number = 0
+        
+        for line in self.invoice_line_ids:
+            line.tax_ids.ensure_one()
+            product = line.product_id
+            
+            product_tax = 0
+            if line.tax_ids and line.tax_ids.amount_type == "percent":
+                product_tax = line.tax_ids.amount
+                if product_tax not in taxes:
+                    taxes[product_tax] = line.price_total
+                else:
+                    taxes[product_tax] += line.price_total
+                    
+            lines.extend([
+                ("LIN", number, "", ["", "EN"]),
+                ("PIA", "5", [product.id, "SA", "", "91"]),
+                ("IMD", "A", "", ["", "", "", product.default_code, product.name]),
+                ("QTY", ["47", line.quantity, "PCE"]),
+                ("MOA", ["203", line.price_subtotal]),
+                ("PRI", ["AAB", line.price_unit, "", "", "", "PCE"]),
+            ])
+            
+            if line.discount:
+                lines.extend([
+                    ("ALC", "A", "", "", "1", "DI"),
+                    ("PCD", ["3", line.discount]),
+                    ("MOA", ["8", line.quantity * line.price_unit * line.discount / 100]),
+                ])
+
+            lines.append(("TAX", "7", "VAT", "", "", ["", "", "", product_tax]))
+        
+        return lines, taxes
+    
+    
+    
+    
+    
+    
+    
+    ################### SUMMARY ###################
+    
+    def _edifact_invoice_get_summary(self, taxes):
+        summary = [
+            ("UNS", "S"),
+            ("MOA", ["77", self.amount_total]),
+            ("MOA", ["79", self.amount_untaxed])
+        ]
+        
+        for product_tax, price_total in taxes.items():
+            summary.extend([
+                ("TAX", "7", "VAT", "", price_total, ["", "", "", product_tax]),
+                ("MOA", ["125", price_total]),
+                ("MOA", ["124", price_total * product_tax / 100])
+            ])
+            
         return summary
+        
+   
