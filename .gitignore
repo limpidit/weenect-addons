@@ -1,10 +1,14 @@
 
 weenect_salesupply/__pycache__/
 
-weenect_salesupply/models/__pycache__/
-
-weenect_salesupply/wizard/__pycache__/
-
 products/__pycache__/
 
 products/models/__pycache__/
+
+weenect_edifact/__pycache__/
+
+weenect_edifact/models/__pycache__/
+
+weenect_salesupply/models/__pycache__/
+
+weenect_salesupply/wizard/__pycache__/
