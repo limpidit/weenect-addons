@@ -120,6 +120,30 @@ class AccountMove(models.Model):
             partner.country_id.code
         )
         
+    def _get_payment_terms_segment_block(self):
+        term_lines = None
+        discount_percentage, discount_days, payment_term_days = 0, 0, 0
+        if self.invoice_payment_term_id:
+            term_lines = self.invoice_payment_term_id.line_ids
+            discount_percentage, discount_days, payment_term_days = (
+                term_lines.discount_percentage,
+                term_lines.discount_days if len(term_lines) == 1 else 0,
+                term_lines.days
+            )
+        if term_lines:
+            return [
+                ("CUX", ["2", "EUR", "4"]),
+                ("PAT", "7", "", ["5", "3", "D", payment_term_days]),
+                ("PAT", "22", "", ["5", "3", "D", discount_days]),
+                ("PCD", "12", discount_percentage),
+            ]
+        else:
+            return [
+                ("CUX", ["2", "EUR", "4"]),
+                ("PAT", "3"),
+                ("DTM", ["209", self.invoice_date.strftime("%Y%m%d"), "102"]),
+            ]
+        
     def _edifact_invoice_get_header(self):
         source_order = self.line_ids.sale_line_ids.order_id
         source_order.ensure_one()
@@ -128,12 +152,7 @@ class AccountMove(models.Model):
         
         today_date_str = datetime.now().date().strftime("%Y%m%d")
         buyer = self.partner_id
-        delivery_address = self.partner_shipping_id
-        term_lines = self.invoice_payment_term_id.line_ids
-        discount_percentage, discount_days = (
-            term_lines.discount_percentage,
-            term_lines.discount_days if len(term_lines) == 1 else 0,
-        )
+        delivery_address = self.partner_shipping_id        
         
         header = [
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
@@ -161,14 +180,8 @@ class AccountMove(models.Model):
                 self._edifact_invoice_get_delivery_address(),
                 ("RFF", ["VA", delivery_address.vat]),
             ])
-            
-        header.extend([
-            ("CUX", ["2", "EUR", "4"]),
-            ("PAT", "3"),
-            ("DTM", ["13", self.invoice_date_due.strftime("%Y%m%d"), "102"]),
-            ("PAT", "22", "", ["5", "3", "D", discount_days]),
-            ("PCD", "12", discount_percentage),
-        ])
+        
+        header.extend(self._get_payment_terms_segment_block())
         
         return header
     
