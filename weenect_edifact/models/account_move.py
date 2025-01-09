@@ -185,6 +185,7 @@ class AccountMove(models.Model):
         
         for line in self.invoice_line_ids:
             line.tax_ids.ensure_one()
+            number += 1
             product = line.product_id
             
             product_tax = 0
@@ -232,7 +233,7 @@ class AccountMove(models.Model):
         
         for product_tax, price_total in taxes.items():
             summary.extend([
-                ("TAX", "7", "VAT", "", price_total, ["", "", "", product_tax]),
+                ("TAX", "7", "VAT", "", "", ["", "", "", product_tax]),
                 ("MOA", ["125", price_total]),
                 ("MOA", ["124", price_total * product_tax / 100])
             ])
