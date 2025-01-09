@@ -9,6 +9,9 @@ weenect_edifact/__pycache__/
 
 weenect_edifact/models/__pycache__/
 
+partner-contact
+
+edi
 weenect_salesupply/models/__pycache__/
 
 weenect_salesupply/wizard/__pycache__/
