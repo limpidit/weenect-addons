@@ -112,7 +112,7 @@ class AccountMove(models.Model):
             segment_code,
             [partner_gln.name, "", "9"],
             "",
-            partner.name,
+            "",
             partner.street,
             partner.city,
             "",
@@ -135,7 +135,7 @@ class AccountMove(models.Model):
                 ("CUX", ["2", "EUR", "4"]),
                 ("PAT", "7", "", ["5", "3", "D", payment_term_days]),
                 ("PAT", "22", "", ["5", "3", "D", discount_days]),
-                ("PCD", "12", discount_percentage),
+                ("PCD", ["12", discount_percentage]),
             ]
         else:
             return [
@@ -161,8 +161,8 @@ class AccountMove(models.Model):
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
         ]
         
-        if self.note:
-            header.append(("FTX", "ZZZ", "", "", self.note))
+        if self.invoice_payment_term_id.note:
+            header.append(("FTX", "ZZZ", "", "", self.invoice_payment_term_id.note))
             
         header.extend([
             ("RFF", ["ON", source_order.name]),
@@ -200,29 +200,32 @@ class AccountMove(models.Model):
             line.tax_ids.ensure_one()
             number += 1
             product = line.product_id
+            product_price_unit = round(line.price_unit, 2)
+            line_price_subltotal = round(line.price_subtotal, 2)
             
             product_tax = 0
             if line.tax_ids and line.tax_ids.amount_type == "percent":
                 product_tax = line.tax_ids.amount
                 if product_tax not in taxes:
-                    taxes[product_tax] = line.price_subtotal
+                    taxes[product_tax] = line_price_subltotal
                 else:
-                    taxes[product_tax] += line.price_subtotal
+                    taxes[product_tax] += line_price_subltotal
                     
             lines.extend([
                 ("LIN", number, "", ["", "EN"]),
                 ("PIA", "5", [product.id, "SA", "", "91"]),
                 ("IMD", "A", "", ["", "", "", product.default_code, product.name]),
                 ("QTY", ["47", line.quantity, "PCE"]),
-                ("MOA", ["203", line.price_subtotal]),
-                ("PRI", ["AAB", line.price_unit, "", "", "", "PCE"]),
+                ("MOA", ["203", line_price_subltotal]),
+                ("PRI", ["AAB", product_price_unit, "", "", "", "PCE"]),
             ])
             
             if line.discount:
+                discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
                 lines.extend([
                     ("ALC", "A", "", "", "1", "DI"),
                     ("PCD", ["3", line.discount]),
-                    ("MOA", ["8", round(line.quantity * line.price_unit * line.discount / 100, 4)]),
+                    ("MOA", ["131", discount_amount]),
                 ])
 
             lines.append(("TAX", "7", "VAT", "", "", ["", "", "", product_tax]))
