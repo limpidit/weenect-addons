@@ -50,7 +50,11 @@ class AccountMove(models.Model):
     def _edifact_invoice_get_interchange(self):
         sender = self.env.company.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         sender.ensure_one()
-        recipient = self.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        if self.partner_id.parent_id:
+            recipient_partner = self.partner_id.parent_id
+        else:
+            recipient_partner = self.partner_id
+        recipient = recipient_partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         recipient.ensure_one()
         
         if not sender or not recipient:
