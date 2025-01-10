@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 from datetime import datetime
 import logging
 import base64
+import re
 
 _logger = logging.getLogger(__name__)
 
@@ -168,7 +169,8 @@ class AccountMove(models.Model):
         ]
         
         if self.invoice_payment_term_id.note:
-            header.append(("FTX", "ZZZ", "", "", str(self.invoice_payment_term_id.note)))
+            clean_text = re.sub(r'<.*?>', '', self.invoice_payment_term_id.note)
+            header.append(("FTX", "ZZZ", "", "", clean_text))
             
         header.extend([
             ("RFF", ["ON", source_order.name]),
