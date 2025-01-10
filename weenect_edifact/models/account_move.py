@@ -14,7 +14,6 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     edifact_attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Edifact attachment")
-    note = fields.Text(string="Notes")
         
     def generate_edifact_attachment(self):
         self.ensure_one()
@@ -168,8 +167,23 @@ class AccountMove(models.Model):
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
         ]
         
+        if self.tracking_numbers:
+            header.append(("FTX", "ZZZ", "", "", self.tracking_numbers))
+            
+        if self.payment_reference:
+            payment_ref_text = "Bitte benutzen Sie den folgenden Verwendungszweck für Ihre Zahlung: %s" % self.payment_reference
+            header.append(("FTX", "ZZZ", "", "", payment_ref_text))
+        
         if self.invoice_payment_term_id.note:
             clean_text = re.sub(r'<.*?>', '', self.invoice_payment_term_id.note)
+            header.append(("FTX", "ZZZ", "", "", clean_text))
+            
+        if self.narration:
+            clean_text = re.sub(r'<.*?>', '', self.narration)
+            header.append(("FTX", "ZZZ", "", "", clean_text))
+        
+        if self.fiscal_position_id:
+            clean_text = re.sub(r'<.*?>', '', self.fiscal_position_id.note)
             header.append(("FTX", "ZZZ", "", "", clean_text))
             
         header.extend([
