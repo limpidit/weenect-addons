@@ -168,7 +168,7 @@ class AccountMove(models.Model):
         ]
         
         if self.invoice_payment_term_id.note:
-            header.append(("FTX", "ZZZ", "", "", self.invoice_payment_term_id.note))
+            header.append(("FTX", "ZZZ", "", "", str(self.invoice_payment_term_id.note)))
             
         header.extend([
             ("RFF", ["ON", source_order.name]),
