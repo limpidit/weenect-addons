@@ -196,8 +196,7 @@ class AccountMove(models.Model):
         taxes = {}
         number = 0
         
-        for line in self.invoice_line_ids:
-            line.tax_ids.ensure_one()
+        for line in self.invoice_line_ids.filtered(lambda x: x.product_id):
             number += 1
             product = line.product_id
             product_price_unit = round(line.price_unit, 2)
