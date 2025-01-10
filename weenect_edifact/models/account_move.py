@@ -92,7 +92,7 @@ class AccountMove(models.Model):
             "out_invoice": "380",
             "in_invoice": "381"
         }.get(self.move_type, "381")
-        return ("BGM", move_type_code, self.payment_reference, "9")
+        return ("BGM", move_type_code, self.name, "9")
 
     def _edifact_invoice_get_supplier(self):
         return self._get_partner_segment(self.company_id.partner_id, "SU")
@@ -205,9 +205,9 @@ class AccountMove(models.Model):
             if line.tax_ids and line.tax_ids.amount_type == "percent":
                 product_tax = line.tax_ids.amount
                 if product_tax not in taxes:
-                    taxes[product_tax] = line.price_total
+                    taxes[product_tax] = line.price_subtotal
                 else:
-                    taxes[product_tax] += line.price_total
+                    taxes[product_tax] += line.price_subtotal
                     
             lines.extend([
                 ("LIN", number, "", ["", "EN"]),
@@ -222,7 +222,7 @@ class AccountMove(models.Model):
                 lines.extend([
                     ("ALC", "A", "", "", "1", "DI"),
                     ("PCD", ["3", line.discount]),
-                    ("MOA", ["8", line.quantity * line.price_unit * line.discount / 100]),
+                    ("MOA", ["8", round(line.quantity * line.price_unit * line.discount / 100, 4)]),
                 ])
 
             lines.append(("TAX", "7", "VAT", "", "", ["", "", "", product_tax]))
@@ -248,7 +248,7 @@ class AccountMove(models.Model):
             summary.extend([
                 ("TAX", "7", "VAT", "", "", ["", "", "", product_tax]),
                 ("MOA", ["125", price_total]),
-                ("MOA", ["124", price_total * product_tax / 100])
+                ("MOA", ["124", round(price_total * product_tax / 100, 4)])
             ])
             
         return summary
