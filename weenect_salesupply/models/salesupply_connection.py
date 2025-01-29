@@ -67,25 +67,26 @@ class SalesupplyConnection(models.Model):
         if 'error_message' in shops_result:
             raise UserError(_(f"Synchronization failed : {shops_result['error_message']}"))
         for element in shops_result:
-            existing_shop = shop_object.search([('id_salesupply', '=', element['Id'])])
-            if existing_shop:
-                existing_shop.write({
-                    'name': element['Name'],
-                    'connection_id': self.id,
-                    'shop_owner_id_salesupply': element['ShopOwnerId'],
-                    'shop_group_id_salesupply': element['ShopGroupId'],
-                    'active': element['Active']
-                })
-            else:
-                new_shop = shop_object.create({
-                    'id_salesupply': element['Id'],
-                    'name': element['Name'],
-                    'connection_id': self.id,
-                    'shop_owner_id_salesupply': element['ShopOwnerId'],
-                    'shop_group_id_salesupply': element['ShopGroupId'],
-                    'active': element['Active']
-                })
-                _logger.info(f"SALESUPPLY : New shop created -> {new_shop.name}")
+            if isinstance(element, dict):
+                existing_shop = shop_object.search([('id_salesupply', '=', element.get('Id'))])
+                if existing_shop:
+                    existing_shop.write({
+                        'name': element['Name'],
+                        'connection_id': self.id,
+                        'shop_owner_id_salesupply': element['ShopOwnerId'],
+                        'shop_group_id_salesupply': element['ShopGroupId'],
+                        'active': element['Active']
+                    })
+                else:
+                    new_shop = shop_object.create({
+                        'id_salesupply': element['Id'],
+                        'name': element['Name'],
+                        'connection_id': self.id,
+                        'shop_owner_id_salesupply': element['ShopOwnerId'],
+                        'shop_group_id_salesupply': element['ShopGroupId'],
+                        'active': element['Active']
+                    })
+                    _logger.info(f"SALESUPPLY : New shop created -> {new_shop.name}")
         return {
             'type': 'ir.actions.act_window',
             'name': "Shops",

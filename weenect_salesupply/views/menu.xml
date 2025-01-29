@@ -16,6 +16,13 @@
         sequence="10"/>
 
     <menuitem
+        id="sync_stock_menu"
+        name="Synchronize stock"
+        action="weenect_salesupply.action_salesupply_stock_synchronization_wizard"
+        parent="salesupply_menu_root"
+        sequence="15"/>
+
+    <menuitem
         id="salesupply_menu_stock"
         name="Inventory"
         groups="stock.group_stock_manager,stock.group_stock_user"

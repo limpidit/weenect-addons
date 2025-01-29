@@ -11,10 +11,12 @@ class SalesupplyShop(models.Model):
     
     name = fields.Char(string="Name")
     connection_id = fields.Many2one(comodel_name='salesupply.connection', string="Associated API config")
+    
     id_salesupply = fields.Integer(string="ID Salesupply")
     shop_owner_id_salesupply = fields.Integer(string="ID shop owner")
     shop_group_id_salesupply = fields.Integer(string="ID shop group")
     active = fields.Boolean(string="Active")
+    default_lot_name = fields.Char(string="Default lot name", default="LOT_SALESUPPLY")
     
     # Shippings synchronization
     sale_done_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', string="Delivered picking states")
@@ -23,6 +25,7 @@ class SalesupplyShop(models.Model):
     
     # Internal transfers synchronization
     last_internal_transfers_synchronization_date = fields.Datetime(string="Last synchronization")
+    
     
     def open_sync_wizard(self):
         return
@@ -84,20 +87,21 @@ class SalesupplyShop(models.Model):
             
         for product in response:
             try:
-                if not product['Code']:
-                    continue
-                id_product = product['Id']
-                existing_product = product_object.search([('default_code', '=', product['Code'])])
-                if not existing_product:
-                    continue
-                if id_product not in existing_product.salesupply_shop_product_ids.mapped('id_salesupply'):
-                    salesupply_shop_product_object.create({
-                        'product_tmpl_id': existing_product.id,
-                        'id_salesupply': id_product,
-                        'id_shop_group': shop_group
-                    })
-                    logs = logs | log_object.log_info(_(f"Product synchronized -> {existing_product.name}"))
-                existing_product.available_on_salesupply = True
+                if isinstance(product, dict):
+                    if not product['Code']:
+                        continue
+                    id_product = product['Id']
+                    existing_product = product_object.search([('default_code', '=', product['Code'])])
+                    if not existing_product:
+                        continue
+                    if id_product not in existing_product.salesupply_shop_product_ids.mapped('id_salesupply'):
+                        salesupply_shop_product_object.create({
+                            'product_tmpl_id': existing_product.id,
+                            'id_salesupply': id_product,
+                            'id_shop_group': shop_group
+                        })
+                        logs = logs | log_object.log_info(_(f"Product synchronized -> {existing_product.name}"))
+                    existing_product.available_on_salesupply = True
             except Exception as exception:
                 logs = logs | log_object.log_error(_(f"Could not synchronize a product"), str(exception))
                 

@@ -41,6 +41,9 @@
                             <field name="shop_group_id_salesupply" />
                             <field name="shop_owner_id_salesupply" />
                         </group>
+                        <group name="lots" string="Lots">
+                            <field name="default_lot_name"/>
+                        </group>
                     </group>
                     <notebook>
                         <page name="deliveries" string="Deliveries synchronization">

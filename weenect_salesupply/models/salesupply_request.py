@@ -73,9 +73,9 @@ class SalesupplyRequest:
         else:
             raise ValidationError(response.text)
         
-    def _get_receptions(self, shop_owner_id, warehouse_id, date_from=False):
+    def _get_receptions(self, shop_owner_id, warehouse_id, date_from=None):
         url = f"/v1/ShopOwners/{shop_owner_id}/PurchaseOrders?warehouseId={warehouse_id}"
-        if date_from:
+        if date_from and isinstance(date_from, datetime):
             url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
         response = self._send_request(url)
         return response
@@ -87,7 +87,7 @@ class SalesupplyRequest:
     
     def _get_shipments(self, warehouse_id, date_from=False):
         url = f"/v1/Warehouses/{warehouse_id}/Shipments"
-        if date_from:
+        if date_from and isinstance(date_from, datetime):
             url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
         response = self._send_request(url)
         return response

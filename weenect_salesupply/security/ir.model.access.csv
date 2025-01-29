@@ -14,7 +14,6 @@ access_salesupply_receptions_wizard,access.salesupply.receptions.wizard,weenect_
 access_salesupply_inventory_wizard,access.salesupply.inventory.wizard,weenect_salesupply.model_salesupply_inventory_wizard,stock.group_stock_manager,1,1,1,1
 access_salesupply_send_product_wizard,access.salesupply.send.product.wizard,weenect_salesupply.model_salesupply_send_product_wizard,stock.group_stock_manager,1,1,1,1
 access_salesupply_shipments_wizard,access.salesupply.shipments.wizard,weenect_salesupply.model_salesupply_shipment_synchronization,stock.group_stock_manager,1,1,1,1
-
-
+access_salesupply_stock_synchronization_wizard,access.salesupply.stock.synchronization.wizard,weenect_salesupply.model_salesupply_stock_synchronization_wizard,stock.group_stock_manager,1,1,1,1
 
 
