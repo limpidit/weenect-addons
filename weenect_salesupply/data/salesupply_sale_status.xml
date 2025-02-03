@@ -53,7 +53,14 @@
             <field name="id_base_status">3</field>
             <field name="id_type_status">0</field>
         </record>
-    
+
+        <record id="salesupply_return_processed_status" model="salesupply.sale.status">
+            <field name="name">Return Processed</field>
+            <field name="id_salesupply">1120</field>
+            <field name="id_base_status">3</field>
+            <field name="id_type_status">0</field>
+        </record>
+
     </data>
     
 

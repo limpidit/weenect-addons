@@ -19,13 +19,18 @@ class SalesupplyShop(models.Model):
     default_lot_name = fields.Char(string="Default lot name", default="LOT_SALESUPPLY")
     
     # Shippings synchronization
-    sale_done_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', string="Delivered picking states")
+    sale_done_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', relation='salessupply_shop_delivery_done_status', 
+        column1='shop_id', column2='status_id', string="Delivered picking states")
     shippings_default_customer_id = fields.Many2one(comodel_name='res.partner', string="Default orders customer")
     last_orders_synchronization_date = fields.Datetime(string="Last synchronization")
     
     # Internal transfers synchronization
     last_internal_transfers_synchronization_date = fields.Datetime(string="Last synchronization")
     
+    # Returns synchronization
+    done_returns_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', relation='salessupply_shop_return_done_status', 
+        column1='shop_id', column2='status_id', string="Returned picking states")
+    last_returns_synchronization_date = fields.Datetime(string="Last synchronization")
     
     def open_sync_wizard(self):
         return

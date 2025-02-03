@@ -97,7 +97,30 @@ class SalesupplyRequest:
         response = self._send_request(url)
         return response
     
-    def _get_order_rows(self, order_id):
-        url = f"v1/Orders/{order_id}/Rows"
+    def _get_shipments(self, shop_id, warehouses, date_from=None):
+        detailled_shipments = {warehouse_id: [] for warehouse_id in warehouses.mapped('id_salesupply')}
+        url = f"v1/Shops/{shop_id}/Shipments"
+        if date_from and isinstance(date_from, datetime):
+            url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
         response = self._send_request(url)
-        return response
+        for shipment in response:
+            if isinstance(shipment, dict):
+                shipment_response = self._send_request(f"v1/Shipments/{shipment['Id']}")
+                warehouse_id = shipment_response.get('WarehouseId')
+                if warehouse_id in detailled_shipments:
+                    detailled_shipments[warehouse_id].append(shipment_response)
+        return detailled_shipments
+    
+    def _get_returns(self, shop_id, warehouses, date_from=None):
+        detailled_returns = {warehouse_id: [] for warehouse_id in warehouses.mapped('id_salesupply')}
+        url = f"v1/Shops/{shop_id}/Returns"
+        if date_from and isinstance(date_from, datetime):
+            url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        response = self._send_request(url)
+        for return_picking in response:
+            if isinstance(return_picking, dict):
+                return_response = self._send_request(f"v1/Returns/{return_picking['Id']}")
+                warehouse_id = return_response.get('WarehouseId')
+                if warehouse_id in detailled_returns:
+                    detailled_returns[warehouse_id].append(return_response)
+        return detailled_returns

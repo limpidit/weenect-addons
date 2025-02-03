@@ -62,6 +62,14 @@
                                 </group>
                             </group>
                         </page>
+                        <page name="returns" string="Returns synchronization">
+                            <group>
+                                <group>
+                                    <field name="done_returns_status_ids" widget="many2many_tags"/>
+                                    <field name="last_returns_synchronization_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
