@@ -21,18 +21,18 @@ class StockQuant(models.Model):
         quantities_by_product = {}
         
         for quant in quants_to_remove:
-            quantities_by_product[quant.product_id.id] = quantities_by_product.get(quant.product_id, 0) + quant.quantity
+            quantities_by_product[quant.product_id.id] = quantities_by_product.get(quant.product_id.id, 0) + quant.quantity
 
         quants_to_remove.inventory_quantity = 0
         quants_to_remove.action_apply_inventory()
             
-        default_lots = lot_object.search([('product_id', 'in', quantities_by_product.keys()), ('is_default_salesupply_lot', '=', True)])
+        default_lots = lot_object.search([('product_id', 'in', list(quantities_by_product.keys())), ('is_default_salesupply_lot', '=', True)])
         default_lot_map = {lot.product_id.id: lot for lot in default_lots}
 
         for product, quantity in quantities_by_product.items():
             lot_id = default_lot_map.get(product)
             if not lot_id:
-                lot_id = lot_object.create({'name': default_lot_name, 'product_id': product.id, 'is_default_salesupply_lot': True})
+                lot_id = lot_object.create({'name': default_lot_name, 'product_id': product, 'is_default_salesupply_lot': True})
                 default_lot_map[product] = lot_id
             self._update_available_quantity(product, warehouse.lot_stock_id, quantity, lot_id=lot_id)
             
