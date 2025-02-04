@@ -57,4 +57,4 @@ class SalesupplyLog(models.Model):
     def remove_older_logs(self):
         date_limit = datetime.today() - timedelta(days=30)
         logs_to_remove = self.search([('execution_date', '<', date_limit)])
-        logs_to_remove.unlink()
+        logs_to_remove.unlink() 

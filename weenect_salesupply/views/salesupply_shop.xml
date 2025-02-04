@@ -20,15 +20,6 @@
                     <button string="Link products" name="get_products_from_salesupply" 
                         groups="stock.group_stock_manager"
                         type="object" class="oe_highlight"/>
-                    <button string="Synchronize inventory" name="action_open_inventory_wizard" 
-                        groups="stock.group_stock_manager"
-                        type="object" class="oe_highlight"/>
-                    <button string="Synchronize receptions" name="action_open_internal_transfer_synchronization_wizard" 
-                        groups="stock.group_stock_manager"
-                        type="object" class="oe_highlight"/>
-                    <button string="Synchronize shipments" name="action_open_shipment_synchronization_wizard" 
-                        groups="stock.group_stock_manager"
-                        type="object" class="oe_highlight"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -45,32 +36,14 @@
                             <field name="default_lot_name"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page name="deliveries" string="Deliveries synchronization">
-                            <group>
-                                <group>
-                                    <field name="sale_done_status_ids" widget="many2many_tags"/>
-                                    <field name="shippings_default_customer_id" />
-                                    <field name="last_orders_synchronization_date" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page name="receptions" string="Receptions synchronization">
-                            <group>
-                                <group>
-                                    <field name="last_internal_transfers_synchronization_date" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page name="returns" string="Returns synchronization">
-                            <group>
-                                <group>
-                                    <field name="done_returns_status_ids" widget="many2many_tags"/>
-                                    <field name="last_returns_synchronization_date" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
+                    <group>
+                        <group name="sync_info" string="Synchronization">
+                            <field name="sale_done_status_ids" widget="many2many_tags"/>
+                            <field name="shippings_default_customer_id" />
+                            <field name="done_returns_status_ids" widget="many2many_tags"/>
+                            <field name="last_synchronization_date"/>
+                        </group>
+                    </group>
                 </sheet>
             </form>
         </field>

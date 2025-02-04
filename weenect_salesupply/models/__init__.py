@@ -1,6 +1,5 @@
 
 from . import product_template
-from . import res_partner
 from . import salesupply_connection
 from . import salesupply_log
 from . import salesupply_sale_status

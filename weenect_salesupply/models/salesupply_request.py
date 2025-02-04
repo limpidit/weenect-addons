@@ -2,10 +2,11 @@
 import requests
 from requests.exceptions import RequestException
 from werkzeug.urls import url_join
-from datetime import datetime
+from datetime import datetime, date
 
 from odoo import _
 from odoo.exceptions import ValidationError
+
 
 class SalesupplyRequest:
     
@@ -85,23 +86,11 @@ class SalesupplyRequest:
         response = self._send_request(url)
         return response
     
-    def _get_shipments(self, warehouse_id, date_from=False):
-        url = f"/v1/Warehouses/{warehouse_id}/Shipments"
-        if date_from and isinstance(date_from, datetime):
-            url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
-        response = self._send_request(url)
-        return response
-    
-    def _get_shipment_details(self, shipment_id):
-        url=f"/v1/Shipments/{shipment_id}"
-        response = self._send_request(url)
-        return response
-    
     def _get_shipments(self, shop_id, warehouses, date_from=None):
         detailled_shipments = {warehouse_id: [] for warehouse_id in warehouses.mapped('id_salesupply')}
         url = f"v1/Shops/{shop_id}/Shipments"
-        if date_from and isinstance(date_from, datetime):
-            url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        if date_from and isinstance(date_from, date):
+            url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
         response = self._send_request(url)
         for shipment in response:
             if isinstance(shipment, dict):
@@ -111,11 +100,25 @@ class SalesupplyRequest:
                     detailled_shipments[warehouse_id].append(shipment_response)
         return detailled_shipments
     
+    def _get_shipment_details(self, shipment_id):
+        url=f"/v1/Shipments/{shipment_id}"
+        response = self._send_request(url)
+        return response
+    
+    def _get_shipment_rows(self, id_order_rows, id_order):
+        url = f"v1/Orders/{id_order}/Rows"
+        response = self._send_request(url)
+        shipment_rows = []
+        for row in response:
+            if isinstance(row, dict) and row.get('Id') in id_order_rows:
+                shipment_rows.append(row)
+        return shipment_rows
+    
     def _get_returns(self, shop_id, warehouses, date_from=None):
         detailled_returns = {warehouse_id: [] for warehouse_id in warehouses.mapped('id_salesupply')}
         url = f"v1/Shops/{shop_id}/Returns"
-        if date_from and isinstance(date_from, datetime):
-            url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        if date_from and isinstance(date_from, date):
+            url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
         response = self._send_request(url)
         for return_picking in response:
             if isinstance(return_picking, dict):

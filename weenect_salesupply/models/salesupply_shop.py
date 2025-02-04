@@ -22,18 +22,12 @@ class SalesupplyShop(models.Model):
     sale_done_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', relation='salessupply_shop_delivery_done_status', 
         column1='shop_id', column2='status_id', string="Delivered picking states")
     shippings_default_customer_id = fields.Many2one(comodel_name='res.partner', string="Default orders customer")
-    last_orders_synchronization_date = fields.Datetime(string="Last synchronization")
-    
-    # Internal transfers synchronization
-    last_internal_transfers_synchronization_date = fields.Datetime(string="Last synchronization")
     
     # Returns synchronization
     done_returns_status_ids = fields.Many2many(comodel_name='salesupply.sale.status', relation='salessupply_shop_return_done_status', 
         column1='shop_id', column2='status_id', string="Returned picking states")
-    last_returns_synchronization_date = fields.Datetime(string="Last synchronization")
     
-    def open_sync_wizard(self):
-        return
+    last_synchronization_date = fields.Datetime(string="Last synchronization date")
     
     def get_products_from_salesupply(self, manual_execution=True):
         """
@@ -130,85 +124,34 @@ class SalesupplyShop(models.Model):
             }
 
         return
-    
-    def action_open_inventory_wizard(self):
-        """Open window assistant to execute inventory synchronization"""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _("Make inventory"),
-            'res_model': 'salesupply.inventory.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_shop_id': self.id
-            },
-        }
-    
-    def action_open_shipment_synchronization_wizard(self):
-        """Open window assistant to execute shipments synchronization"""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _("Synchronize shipments from Salesupply"),
-            'res_model': 'salesupply.shipment.synchronization',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_shop_id': self.id
-            },
-        }
-    
-    def action_open_internal_transfer_synchronization_wizard(self):
-        """Open window assistant to execute receptions synchronization"""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _("Synchronize receptions from Salesupply"),
-            'res_model': 'salesupply.internal.transfer.validate.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_shop_id': self.id
-            },
-        }
         
     def cron_execute_synchronization(self):
-        warehouse_object = self.env['stock.warehouse']
-        reception_wizard_object = self.env['salesupply.internal.transfer.validate.wizard']
-        delivery_wizard_object = self.env['salesupply.shipment.synchronization']
-        inventory_wizard_object = self.env['salesupply.inventory.wizard']
+        """
+        Executes the stock synchronization process for the shop.
+        This method is intended to be called by a cron job to synchronize the stock
+        levels of the shop with the external system. It logs errors if the synchronization
+        fails or if the last synchronization date is missing.
+        Raises:
+            Exception: If an error occurs during the stock synchronization process.
+        Returns:
+            None
+        """
         log_object = self.env['salesupply.log']
         
         for shop in self:
-            if not shop.last_internal_transfers_synchronization_date or not shop.last_orders_synchronization_date:
-                log_object.log_error(
-                    _(f"Could not synchronize inventory of {shop.name}"), 
-                    _("A date to specify from when we want to synchronize inventory is needed"))
-                continue
+            if not shop.last_synchronization_date:
+                log_object.log_error(title=_("Could not synchronize because missing date from wich fetch stock"))
+                return
             
-            warehouses = warehouse_object.search([('is_salesupply', '=', True), ('shop_id', '=', shop.id)])
-
-            reception_wizard = reception_wizard_object.create({
-                'shop_id': shop.id,
-                'warehouse_ids': warehouses.ids,
-                'date_from_synchronization': shop.last_internal_transfers_synchronization_date - timedelta(hours=1),
-            })
-            reception_wizard.synchronize_receptions(manual_execution=False)
-            shop.last_internal_transfers_synchronization_date = datetime.now()
-            
-            delivery_wizard = delivery_wizard_object.create({
-                'shop_id': shop.id,
-                'warehouse_ids': warehouses.ids,
-                'date_from_synchronization': shop.last_orders_synchronization_date - timedelta(hours=1),
-            })
-            delivery_wizard.synchronize_shipments(manual_execution=False)
-            shop.last_orders_synchronization_date = datetime.now()
-            
-            inventory_wizard = inventory_wizard_object.create({
-                'shop_id': shop.id,
-                'warehouse_ids': warehouses.ids,
-            })
-            inventory_wizard.synchronize_inventory(manual_execution=False)
+            last_sync_date = shop.last_synchronization_date - timedelta(hours=1)
+            try:
+                wizard = self.env['salesupply.stock.synchronization.wizard'].create({
+                    'shop_ids': shop.id,
+                    'date_from_synchronization': last_sync_date.date(),
+                })
+                wizard.synchronize_stock()
+            except Exception as e:
+                log_object.log_error(_("Error during stock synchronization for shop: %s") % shop.name, str(e))
         
+        return
         

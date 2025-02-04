@@ -21,10 +21,7 @@
         'views/stock_picking.xml',
         'views/stock_warehouse.xml',
         # Wizard
-        'wizard/salesupply_internal_transfer_validate_wizard.xml',
-        'wizard/salesupply_inventory_wizard.xml',
         'wizard/salesupply_send_product_wizard.xml',
-        'wizard/salesupply_shipment_synchronization.xml',
         'wizard/salesupply_stock_synchronization_wizard.xml',
         # Data
         'data/ir_cron.xml',
