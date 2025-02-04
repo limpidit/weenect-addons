@@ -34,7 +34,7 @@ class StockQuant(models.Model):
             if not lot_id:
                 lot_id = lot_object.create({'name': default_lot_name, 'product_id': product, 'is_default_salesupply_lot': True})
                 default_lot_map[product] = lot_id
-            self._update_available_quantity(product, warehouse.lot_stock_id, quantity, lot_id=lot_id)
+            self._update_available_quantity(lot_id.product_id, warehouse.lot_stock_id, quantity, lot_id=lot_id)
             
         self._unlink_zero_quants()
         
