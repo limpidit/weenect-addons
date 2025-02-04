@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0+e-20241029\n"
+"Project-Id-Version: Odoo Server 16.0+e-20241118\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-06 13:24+0000\n"
-"PO-Revision-Date: 2024-11-06 13:24+0000\n"
+"POT-Creation-Date: 2025-02-04 15:07+0000\n"
+"PO-Revision-Date: 2025-02-04 15:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -28,38 +28,49 @@ msgstr "Connexion API"
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__api_password
 msgid "API password"
-msgstr "Mot de passe"
+msgstr "Mot de passe API"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__api_host
 msgid "API url"
-msgstr "Url"
+msgstr "URL API"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__api_username
 msgid "API username"
-msgstr "Identifiant"
-
-#. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "Action"
-msgstr "Action"
+msgstr "Nom d'utilisateur API"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__active
 msgid "Active"
-msgstr "Active"
+msgstr "Actif"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__active
 msgid "Active ?"
-msgstr "Activation"
+msgstr "Actif ?"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__message
+msgid "Additional information"
+msgstr "Informations supplémentaires"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__connection_id
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__connection_id
 msgid "Associated API config"
 msgstr "Configuration API associée"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_product_product__available_on_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_product_template__available_on_salesupply
+msgid "Available on Salesupply"
+msgstr "Disponible sur Salesupply"
+
+#. module: weenect_salesupply
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.view_salesupply_send_product_wizard
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.view_salesupply_stock_synchronization_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
 
 #. module: weenect_salesupply
 #: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_configs
@@ -67,48 +78,107 @@ msgid "Configuration"
 msgstr "Configuration"
 
 #. module: weenect_salesupply
+#. odoo-python
+#: code:addons/weenect_salesupply/models/salesupply_connection.py:0
+#, python-format
+msgid "Connection test failed : Check your configuration"
+msgstr "Échec du test de connexion : Vérifiez votre configuration"
+
+#. module: weenect_salesupply
+#. odoo-python
+#: code:addons/weenect_salesupply/models/product_template.py:0
+#, python-format
+msgid "Create products in Salesupply"
+msgstr "Créer des produits dans Salesupply"
+
+#. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__create_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__create_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__create_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__create_uid
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__create_uid
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__create_uid
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__create_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__create_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__create_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__create_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__create_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__create_date
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__create_date
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__create_date
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__create_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__create_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__create_date
 msgid "Created on"
 msgstr "Créé le"
 
 #. module: weenect_salesupply
-#: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_current_synchronization
-msgid "Current synchronizations"
-msgstr "Synchronisations en cours"
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_log_action
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_log_view_tree
+msgid "Data retrieving from Salesupply history"
+msgstr "Historique de récupération des données de Salesupply"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__synchronization_done_date
-msgid "Date of synchronization"
-msgstr "Date de synchronisation"
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__date_from_synchronization
+msgid "Date from wich stock should be synchronized"
+msgstr "Date à partir de laquelle le stock doit être synchronisé"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__default_lot_name
+msgid "Default lot name"
+msgstr "Nom de lot par défaut"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__shippings_default_customer_id
+msgid "Default orders customer"
+msgstr "Client par défaut pour les commandes"
 
 #. module: weenect_salesupply
 #: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_connection_action
 msgid "Define Salesupply API configuration here"
-msgstr "Definissez les configurations de l'API Salesupply ici"
+msgstr "Définissez les configurations de l'API Salesupply ici"
+
+#. module: weenect_salesupply
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_action_warehouse_form
+msgid "Define a new Salesupply warehouse"
+msgstr "Définir un nouvel entrepôt Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_salesupply_sale_status
+msgid "Define sale orders statuses on Salesupply"
+msgstr "Définir les statuts des commandes de vente sur Salesupply"
+
+#. module: weenect_salesupply
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_sale_status_action
+msgid "Define salesupply order statuses"
+msgstr "Définir les statuts des commandes Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__sale_done_status_ids
+msgid "Delivered picking states"
+msgstr "États de prélèvement livrés"
+
+#. module: weenect_salesupply
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_deliveries_menu
+msgid "Deliveries"
+msgstr "Livraisons"
+
+#. module: weenect_salesupply
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_deliveries_action
+msgid "Deliveries from Salesupply warehouses"
+msgstr "Livraisons des entrepôts Salesupply"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__display_name
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__display_name
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__display_name
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__display_name
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__display_name
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__display_name
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__display_name
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__display_name
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__display_name
 msgid "Display Name"
-msgstr ""
-
-#. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization__state__done
-msgid "Done"
-msgstr "Terminé"
+msgstr "Nom d'affichage"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__environment
@@ -117,40 +187,47 @@ msgid "Environment"
 msgstr "Environnement"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization_message__type__error
+#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_log__type__error
 msgid "Error"
 msgstr "Erreur"
 
 #. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_form
-msgid "Execute manually"
-msgstr "Executer manuellement"
+#. odoo-python
+#: code:addons/weenect_salesupply/models/salesupply_shop.py:0
+#, python-format
+msgid "Error while retrieving products"
+msgstr "Erreur lors de la récupération des produits"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization__state__failed
-msgid "Failed"
-msgstr "En erreur"
+#. odoo-python
+#: code:addons/weenect_salesupply/models/stock_quant.py:0
+#, python-format
+msgid "Error while synchronizing inventory"
+msgstr "Erreur lors de la synchronisation de l'inventaire"
 
 #. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "Failed actions"
-msgstr "Actions en erreur"
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.view_salesupply_send_product_wizard
+msgid "Execute"
+msgstr "Exécuter"
 
 #. module: weenect_salesupply
-#: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_finished_synchronization
-msgid "Finished synchronizations"
-msgstr "Synchronisations terminées"
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_view_warehouse
+msgid "General Information"
+msgstr "Informations générales"
 
 #. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "Group By"
-msgstr "Regrouper par"
+#: model:ir.model,name:weenect_salesupply.model_salesupply_log
+msgid "History of data retrieving from Salesupply"
+msgstr "Historique de récupération des données de Salesupply"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__id
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__id
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__id
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__id
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__id
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__id
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__id
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__id
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__id
 msgid "ID"
 msgstr "ID"
 
@@ -170,96 +247,122 @@ msgid "ID shop owner"
 msgstr "ID détenteur de la boutique"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization_message__type__info
+#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_log__type__info
 msgid "Information"
 msgstr "Information"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__logs
-msgid "Information logs"
-msgstr "Logs d'information"
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_receptions_action
+msgid "Internal transfers to Salesupply warehouses"
+msgstr "Transferts internes vers les entrepôts Salesupply"
 
 #. module: weenect_salesupply
-#: model:ir.model,name:weenect_salesupply.model_salesupply_synchronization_message
-msgid "Information messages about a synchronization action"
-msgstr "Message d'information à propos d'une action de synchronisation"
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_stock
+msgid "Inventory"
+msgstr "Inventaire"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_picking__is_delivered_from_salesupply
+msgid "Is Delivered From Salesupply"
+msgstr "Est livré par Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_picking__is_returned_to_salesupply
+msgid "Is Returned To Salesupply"
+msgstr "Est retourné à Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_picking__is_transfered_to_salesupply
+msgid "Is Transfered To Salesupply"
+msgstr "Est transféré à Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_lot__is_default_salesupply_lot
+msgid "Is default Salesupply lot"
+msgstr "Est le lot par défaut de Salesupply"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection____last_update
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log____last_update
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status____last_update
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard____last_update
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop____last_update
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization____last_update
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message____last_update
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product____last_update
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Dernière modification le"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__write_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__write_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__write_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__write_uid
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__write_uid
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__write_uid
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__write_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__write_uid
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Dernière mise à jour par"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__write_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__write_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__write_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__write_date
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__write_date
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__write_date
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__write_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__write_date
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Dernière mise à jour le"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__message_ids
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_form
-msgid "Logs"
-msgstr "Logs"
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__last_synchronization_date
+msgid "Last synchronization date"
+msgstr "Date de la dernière synchronisation"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__type
-msgid "Message type"
-msgstr "Type de message"
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_shop_view_form
+msgid "Link products"
+msgstr "Lier les produits"
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_salesupply_shop_product
+msgid "Linking products to salesupply shops"
+msgstr "Liaison des produits aux boutiques Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_stock_lot
+msgid "Lot/Serial"
+msgstr "Lot/N° série"
+
+#. module: weenect_salesupply
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_shop_view_form
+msgid "Lots"
+msgstr "Lots"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_connection__name
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__name
 #: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__name
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__name
 msgid "Name"
 msgstr "Nom"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization__state__new
-msgid "New"
-msgstr "Nouveau"
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_deliveries_action
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_receptions_action
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_returns_action
+msgid "No transfer found. Let's create one!"
+msgstr "Aucun transfert trouvé. Créons-en un!"
 
 #. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "New actions"
-msgstr "Nouvelles actions"
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_sale_status_menu
+msgid "Order statuses"
+msgstr "Statuts des commandes"
 
 #. module: weenect_salesupply
-#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_synchronization_action
-msgid "Open current salesupply synchronization actions"
-msgstr "Ouvrir les actions de synchro Salesupply en cours"
-
-#. module: weenect_salesupply
-#: model_terms:ir.actions.act_window,help:weenect_salesupply.done_salesupply_synchronization_action
-msgid "Open finished salesupply synchronization actions"
-msgstr "Ouvrir les actions de synchro Salesupply terminées"
-
-#. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization__state__processing
-msgid "Processing"
-msgstr "En cours"
-
-#. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "Processing actions"
-msgstr "Actions en cours"
-
-#. module: weenect_salesupply
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization__synchronizated_data__product
+#: model:ir.model,name:weenect_salesupply.model_product_template
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__product_tmpl_id
 msgid "Product"
-msgstr "Article"
+msgstr "Produit"
 
 #. module: weenect_salesupply
 #: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_connection__environment__prod
@@ -267,21 +370,72 @@ msgid "Production environment"
 msgstr "Environnement de production"
 
 #. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_form
-msgid "Put back to new"
-msgstr "Remettre en nouveau"
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_product_menu
+msgid "Products"
+msgstr "Produits"
 
 #. module: weenect_salesupply
-#: model:ir.actions.server,name:weenect_salesupply.cron_remove_salesupply_finished_synchronizations_ir_actions_server
-#: model:ir.cron,cron_name:weenect_salesupply.cron_remove_salesupply_finished_synchronizations
-msgid "SALESUPPLY : Removing finished synchronizations"
-msgstr "SALESUPPLY : Suppression des actions terminées"
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_product_template_action
+msgid "Products available on Salesupply"
+msgstr "Produits disponibles sur Salesupply"
 
 #. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__product_tmpl_ids
+msgid "Products to synchronize"
+msgstr "Produits à synchroniser"
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_stock_quant
+msgid "Quants"
+msgstr "Quantités"
+
+#. module: weenect_salesupply
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_receptions_menu
+msgid "Receptions"
+msgstr "Réceptions"
+
+#. module: weenect_salesupply
+#. odoo-python
+#: code:addons/weenect_salesupply/models/salesupply_shop.py:0
+#, python-format
+msgid "Retrieving products from Salesupply"
+msgstr "Récupération des produits de Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop__done_returns_status_ids
+msgid "Returned picking states"
+msgstr "États de prélèvement retournés"
+
+#. module: weenect_salesupply
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_returns_menu
+msgid "Returns"
+msgstr "Retours"
+
+#. module: weenect_salesupply
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_returns_action
+msgid "Returns to Salesupply warehouses"
+msgstr "Retours aux entrepôts Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.actions.server,name:weenect_salesupply.cron_remove_salesupply_older_logs_ir_actions_server
+#: model:ir.cron,cron_name:weenect_salesupply.cron_remove_salesupply_older_logs
+msgid "SALESUPPLY : Removing older logs"
+msgstr "SALESUPPLY : Suppression des anciens journaux"
+
+#. module: weenect_salesupply
+#: model:ir.actions.server,name:weenect_salesupply.synchronize_salesupply_cron_ir_actions_server
+#: model:ir.cron,cron_name:weenect_salesupply.synchronize_salesupply_cron
+msgid "SALESUPPLY : Synchronize stocks"
+msgstr "SALESUPPLY : Synchroniser les stocks"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_warehouse__is_salesupply
 #: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_root
-#: model:ir.ui.menu,name:weenect_salesupply.stock_salesupply_menu
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_product_template_form_view
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_stock_picking_view_form
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_view_warehouse
 msgid "Salesupply"
-msgstr ""
+msgstr "Salesupply"
 
 #. module: weenect_salesupply
 #: model:ir.actions.act_window,name:weenect_salesupply.salesupply_connection_action
@@ -292,7 +446,65 @@ msgstr "Configurations API Salesupply"
 #. module: weenect_salesupply
 #: model:ir.model,name:weenect_salesupply.model_salesupply_connection
 msgid "Salesupply API configuration"
-msgstr "Configurations API Salesupply"
+msgstr "Configuration API Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__id_salesupply
+msgid "Salesupply Id"
+msgstr "ID Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.actions.server,name:weenect_salesupply.salesupply_product_template_action_server
+msgid "Salesupply Products Action"
+msgstr "Action des produits Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_salesupply_stock_synchronization_wizard
+msgid "Salesupply Stock Synchronization Wizard"
+msgstr "Assistant de synchronisation des stocks Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__id_base_status
+msgid "Salesupply base status Id"
+msgstr "ID de statut de base Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_picking__salesupply_code
+msgid "Salesupply code"
+msgstr "Code Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__id_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_warehouse__id_salesupply
+msgid "Salesupply id"
+msgstr "ID Salesupply"
+
+#. module: weenect_salesupply
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_shop_view_form
+msgid "Salesupply information"
+msgstr "Informations Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_warehouse__name_salesupply
+msgid "Salesupply name"
+msgstr "Nom Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_sale_status_action
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_sale_status_view_tree
+msgid "Salesupply order statuses"
+msgstr "Statuts des commandes Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_product_product__salesupply_shop_product_ids
+#: model:ir.model.fields,field_description:weenect_salesupply.field_product_template__salesupply_shop_product_ids
+msgid "Salesupply products"
+msgstr "Produits Salesupply"
+
+#. module: weenect_salesupply
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_product_template_form_view
+msgid "Salesupply products Shop"
+msgstr "Boutique des produits Salesupply"
 
 #. module: weenect_salesupply
 #: model:ir.model,name:weenect_salesupply.model_salesupply_shop
@@ -300,21 +512,52 @@ msgid "Salesupply shop"
 msgstr "Boutique Salesupply"
 
 #. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_shop_product__id_shop_group
+msgid "Salesupply shop group id"
+msgstr "ID du groupe de boutiques Salesupply"
+
+#. module: weenect_salesupply
 #: model:ir.actions.act_window,name:weenect_salesupply.salesupply_shop_action
 msgid "Salesupply shops"
 msgstr "Boutiques Salesupply"
 
 #. module: weenect_salesupply
-#: model:ir.model,name:weenect_salesupply.model_salesupply_synchronization
-msgid "Salesupply synchronization"
-msgstr "Synchronisation Salesupply"
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_sale_status__id_type_status
+msgid "Salesupply type status Id"
+msgstr "ID du type de statut Salesupply"
 
 #. module: weenect_salesupply
+#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_action_warehouse_form
+msgid "Salesupply warehouses"
+msgstr "Entrepôts Salesupply"
+
+#. module: weenect_salesupply
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_log_action
+msgid ""
+"See there the last executions of data retrieving from Salesupply to Odoo."
+msgstr "Voir ici les dernières exécutions de récupération de données de Salesupply vers Odoo."
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_salesupply_send_product_wizard
+msgid "Send products to specific Salesupply shops"
+msgstr "Envoyer des produits à des boutiques Salesupply spécifiques"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_warehouse__shop_id
+msgid "Shop"
+msgstr "Boutique"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_stock_synchronization_wizard__shop_ids
 #: model:ir.ui.menu,name:weenect_salesupply.stock_salesupply_shop_menu
-#: model:ir.ui.menu,name:weenect_salesupply.stock_salesupply_shops_menu
 #: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_shop_view_tree
 msgid "Shops"
 msgstr "Boutiques"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_send_product_wizard__shop_ids
+msgid "Shops to send products on"
+msgstr "Boutiques pour envoyer des produits"
 
 #. module: weenect_salesupply
 #. odoo-python
@@ -324,36 +567,35 @@ msgid "Something went wrong, please try again later!!"
 msgstr "Il s'est produit une erreur, essayez plus tard!!"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__state
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "State"
-msgstr "Statut"
+#: model:ir.actions.act_window,name:weenect_salesupply.action_salesupply_stock_synchronization_wizard
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.view_salesupply_stock_synchronization_wizard_form
+msgid "Stock Synchronization Wizard"
+msgstr "Assistant de synchronisation des stocks"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__synchronization_id
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_shop_view_form
 msgid "Synchronization"
 msgstr "Synchronisation"
 
 #. module: weenect_salesupply
-#: model:ir.actions.act_window,name:weenect_salesupply.salesupply_synchronization_action
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_tree
-msgid "Synchronization actions"
-msgstr "Actions de synchronisation"
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__execution_date
+msgid "Synchronization execution date"
+msgstr "Date d'exécution de la synchronisation"
 
 #. module: weenect_salesupply
-#: model:ir.actions.act_window,name:weenect_salesupply.done_salesupply_synchronization_action
-msgid "Synchronization finished actions"
-msgstr "Actions de synchronisation terminées"
+#: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_log
+msgid "Synchronization logs"
+msgstr "Journaux de synchronisation"
 
 #. module: weenect_salesupply
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_form
-msgid "Synchronization information"
-msgstr "Information de synchronisation"
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.view_salesupply_stock_synchronization_wizard_form
+msgid "Synchronize"
+msgstr "Synchroniser"
 
 #. module: weenect_salesupply
-#: model:ir.ui.menu,name:weenect_salesupply.salesupply_menu_synchronization
-msgid "Synchronization"
-msgstr "Synchronisation"
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.view_salesupply_send_product_wizard
+msgid "Synchronize products"
+msgstr "Synchroniser les produits"
 
 #. module: weenect_salesupply
 #: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_connection_view_form
@@ -361,10 +603,14 @@ msgid "Synchronize shops"
 msgstr "Synchroniser les boutiques"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__synchronizated_data
-#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_synchronization_view_search
-msgid "Synchronized data"
-msgstr "Modèle synchronisé"
+#: model:ir.ui.menu,name:weenect_salesupply.sync_stock_menu
+msgid "Synchronize stock"
+msgstr "Synchroniser le stock"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_stock_picking__salesupply_synchronized
+msgid "Synchronized with Salesupply"
+msgstr "Synchronisé avec Salesupply"
 
 #. module: weenect_salesupply
 #: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_connection_view_form
@@ -377,24 +623,42 @@ msgid "Testing environment"
 msgstr "Environnement de tests"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization_message__title
-msgid "Title"
-msgstr "Titre"
+#: model:ir.model,name:weenect_salesupply.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__id_updated_record
-msgid "Updated record id"
-msgstr "ID de l'enregistrement mis à jour"
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_deliveries_action
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_receptions_action
+#: model_terms:ir.actions.act_window,help:weenect_salesupply.salesupply_returns_action
+msgid "Transfers allow you to move products from one location to another."
+msgstr "Les transferts vous permettent de déplacer des produits d'un endroit à un autre."
 
 #. module: weenect_salesupply
-#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_synchronization__name_updated_record
-msgid "Updated record name"
-msgstr "Nom de l'enregistrement mis à jour"
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__type
+msgid "Type"
+msgstr "Type"
+
+#. module: weenect_salesupply
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_product_template_form_view
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_product_template_view_tree
+msgid "Upload to Salesupply"
+msgstr "Télécharger sur Salesupply"
+
+#. module: weenect_salesupply
+#: model:ir.model,name:weenect_salesupply.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Entrepôt"
+
+#. module: weenect_salesupply
+#: model:ir.ui.menu,name:weenect_salesupply.stock_warehouse_menu
+msgid "Warehouses"
+msgstr "Entrepôts"
 
 #. module: weenect_salesupply
 #. odoo-python
 #: code:addons/weenect_salesupply/models/salesupply_connection.py:0
-#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_synchronization_message__type__warning
+#: model:ir.model.fields.selection,name:weenect_salesupply.selection__salesupply_log__type__warning
 #, python-format
 msgid "Warning"
 msgstr "Attention"
@@ -408,5 +672,16 @@ msgstr "Vous devez d'abord activer la connexion !"
 
 #. module: weenect_salesupply
 #: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_connection_view_form
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_log_view_form
 msgid "e.g. API connection"
 msgstr "par ex. Connexion API"
+
+#. module: weenect_salesupply
+#: model_terms:ir.ui.view,arch_db:weenect_salesupply.salesupply_shop_view_form
+msgid "e.g. Shop"
+msgstr "par ex. Boutique"
+
+#. module: weenect_salesupply
+#: model:ir.model.fields,field_description:weenect_salesupply.field_salesupply_log__name
+msgid "name"
+msgstr "nom"
