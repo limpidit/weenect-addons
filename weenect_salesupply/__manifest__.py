@@ -20,16 +20,14 @@
         'views/salesupply_shop.xml',
         'views/stock_picking.xml',
         'views/stock_warehouse.xml',
-        # Menus
-        'views/menu.xml',
         # Wizard
-        'wizard/salesupply_internal_transfer_validate_wizard.xml',
-        'wizard/salesupply_inventory_wizard.xml',
         'wizard/salesupply_send_product_wizard.xml',
-        'wizard/salesupply_shipment_synchronization.xml',
+        'wizard/salesupply_stock_synchronization_wizard.xml',
         # Data
         'data/ir_cron.xml',
         'data/salesupply_sale_status.xml',
+        # Menus
+        'views/menu.xml',
     ],
     "installable": True,
     "application": True,

@@ -31,4 +31,22 @@
         </field>
     </record>
 
+    <record id="salesupply_stock_picking_view_form" model="ir.ui.view">
+        <field name="name">salesupply.stock.picking.view.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="salesupply" string="Salesupply">
+                    <group>
+                        <group>
+                            <field name="salesupply_synchronized"/>
+                            <field name="salesupply_code"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
 </odoo>
