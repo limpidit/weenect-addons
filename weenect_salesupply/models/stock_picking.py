@@ -9,20 +9,28 @@ class StockPicking(models.Model):
     salesupply_synchronized = fields.Boolean(string="Synchronized with Salesupply", default=False, copy=False)
     is_transfered_to_salesupply = fields.Boolean(compute='_compute_salesupply_picking_type', store=True)
     is_delivered_from_salesupply = fields.Boolean(compute='_compute_salesupply_picking_type', store=True)
+    is_returned_to_salesupply = fields.Boolean(compute='_compute_salesupply_picking_type', store=True)
     
     @api.depends('location_id', 'location_dest_id', 'picking_type_id')
     def _compute_salesupply_picking_type(self):
         salesupply_warehouses = self.env['stock.warehouse'].search([('is_salesupply', '=', True)])
         for record in self:
-            if record.location_dest_id.id in salesupply_warehouses.mapped(lambda w: w.lot_stock_id.id) and record.picking_type_id.code == 'internal':
+            if record.location_dest_id.id in salesupply_warehouses.mapped('lot_stock_id.id') and record.picking_type_id.code == 'internal':
                 record.is_transfered_to_salesupply = True
                 record.is_delivered_from_salesupply = False
-            elif record.location_id.id in salesupply_warehouses.mapped(lambda w: w.lot_stock_id.id) and record.picking_type_id.code in 'outgoing':
+                record.is_returned_to_salesupply = False
+            elif record.location_id.id in salesupply_warehouses.mapped('lot_stock_id.id') and record.picking_type_id.code == 'outgoing':
                 record.is_transfered_to_salesupply = False
                 record.is_delivered_from_salesupply = True
+                record.is_returned_to_salesupply = False
+            elif record.location_dest_id.id in salesupply_warehouses.mapped('lot_stock_id.id') and record.picking_type_id.code == 'incoming':
+                record.is_transfered_to_salesupply = False
+                record.is_delivered_from_salesupply = False
+                record.is_returned_to_salesupply = True
             else:
                 record.is_transfered_to_salesupply = False
-                record.is_transfered_to_salesupply = False
+                record.is_delivered_from_salesupply = False
+                record.is_returned_to_salesupply = False
         
     def _validate_internal_transfer_from_salesupply(self, salesupply_data):
         picking_object = self.env['stock.picking']

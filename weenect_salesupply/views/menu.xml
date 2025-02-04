@@ -31,21 +31,27 @@
 
         <menuitem
             id="salesupply_receptions_menu"
-            name="Salesupply receptions"
+            name="Receptions"
             action="salesupply_receptions_action"
             sequence="10"/>
 
         <menuitem
             id="salesupply_deliveries_menu"
-            name="Salesupply deliveries"
+            name="Deliveries"
             action="salesupply_deliveries_action"
             sequence="15"/>
+
+        <menuitem
+            id="salesupply_returns_menu"
+            name="Returns"
+            action="salesupply_returns_action"
+            sequence="20"/>
 
         <menuitem
             id="salesupply_product_menu"
             name="Products"
             action="weenect_salesupply.salesupply_product_template_action_server"
-            sequence="20"/>
+            sequence="25"/>
     
     </menuitem>
 
