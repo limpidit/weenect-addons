@@ -54,7 +54,7 @@ class StockQuant(models.Model):
             qty_on_hand = item.get('QtyOnHand')
             shop_product = self.env['salesupply.shop.product'].search([('id_salesupply', '=', product_id)], limit=1)
             if not shop_product:
-                log_object.log_info(_(f"Product {product_id} not existing in Odoo"))
+                log_object.log_warning(_(f"Product {product_id} not existing in Odoo"))
                 continue
             product = shop_product.product_tmpl_id.product_variant_id
             inventory_line = self.search([('product_id', '=', product.id), ('location_id', '=', location.id)], limit=1)

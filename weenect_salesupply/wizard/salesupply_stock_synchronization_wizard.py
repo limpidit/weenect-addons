@@ -32,6 +32,11 @@ class SalesupplyStockSynchronizationWizard(models.TransientModel):
 
     shop_ids = fields.Many2many(comodel_name='salesupply.shop', string="Shops")
     date_from_synchronization = fields.Date(string="Date from wich stock should be synchronized")
+    
+    sync_deliveries = fields.Boolean(string="Synchronize deliveries")
+    sync_receptions = fields.Boolean(string="Synchronize receptions")
+    sync_returns = fields.Boolean(string="Synchronize returns")
+    do_inventory = fields.Boolean(string="Do inventory")
 
     def synchronize_stock(self):
         """
@@ -60,27 +65,35 @@ class SalesupplyStockSynchronizationWizard(models.TransientModel):
             salesupply = SalesupplyRequest(shop.connection_id)
             
             warehouses = warehouse_object.search([('is_salesupply', '=', True), ('shop_id', '=', shop.id)])
-            salesupply_returns = salesupply._get_returns(shop.id_salesupply, warehouses, self.date_from_synchronization)
-            salesupply_shipments = salesupply._get_shipments(shop.id_salesupply, warehouses, self.date_from_synchronization)
+            
+            if self.sync_returns:
+                salesupply_returns = salesupply._get_returns(shop.id_salesupply, warehouses, self.date_from_synchronization)
+
+            if self.sync_deliveries:
+                salesupply_shipments = salesupply._get_shipments(shop.id_salesupply, warehouses, self.date_from_synchronization)
 
             for warehouse in warehouses:
                 log_object.log_info(title=_(f"Starting stock synchronization for warehouse {warehouse.name}"))
                 
                 # RECEPTIONS / INTERNAL TRANSFERS JL -> NL
-                self._synchronize_receptions(salesupply, warehouse)
-                self.env.cr.commit()
-                
-                # Updating lots to get the default Salesupply lot on new quants
-                quant_object._update_salesupply_quants(warehouse, shop.default_lot_name)
+                if self.sync_receptions:
+                    self._synchronize_receptions(salesupply, warehouse)
+                    self.env.cr.commit()
+                    # Updating lots to get the default Salesupply lot on new quants
+                    quant_object._update_salesupply_quants(warehouse, shop.default_lot_name)
                             
                 # RETURNS Customers -> NL
-                picking_object._return_pickings_from_salesupply(salesupply_returns[warehouse.id_salesupply])
+                if self.sync_returns:
+                    picking_object._return_pickings_from_salesupply(salesupply_returns[warehouse.id_salesupply])
                             
                 # DELIVERIES
-                picking_object._create_shipments_from_salesupply(salesupply, shop, warehouse, salesupply_shipments)
+                if self.sync_deliveries:
+                    picking_object._create_shipments_from_salesupply(salesupply, shop, warehouse, salesupply_shipments)
                 
                 # TODO : Inventory adjustments
-                quant_object._make_inventory_from_salesupply(salesupply, warehouse)
+                if self.do_inventory:
+                    quant_object._make_inventory_from_salesupply(salesupply, warehouse)
+                    quant_object._update_salesupply_quants(warehouse, shop.default_lot_name)
                 
             shop.last_synchronization_date = datetime.now()
                 
