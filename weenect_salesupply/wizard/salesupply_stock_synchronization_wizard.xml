@@ -5,8 +5,18 @@
         <field name="arch" type="xml">
             <form string="Stock Synchronization Wizard">
                 <group>
-                    <field name="shop_ids" widget="many2many_tags"/>
-                    <field name="date_from_synchronization"/>
+                    <group>
+                        <field name="shop_ids" widget="many2many_tags"/>
+                        <field name="date_from_synchronization"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="sync_deliveries"/>
+                        <field name="sync_receptions"/>
+                        <field name="sync_returns"/>
+                        <field name="do_inventory"/>
+                    </group>
                 </group>
                 <footer>
                     <button string="Synchronize" type="object" name="synchronize_stock" class="btn-primary"/>
