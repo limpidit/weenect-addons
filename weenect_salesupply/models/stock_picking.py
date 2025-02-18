@@ -6,6 +6,7 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
     
     salesupply_code = fields.Char(string="Salesupply code")
+    salesupply_order_id = fields.Char(string="Salesupply order id")
     salesupply_synchronized = fields.Boolean(string="Synchronized with Salesupply", default=False, copy=False)
     is_transfered_to_salesupply = fields.Boolean(compute='_compute_salesupply_picking_type', store=True)
     is_delivered_from_salesupply = fields.Boolean(compute='_compute_salesupply_picking_type', store=True)
@@ -74,7 +75,7 @@ class StockPicking(models.Model):
                 if existing_return:
                     raise ValueError(f"Already returned {return_code}")
             
-                delivery = self.search([('origin', '=', salesupply_json_return['OrderId'])])
+                delivery = self.search([('salesupply_order_id', '=', salesupply_json_return['OrderId'])])
                 
                 if not delivery:
                     log_object.log_warning(title=_(f"Could not synchronize return {return_code} because of missing delivery"))
@@ -113,7 +114,8 @@ class StockPicking(models.Model):
             
             try:
                 new_shipment = self.create({
-                    'origin': salesupply_json_shipment['OrderId'],
+                    'origin': salesupply_json_shipment['OrderCode'],
+                    'salesupply_order_id': salesupply_json_shipment['OrderId'],
                     'partner_id': shop.shippings_default_customer_id.id,
                     'picking_type_id': warehouse.out_type_id.id,
                     'salesupply_synchronized': True,
@@ -132,7 +134,7 @@ class StockPicking(models.Model):
                     product_id = shop_product.product_tmpl_id.product_variant_id.id
 
                     lot_id = False
-                    if shop_product.product_tmpl_id == 'lot':
+                    if shop_product.product_tmpl_id.tracking == 'lot':
                         lot_id = lot_object.search([('product_id', '=', product_id), ('is_default_salesupply_lot', '=', True)], limit=1)
                         if not lot_id:
                             lot_id = lot_object.create({
