@@ -148,6 +148,10 @@ class SalesupplyShop(models.Model):
                 wizard = self.env['salesupply.stock.synchronization.wizard'].create({
                     'shop_ids': shop.id,
                     'date_from_synchronization': last_sync_date.date(),
+                    'sync_deliveries': True,
+                    'sync_receptions': True,
+                    'sync_returns': True,
+                    'do_inventory': True,
                 })
                 wizard.synchronize_stock()
             except Exception as e:
