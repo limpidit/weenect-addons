@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!-- Cleaning -->
+        <record id="cron_remove_salesupply_older_logs" model="ir.cron">
+            <field name="name">SALESUPPLY : Removing older logs</field>
+            <field name="model_id" ref="model_salesupply_log"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="code">model.remove_older_logs()</field>
+        </record>
+
+        <!-- Synchronizations -->
+        <record id="synchronize_salesupply_cron" model="ir.cron">
+            <field name="name">SALESUPPLY : Synchronize stocks</field>
+            <field name="model_id" ref="model_salesupply_shop"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">False</field>
+            <field name="state">code</field>
+            <field name="code">model.cron_execute_synchronization()</field>
+        </record>
+    </data>
+    
+
+</odoo>

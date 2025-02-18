@@ -1,0 +1,2 @@
+from . import salesupply_send_product_wizard
+from . import salesupply_stock_synchronization_wizard
