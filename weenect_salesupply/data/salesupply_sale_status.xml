@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+    
+        <!-- These statuses will never change on the API Salesupply -->
+        
+        <record id="salesupply_cancelled_status" model="salesupply.sale.status">
+            <field name="name">Cancelled</field>
+            <field name="id_salesupply">4</field>
+            <field name="id_base_status">4</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_delivered_status" model="salesupply.sale.status">
+            <field name="name">Delivered</field>
+            <field name="id_salesupply">1469</field>
+            <field name="id_base_status">3</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_lost_status" model="salesupply.sale.status">
+            <field name="name">Lost</field>
+            <field name="id_salesupply">1577</field>
+            <field name="id_base_status">3</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_new_status" model="salesupply.sale.status">
+            <field name="name">New</field>
+            <field name="id_salesupply">83</field>
+            <field name="id_base_status">1</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_on_hold_status" model="salesupply.sale.status">
+            <field name="name">On hold</field>
+            <field name="id_salesupply">3</field>
+            <field name="id_base_status">2</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_processing_status" model="salesupply.sale.status">
+            <field name="name">Processing</field>
+            <field name="id_salesupply">1</field>
+            <field name="id_base_status">1</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_shipped_status" model="salesupply.sale.status">
+            <field name="name">Shipped</field>
+            <field name="id_salesupply">2</field>
+            <field name="id_base_status">3</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+        <record id="salesupply_return_processed_status" model="salesupply.sale.status">
+            <field name="name">Return Processed</field>
+            <field name="id_salesupply">1120</field>
+            <field name="id_base_status">3</field>
+            <field name="id_type_status">0</field>
+        </record>
+
+    </data>
+    
+
+</odoo>

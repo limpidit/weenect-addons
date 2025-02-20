@@ -1,0 +1,36 @@
+<odoo>
+    <record id="view_salesupply_stock_synchronization_wizard_form" model="ir.ui.view">
+        <field name="name">salesupply.stock.synchronization.wizard.form</field>
+        <field name="model">salesupply.stock.synchronization.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Stock Synchronization Wizard">
+                <group>
+                    <group>
+                        <field name="shop_ids" widget="many2many_tags"/>
+                        <field name="date_from_synchronization"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="sync_deliveries"/>
+                        <field name="sync_receptions"/>
+                        <field name="sync_returns"/>
+                        <field name="do_inventory"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Synchronize" type="object" name="synchronize_stock" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_salesupply_stock_synchronization_wizard" model="ir.actions.act_window">
+        <field name="name">Stock Synchronization Wizard</field>
+        <field name="res_model">salesupply.stock.synchronization.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_salesupply_stock_synchronization_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

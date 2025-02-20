@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="edifact_view_move_form" model="ir.ui.view">
+        <field name="name">edifact.view_move_form.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <!-- <button string="Generate edifact Futterhaus" name="generate_futterhaus_edifact_attachment" type="object" class="oe_highlight"/> -->
+                <button string="Generate edifact Sagaflor" name="generate_edifact_attachment" type="object" class="oe_highlight"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
