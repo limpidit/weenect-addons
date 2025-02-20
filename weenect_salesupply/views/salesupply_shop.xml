@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <tree string="Shops">
                 <field name="name"/>
+                <field name="last_synchronization_date"/>
             </tree>
         </field>
     </record>
@@ -33,6 +34,7 @@
                             <field name="shop_owner_id_salesupply" />
                         </group>
                         <group name="lots" string="Lots">
+                            <field name="default_picking_user_id"/>
                             <field name="default_lot_name"/>
                         </group>
                     </group>
