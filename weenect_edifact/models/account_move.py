@@ -106,13 +106,15 @@ class AccountMove(models.Model):
     def _get_partner_segment(self, partner, segment_code):
         partner_gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         partner_gln.ensure_one()
+
+        partner_names = [partner.name[i:i+35] for i in range(0, len(partner.name), 35)]
         
         return (
             "NAD",
             segment_code,
             [partner_gln.name, "", "9"],
             "",
-            partner.name,
+            partner_names,
             partner.street,
             partner.city,
             "",
@@ -121,28 +123,28 @@ class AccountMove(models.Model):
         )
         
     def _get_payment_terms_segment_block(self):
-        term_lines = None
-        discount_percentage, discount_days, payment_term_days = 0, 0, 0
-        if self.invoice_payment_term_id:
-            term_lines = self.invoice_payment_term_id.line_ids
-            discount_percentage, discount_days, payment_term_days = (
-                term_lines.discount_percentage,
-                term_lines.discount_days if len(term_lines) == 1 else 0,
-                term_lines.days
-            )
-        if term_lines:
-            return [
-                ("CUX", ["2", "EUR", "4"]),
-                ("PAT", "7", "", ["5", "3", "D", payment_term_days]),
-                ("PAT", "22", "", ["5", "3", "D", discount_days]),
-                ("PCD", "12", discount_percentage),
-            ]
-        else:
-            return [
-                ("CUX", ["2", "EUR", "4"]),
-                ("PAT", "3"),
-                ("DTM", ["209", self.invoice_date.strftime("%Y%m%d"), "102"]),
-            ]
+        # term_lines = None
+        # discount_percentage, discount_days, payment_term_days = 0, 0, 0
+        # if self.invoice_payment_term_id:
+        #     term_lines = self.invoice_payment_term_id.line_ids
+        #     discount_percentage, discount_days, payment_term_days = (
+        #         term_lines.discount_percentage,
+        #         term_lines.discount_days if len(term_lines) == 1 else 0,
+        #         term_lines.days
+        #     )
+        # if term_lines:
+        #     return [
+        #         ("CUX", ["2", "EUR", "4"]),
+        #         ("PAT", "7", "", ["5", "3", "D", payment_term_days]),
+        #         ("PAT", "22", "", ["5", "3", "D", discount_days]),
+        #         ("PCD", "12", discount_percentage),
+        #     ]
+
+        return [
+            ("CUX", ["2", "EUR", "4"]),
+            ("PAT", "3"),
+            ("DTM", ["209", self.invoice_date.strftime("%Y%m%d"), "102"]),
+        ]
         
     def _edifact_invoice_get_header(self):
         source_order = self.line_ids.sale_line_ids.order_id
@@ -152,13 +154,15 @@ class AccountMove(models.Model):
         
         today_date_str = datetime.now().date().strftime("%Y%m%d")
         buyer = self.partner_id
-        delivery_address = self.partner_shipping_id        
+        delivery_address = self.partner_shipping_id
         
         header = [
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             self._edifact_invoice_get_bgm_segment(),
-            ("DTM", ["137", today_date_str, "102"]),
+            ("DTM", ["137", self.invoice_date, "102"]),
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
+            ("FTX", "ZZZ", "", "", "Zentralregulierung über SAGAFLOR AG"),
+            ("FTX", "ZZZ", "", "", "Mehrwertsteuerbefreiung, art. 262 ter-l französisches Steuergesetzbuch"),
         ]
         
         if self.note:
@@ -184,10 +188,8 @@ class AccountMove(models.Model):
         header.extend(self._get_payment_terms_segment_block())
         
         return header
-    
-    
-    
-    
+
+
     
     ################### PRODUCT ###################
     
@@ -200,39 +202,45 @@ class AccountMove(models.Model):
             line.tax_ids.ensure_one()
             number += 1
             product = line.product_id
-            
+
+            if len(line.name) > 70:
+                raise UserError(_(f"Line name {line.name} is too long. Max 70 caracters allowed."))
+
+            libelle_part1 = line.name[:35]  # Premier segment (max 35 caractères)
+            libelle_part2 = line.name[35:70] if len(line.name) > 35 else ""  # Deuxième segment (max 35 caractères)
+            libelle_segment = ["", "", "", libelle_part1]
+            if libelle_part2:
+                libelle_segment.append(libelle_part2)
+
             product_tax = 0
             if line.tax_ids and line.tax_ids.amount_type == "percent":
                 product_tax = line.tax_ids.amount
                 if product_tax not in taxes:
-                    taxes[product_tax] = line.price_total
+                    taxes[product_tax] = round(line.price_total, 2)
                 else:
-                    taxes[product_tax] += line.price_total
-                    
+                    taxes[product_tax] += round(line.price_total, 2)
+
             lines.extend([
-                ("LIN", number, "", ["", "EN"]),
+                ("LIN", number, "", [product.ean_weenect, "EAN"]),
                 ("PIA", "5", [product.id, "SA", "", "91"]),
-                ("IMD", "A", "", ["", "", "", product.default_code, product.name]),
+                ("IMD", "A", libelle_segment),
                 ("QTY", ["47", line.quantity, "PCE"]),
-                ("MOA", ["203", line.price_subtotal]),
-                ("PRI", ["AAB", line.price_unit, "", "", "", "PCE"]),
+                ("MOA", ["203", round(line.price_subtotal, 2)]),
+                ("PRI", ["AAB", round(line.price_unit, 2), "", "", "", "PCE"]),
             ])
-            
+
             if line.discount:
+                discount_amount = round(line.quantity * line.price_unit * line.discount / 100, 2)
                 lines.extend([
                     ("ALC", "A", "", "", "1", "DI"),
-                    ("PCD", ["3", line.discount]),
-                    ("MOA", ["8", line.quantity * line.price_unit * line.discount / 100]),
+                    ("PCD", ["3", round(line.discount, 2)]),
+                    ("MOA", ["8", discount_amount]),
                 ])
 
-            lines.append(("TAX", "7", "VAT", "", "", ["", "", "", product_tax]))
+            lines.append(("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]))
         
         return lines, taxes
-    
-    
-    
-    
-    
+
     
     
     ################### SUMMARY ###################
@@ -240,17 +248,18 @@ class AccountMove(models.Model):
     def _edifact_invoice_get_summary(self, taxes):
         summary = [
             ("UNS", "S"),
-            ("MOA", ["77", self.amount_total]),
-            ("MOA", ["79", self.amount_untaxed])
+            ("MOA", ["77", round(self.amount_total, 2)]),
+            ("MOA", ["79", round(self.amount_untaxed, 2)])
         ]
         
         for product_tax, price_total in taxes.items():
             summary.extend([
-                ("TAX", "7", "VAT", "", "", ["", "", "", product_tax]),
-                ("MOA", ["125", price_total]),
-                ("MOA", ["124", price_total * product_tax / 100])
+                ("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]),
+                ("MOA", ["125", round(price_total, 2)]),
+                ("MOA", ["124", round(price_total * product_tax / 100, 2)])
             ])
             
         return summary
+
         
    
