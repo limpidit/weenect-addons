@@ -28,6 +28,8 @@ class SalesupplyShop(models.Model):
         column1='shop_id', column2='status_id', string="Returned picking states")
     
     last_synchronization_date = fields.Datetime(string="Last synchronization date")
+
+    default_picking_user_id = fields.Many2one(comodel_name='res.users', string="Default picking user")
     
     def get_products_from_salesupply(self, manual_execution=True):
         """

@@ -18,7 +18,7 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <header position="inside">
-                <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard" attrs="{'invisible': [('available_on_salesupply', '=', True)]}"/>
+                <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard" class="btn-primary"/>
             </header>
             <div name="options" position="inside">
                 <span class="d-inline-block">

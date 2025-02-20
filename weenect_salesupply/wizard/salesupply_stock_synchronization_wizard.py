@@ -64,6 +64,7 @@ class SalesupplyStockSynchronizationWizard(models.TransientModel):
         for shop in self.shop_ids:
             salesupply = SalesupplyRequest(shop.connection_id)
             
+            logistic_user = shop.default_picking_user_id or self.env.user
             warehouses = warehouse_object.search([('is_salesupply', '=', True), ('shop_id', '=', shop.id)])
             
             if self.sync_returns:
@@ -77,29 +78,29 @@ class SalesupplyStockSynchronizationWizard(models.TransientModel):
                 
                 # RECEPTIONS / INTERNAL TRANSFERS JL -> NL
                 if self.sync_receptions:
-                    self._synchronize_receptions(salesupply, warehouse)
+                    self._synchronize_receptions(salesupply, warehouse, logistic_user)
                     self.env.cr.commit()
                     # Updating lots to get the default Salesupply lot on new quants
-                    quant_object._update_salesupply_quants(warehouse, shop.default_lot_name)
+                    quant_object.with_user(logistic_user.id)._update_salesupply_quants(warehouse, shop.default_lot_name)
                             
                 # RETURNS Customers -> NL
                 if self.sync_returns:
-                    picking_object._return_pickings_from_salesupply(salesupply_returns[warehouse.id_salesupply])
+                    picking_object.with_user(logistic_user.id)._return_pickings_from_salesupply(salesupply_returns[warehouse.id_salesupply])
                             
                 # DELIVERIES
                 if self.sync_deliveries:
-                    picking_object._create_shipments_from_salesupply(salesupply, shop, warehouse, salesupply_shipments)
+                    picking_object.with_user(logistic_user.id)._create_shipments_from_salesupply(salesupply, shop, warehouse, salesupply_shipments)
                 
                 # TODO : Inventory adjustments
                 if self.do_inventory:
-                    quant_object._make_inventory_from_salesupply(salesupply, warehouse)
-                    quant_object._update_salesupply_quants(warehouse, shop.default_lot_name)
+                    quant_object.with_user(logistic_user.id)._make_inventory_from_salesupply(salesupply, warehouse)
+                    quant_object.with_user(logistic_user.id)._update_salesupply_quants(warehouse, shop.default_lot_name)
                 
             shop.last_synchronization_date = datetime.now()
                 
         return {'type': 'ir.actions.act_window_close'}
             
-    def _synchronize_receptions(self, salesupply, warehouse):
+    def _synchronize_receptions(self, salesupply, warehouse, logistic_user):
         log_object = self.env['salesupply.log']
         picking_object = self.env['stock.picking']
 
@@ -120,6 +121,6 @@ class SalesupplyStockSynchronizationWizard(models.TransientModel):
                 ])
                 if assigned_reception:
                     reception_details_json = salesupply._get_reception_details(salesupply_json_reception['Id'])
-                    assigned_reception._validate_internal_transfer_from_salesupply(reception_details_json)
+                    assigned_reception.with_user(logistic_user.id)._validate_internal_transfer_from_salesupply(reception_details_json)
                 else:
                     log_object.log_warning(title=_(f"Couldnt find associated reception {salesupply_json_reception['OrderCode']}"))
