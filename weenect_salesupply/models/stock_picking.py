@@ -38,8 +38,9 @@ class StockPicking(models.Model):
     def _validate_internal_transfer_from_salesupply(self, salesupply_data):
         log_object = self.env['salesupply.log']
         
-        date_done = parser.isoparse(salesupply_data['DateReceived'])
-
+        salesupply_date_done = salesupply_data['DateReceived']
+        date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+        
         for picking in self:
             salesupply_rows = {row['ProductId']: row for row in salesupply_data.get("PurchaseOrderRows", [])}
             is_delivered = True
@@ -76,7 +77,7 @@ class StockPicking(models.Model):
             return_code = salesupply_json_return['ReturnCode']
             
             salesupply_date_done = salesupply_json_return['ReceivedDate']
-            date_done = parser.isoparse(salesupply_date_done)
+            date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
             
             try:
                 existing_return = self.search([('salesupply_code', '=', return_code), ('salesupply_synchronized', '=', True)])
@@ -116,7 +117,7 @@ class StockPicking(models.Model):
             shipment_code = salesupply_json_shipment['ShippingCode']
             
             salesupply_date_done = salesupply_json_shipment['ShippedTimestamp']
-            date_done = parser.isoparse(salesupply_date_done)
+            date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
             
             # There should no be already synchronized shipments in the API response
             existing_delivery = self.search([('salesupply_code', '=', shipment_code), ('salesupply_synchronized', '=', True)])
