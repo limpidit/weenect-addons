@@ -78,6 +78,7 @@ class SalesupplyRequest:
         url = f"/v1/ShopOwners/{shop_owner_id}/PurchaseOrders?warehouseId={warehouse_id}"
         if date_from and isinstance(date_from, datetime):
             url += f"&fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        url += "&pageSize=2000"
         response = self._send_request(url)
         return response
     
@@ -91,6 +92,7 @@ class SalesupplyRequest:
         url = f"v1/Shops/{shop_id}/Shipments"
         if date_from and isinstance(date_from, date):
             url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        url += "&pageSize=2000"
         response = self._send_request(url)
         for shipment in response:
             if isinstance(shipment, dict):
@@ -119,6 +121,7 @@ class SalesupplyRequest:
         url = f"v1/Shops/{shop_id}/Returns"
         if date_from and isinstance(date_from, date):
             url += f"?fromDateChanged={date_from.strftime('%Y-%m-%d')}"
+        url += "&pageSize=2000"
         response = self._send_request(url)
         for return_picking in response:
             if isinstance(return_picking, dict):
