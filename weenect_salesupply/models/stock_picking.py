@@ -99,6 +99,7 @@ class StockPicking(models.Model):
                     
                 backorder_id = return_wizard._create_returns()[0]
                 backorder = self.browse(backorder_id)
+                backorder.move_ids._set_quantities_to_reservation()
                 backorder.button_validate(date_done)
                 backorder.write({'salesupply_synchronized': True, 'salesupply_code': return_code})
                 log_object.log_info(title=_(f"{backorder.name} Backorder created from {delivery.name}"))
