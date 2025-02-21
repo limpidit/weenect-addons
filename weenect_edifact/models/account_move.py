@@ -157,6 +157,7 @@ class AccountMove(models.Model):
         delivery_address = self.partner_shipping_id
         
         header = [
+            # TODO : Remplacer pour avoir le nom de la facture
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             self._edifact_invoice_get_bgm_segment(),
             ("DTM", ["137", self.invoice_date, "102"]),
