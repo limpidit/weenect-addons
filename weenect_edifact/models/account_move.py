@@ -152,13 +152,11 @@ class AccountMove(models.Model):
         picking = source_order.picking_ids.filtered(lambda x: x.state != 'cancel')
         picking.ensure_one()
         
-        today_date_str = datetime.now().date().strftime("%Y%m%d")
         buyer = self.partner_id
         delivery_address = self.partner_shipping_id
         
         header = [
-            # TODO : Remplacer pour avoir le nom de la facture
-            ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
+            ("UNH", self.name, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             self._edifact_invoice_get_bgm_segment(),
             ("DTM", ["137", self.invoice_date, "102"]),
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
