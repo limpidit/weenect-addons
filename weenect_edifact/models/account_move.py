@@ -162,7 +162,7 @@ class AccountMove(models.Model):
         delivery_address = self.partner_shipping_id
         
         header = [
-            ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
+            ("UNH", self.name, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             self._edifact_invoice_get_bgm_segment(),
             ("DTM", ["137", self.invoice_date.strftime("%Y%m%d"), "102"]),
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
