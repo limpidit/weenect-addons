@@ -229,11 +229,12 @@ class AccountMove(models.Model):
             number += 1
             product = line.product_id
 
-            if len(line.name) > 70:
-                raise UserError(_(f"Line name {line.name} is too long. Max 70 caracters allowed."))
+            line_pdf_description = line.product_id.client_friendly_name + " " + line.name
+            if len(line_pdf_description) > 70:
+                raise UserError(_(f"Line name {line_pdf_description} is too long. Max 70 caracters allowed."))
 
-            libelle_part1 = line.name[:35]  # Premier segment (max 35 caractères)
-            libelle_part2 = line.name[35:70] if len(line.name) > 35 else ""  # Deuxième segment (max 35 caractères)
+            libelle_part1 = line_pdf_description[:35]  # Premier segment (max 35 caractères)
+            libelle_part2 = line_pdf_description[35:70] if len(line.name) > 35 else ""  # Deuxième segment (max 35 caractères)
             libelle_segment = ["", "", "", libelle_part1]
             if libelle_part2:
                 libelle_segment.append(libelle_part2)
