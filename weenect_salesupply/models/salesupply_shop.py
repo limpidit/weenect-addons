@@ -140,7 +140,7 @@ class SalesupplyShop(models.Model):
         """
         log_object = self.env['salesupply.log']
         
-        for shop in self:
+        for shop in self.search([]):
             if not shop.last_synchronization_date:
                 log_object.log_error(title=_("Could not synchronize because missing date from wich fetch stock"))
                 return
