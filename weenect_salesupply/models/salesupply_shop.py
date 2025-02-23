@@ -148,7 +148,7 @@ class SalesupplyShop(models.Model):
             last_sync_date = shop.last_synchronization_date - timedelta(hours=1)
             try:
                 wizard = self.env['salesupply.stock.synchronization.wizard'].create({
-                    'shop_ids': shop.id,
+                    'shop_ids': [(6, 0, [shop.id])],
                     'date_from_synchronization': last_sync_date.date(),
                     'sync_deliveries': True,
                     'sync_receptions': True,
