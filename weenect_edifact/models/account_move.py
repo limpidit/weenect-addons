@@ -141,7 +141,6 @@ class AccountMove(models.Model):
         #     ]
 
         return [
-            ("CUX", ["2", "EUR", "4"]),
             ("PAT", "3"),
             ("DTM", ["209", self.invoice_date.strftime("%Y%m%d"), "102"]),
         ]
@@ -183,8 +182,11 @@ class AccountMove(models.Model):
                 self._edifact_invoice_get_delivery_address(),
                 ("RFF", ["VA", delivery_address.vat]),
             ])
-        
-        header.extend(self._get_payment_terms_segment_block())
+
+        header.append(("CUX", ["2", "EUR", "4"]))
+
+        if self.invoice_date_due > self.invoice_date:
+            header.extend(self._get_payment_terms_segment_block())
         
         return header
 
@@ -221,7 +223,7 @@ class AccountMove(models.Model):
             lines.extend([
                 ("LIN", number, "", [product.ean_weenect, "EAN"]),
                 ("PIA", "5", [product.id, "SA", "", "91"]),
-                ("IMD", "A", libelle_segment),
+                ("IMD", "A", "", libelle_segment),
                 ("QTY", ["47", line.quantity, "PCE"]),
                 ("MOA", ["203", round(line.price_subtotal, 2)]),
                 ("PRI", ["AAB", round(line.price_unit, 2), "", "", "", "PCE"]),
