@@ -148,7 +148,12 @@ class AccountMove(models.Model):
     def _edifact_invoice_get_header(self):
         source_order = self.line_ids.sale_line_ids.order_id
         source_order.ensure_one()
-        picking = source_order.picking_ids.filtered(lambda x: x.state != 'cancel')
+        
+        picking = self.env['stock.picking']
+        if self.move_type == 'out_invoice':
+            picking = source_order.picking_ids.filtered(lambda x: x.state != 'cancel' and x.picking_type_id.code == 'outgoing')
+        elif self.move_type == 'out_refund':
+            picking = source_order.picking_ids.filtered(lambda x: x.state != 'cancel' and x.picking_type_id.code == 'incoming')
         picking.ensure_one()
         
         buyer = self.partner_id
