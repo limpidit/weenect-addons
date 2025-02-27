@@ -108,8 +108,7 @@ class AccountMove(models.Model):
         return self._get_partner_segment(self.partner_shipping_id, "DP")
     
     def _get_partner_segment(self, partner, segment_code):
-        if partner.parent_id:
-            partner = partner.parent_id
+        
         partner_gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         partner_gln.ensure_one()
 
