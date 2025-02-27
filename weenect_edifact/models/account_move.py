@@ -166,7 +166,7 @@ class AccountMove(models.Model):
         delivery_address = self.partner_shipping_id
         
         header = [
-            ("UNH", self.name, ["INVOIC", "D", "96A", "UN", "EAN008"]),
+            ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             self._edifact_invoice_get_bgm_segment(),
             ("DTM", ["137", self.invoice_date.strftime("%Y%m%d"), "102"]),
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
@@ -252,7 +252,7 @@ class AccountMove(models.Model):
                     taxes[product_tax] += line_price_subltotal
                     
             lines.extend([
-                ("LIN", number, "", [product.ean_weenect, "EAN"]),
+                ("LIN", number, "", [product.ean_weenect, "EN"]),
                 ("PIA", "5", [product.id, "SA", "", "91"]),
                 ("IMD", "A", "", libelle_segment),
                 ("QTY", ["47", line.quantity, "PCE"]),
