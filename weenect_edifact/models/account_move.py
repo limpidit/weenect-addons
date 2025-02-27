@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 from datetime import datetime
 import logging
 import base64
+import re
 
 _logger = logging.getLogger(__name__)
 
@@ -13,7 +14,6 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     edifact_attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Edifact attachment")
-    note = fields.Text(string="Notes")
         
     def generate_edifact_attachment(self):
         self.ensure_one()
@@ -50,7 +50,11 @@ class AccountMove(models.Model):
     def _edifact_invoice_get_interchange(self):
         sender = self.env.company.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         sender.ensure_one()
-        recipient = self.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        if self.partner_id.parent_id:
+            recipient_partner = self.partner_id.parent_id
+        else:
+            recipient_partner = self.partner_id
+        recipient = recipient_partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         recipient.ensure_one()
         
         if not sender or not recipient:
@@ -92,7 +96,7 @@ class AccountMove(models.Model):
             "out_invoice": "380",
             "in_invoice": "381"
         }.get(self.move_type, "381")
-        return ("BGM", move_type_code, self.payment_reference, "9")
+        return ("BGM", move_type_code, self.name, "9")
 
     def _edifact_invoice_get_supplier(self):
         return self._get_partner_segment(self.company_id.partner_id, "SU")
@@ -162,14 +166,32 @@ class AccountMove(models.Model):
         header = [
             ("UNH", self.id, ["INVOIC", "D", "96A", "UN", "EAN008"]),
             self._edifact_invoice_get_bgm_segment(),
-            ("DTM", ["137", self.invoice_date, "102"]),
+            ("DTM", ["137", self.invoice_date.strftime("%Y%m%d"), "102"]),
             ("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]),
             ("FTX", "ZZZ", "", "", "Zentralregulierung über SAGAFLOR AG"),
             ("FTX", "ZZZ", "", "", "Mehrwertsteuerbefreiung, art. 262 ter-l französisches Steuergesetzbuch"),
         ]
         
-        if self.note:
-            header.append(("FTX", "ZZZ", "", "", self.note))
+        # TODO LIMPIDIT : Voir avec Fitzner concnernaut pour les inforamtions suivantes
+        
+        # if self.tracking_numbers:
+        #     header.append(("FTX", "ZZZ", "", "", self.tracking_numbers))
+            
+        # if self.payment_reference:
+        #     payment_ref_text = "Bitte benutzen Sie den folgenden Verwendungszweck für Ihre Zahlung: %s" % self.payment_reference
+        #     header.append(("FTX", "ZZZ", "", "", payment_ref_text))
+        
+        # if self.invoice_payment_term_id.note:
+        #     clean_text = re.sub(r'<.*?>', '', self.invoice_payment_term_id.note)
+        #     header.append(("FTX", "ZZZ", "", "", clean_text))
+            
+        # if self.narration:
+        #     clean_text = re.sub(r'<.*?>', '', self.narration)
+        #     header.append(("FTX", "ZZZ", "", "", clean_text))
+        
+        # if self.fiscal_position_id:
+        #     clean_text = re.sub(r'<.*?>', '', self.fiscal_position_id.note)
+        #     header.append(("FTX", "ZZZ", "", "", clean_text))
             
         header.extend([
             ("RFF", ["ON", source_order.name]),
@@ -204,8 +226,7 @@ class AccountMove(models.Model):
         taxes = {}
         number = 0
         
-        for line in self.invoice_line_ids:
-            line.tax_ids.ensure_one()
+        for line in self.invoice_line_ids.filtered(lambda x: x.product_id):
             number += 1
             product = line.product_id
 
@@ -217,29 +238,32 @@ class AccountMove(models.Model):
             if libelle_part2:
                 libelle_segment.append(libelle_part2)
 
+            product_price_unit = round(line.price_unit, 2)
+            line_price_subltotal = round(line.price_subtotal, 2)
+            
             product_tax = 0
             if line.tax_ids and line.tax_ids.amount_type == "percent":
                 product_tax = line.tax_ids.amount
                 if product_tax not in taxes:
-                    taxes[product_tax] = round(line.price_total, 2)
+                    taxes[product_tax] = line_price_subltotal
                 else:
-                    taxes[product_tax] += round(line.price_total, 2)
-
+                    taxes[product_tax] += line_price_subltotal
+                    
             lines.extend([
                 ("LIN", number, "", [product.ean_weenect, "EN"]),
                 ("PIA", "5", [product.id, "SA", "", "91"]),
                 ("IMD", "A", "", libelle_segment),
                 ("QTY", ["47", line.quantity, "PCE"]),
-                ("MOA", ["203", round(line.price_subtotal, 2)]),
-                ("PRI", ["AAB", round(line.price_unit, 2), "", "", "", "PCE"]),
+                ("MOA", ["203", line_price_subltotal]),
+                ("PRI", ["AAB", product_price_unit, "", "", "", "PCE"]),
             ])
 
             if line.discount:
-                discount_amount = round(line.quantity * line.price_unit * line.discount / 100, 2)
+                discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
                 lines.extend([
                     ("ALC", "A", "", "", "1", "DI"),
-                    ("PCD", ["3", round(line.discount, 2)]),
-                    ("MOA", ["8", discount_amount]),
+                    ("PCD", ["3", line.discount]),
+                    ("MOA", ["131", discount_amount]),
                 ])
 
             lines.append(("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]))
