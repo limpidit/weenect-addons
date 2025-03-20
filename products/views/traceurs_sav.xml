@@ -17,6 +17,7 @@
                             <field name="traceur_sav_a_envoyer"/>
                             <field name="traceur_sav_termine"/>
                             <field name="traceur_demo_realisee"/>
+                            <field name="date_demo"/>
                         </group>
                     </group>
                 </sheet>
@@ -42,6 +43,7 @@
             <field name="type"/>
             <field name="traceur_demo_realisee"/>
             <field name="create_date"/>
+            <field name="date_demo"/>
         </tree>
     </field>
     </record>

@@ -17,6 +17,9 @@ class TraceursSAV(models.Model):
         ('sav', 'SAV')
     ], string='Type')
     traceur_demo_realisee=fields.Boolean("Démo réalisée")
+    date_demo = fields.Date(string="Date de la démonstration")
+
+
 
     @api.onchange('traceur_sav_termine')
     def _onchange_traceur_sav_termine(self):
