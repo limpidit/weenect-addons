@@ -1,5 +1,5 @@
 
-from odoo import models, fields, api, _
+from odoo import models, Command, fields, api, _
 
 from dateutil import parser
 
@@ -111,7 +111,6 @@ class StockPicking(models.Model):
     def _create_shipments_from_salesupply(self, salesupply, shop, warehouse, salesupply_shipments):
         log_object = self.env['salesupply.log']
         lot_object = self.env['stock.lot']
-        move_line_object = self.env['stock.move.line']
         shop_product_object = self.env['salesupply.shop.product']
         
         for salesupply_json_shipment in salesupply_shipments[warehouse.id_salesupply]:
@@ -127,14 +126,6 @@ class StockPicking(models.Model):
                 continue
             
             try:
-                new_shipment = self.create({
-                    'origin': salesupply_json_shipment['OrderCode'],
-                    'salesupply_order_id': salesupply_json_shipment['OrderId'],
-                    'partner_id': shop.shippings_default_customer_id.id,
-                    'picking_type_id': warehouse.out_type_id.id,
-                    'salesupply_synchronized': True,
-                    'salesupply_code': shipment_code,
-                })
                 
                 detailled_rows = salesupply._get_shipment_rows(salesupply_json_shipment['OrderRows'], salesupply_json_shipment['OrderId'])
 
@@ -156,15 +147,23 @@ class StockPicking(models.Model):
                                 'product_id': product_id, 
                                 'is_default_salesupply_lot': True
                             })
-
-                    move_line_vals.append({
-                        'picking_id': new_shipment.id,
+                    
+                    move_line_vals.append(Command.create({
                         'product_id': product_id,
                         'lot_id': lot_id.id if lot_id else False,
                         'qty_done': row['ItemQuantity'],
-                    })
+                    }))
+
+                new_shipment = self.create({
+                    'origin': salesupply_json_shipment['OrderCode'],
+                    'salesupply_order_id': salesupply_json_shipment['OrderId'],
+                    'partner_id': shop.shippings_default_customer_id.id,
+                    'picking_type_id': warehouse.out_type_id.id,
+                    'salesupply_synchronized': True,
+                    'salesupply_code': shipment_code,
+                    'move_line_ids_without_package': move_line_vals,
+                })
                     
-                move_line_object.create(move_line_vals)
                 new_shipment.button_validate(date_done)
                 log_object.log_info(title=_(f"Successfully delivered {shipment_code} -> {new_shipment.name}"))
 
