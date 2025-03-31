@@ -15,3 +15,6 @@ edi
 weenect_salesupply/models/__pycache__/
 
 weenect_salesupply/wizard/__pycache__/
+
+weenect_crosslog/__pycache__/
+weenect_crosslog/models/__pycache__/
