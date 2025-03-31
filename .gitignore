@@ -18,3 +18,6 @@ weenect_salesupply/wizard/__pycache__/
 
 weenect_crosslog/__pycache__/
 weenect_crosslog/models/__pycache__/
+
+.DS_Store
+weenect_crosslog/DS_Store/
