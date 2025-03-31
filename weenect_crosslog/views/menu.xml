@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <menuitem
+        id="crosslog_menu_root"
+        name="Crosslog"
+        web_icon="weenect_crosslog,static/description/icon.png"
+        groups="stock.group_stock_manager,stock.group_stock_user">
+
+        <menuitem
+            id="crosslog_stock_menu"
+            name="Stock">
+
+            <menuitem
+                id="crosslog_products_menu"
+                name="Produits"
+                action="product.product_template_action_all"/>
+
+        </menuitem>
+
+    </menuitem>
+
+</odoo>
