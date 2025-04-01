@@ -12,6 +12,8 @@
         # Security 
         'security/ir.model.access.csv',
         # Views
+        'views/crosslog_connection.xml',
+        # Menus
         'views/menu.xml',
     ],
     "installable": True,

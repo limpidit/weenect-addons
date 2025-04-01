@@ -19,6 +19,17 @@
 
         </menuitem>
 
+        <menuitem
+            id="crosslog_configuration_menu"
+            name="Configuration">
+
+            <menuitem
+                id="crosslog_api_connection_menu"
+                name="Connexions API"
+                action="crosslog_connection_action"/>
+
+        </menuitem>
+
     </menuitem>
 
 </odoo>
