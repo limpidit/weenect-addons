@@ -28,6 +28,9 @@
                             <field name="username" />
                             <field name="password" password="True" />
                         </group>
+                        <group string="Warehouse">
+                            <field name="warehouse_id" />
+                        </group>
                     </group>
                 </sheet>
             </form>
