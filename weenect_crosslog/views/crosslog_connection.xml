@@ -28,9 +28,6 @@
                             <field name="username" />
                             <field name="password" password="True" />
                         </group>
-                        <group string="Environment">
-                            <field name="active" widget="boolean_toggle"/>
-                        </group>
                     </group>
                 </sheet>
             </form>

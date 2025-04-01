@@ -14,8 +14,8 @@
 
             <menuitem
                 id="crosslog_products_menu"
-                name="Produits"
-                action="product.product_template_action_all"/>
+                name="Products"
+                action="crosslog_product_template_action"/>
 
         </menuitem>
 
@@ -25,7 +25,7 @@
 
             <menuitem
                 id="crosslog_api_connection_menu"
-                name="Connexions API"
+                name="API Connections"
                 action="crosslog_connection_action"/>
 
         </menuitem>

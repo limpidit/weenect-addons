@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         # Views
         'views/crosslog_connection.xml',
+        'views/product_template.xml',
         # Menus
         'views/menu.xml',
     ],

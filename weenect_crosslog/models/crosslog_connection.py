@@ -14,4 +14,3 @@ class CrosslogConnection(models.Model):
     password = fields.Char(string="API password", required=True)
 
     warehouse_id = fields.Many2one(comodel_name='stock.warehouse', string="Warehouse")
-    active = fields.Boolean(string="Active ?", default=False)
