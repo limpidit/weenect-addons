@@ -255,9 +255,7 @@ class AccountMove(models.Model):
                 ("PIA", "5", [product.id, "SA", "", "91"]),
                 ("IMD", "A", "", libelle_segment),
                 ("QTY", ["47", line.quantity, "PCE"]),
-                ("MOA", ["203", line_price_subltotal]),
-                # TODO Alexandre : Der Positionsrabatt ist falsch übermittelt.
-                
+                ("MOA", ["203", line_price_subltotal]),                
             ])
 
             if line.discount:
@@ -265,16 +263,17 @@ class AccountMove(models.Model):
                 lines.extend([
                     ("MOA", ["131", - discount_amount])
                 ])
-                alc_pcd_moa_segment = {
+                alc_pcd_moa_segment = [
                     ("ALC", "A", "", "", "1", "DI"),
                     ("PCD", ["3", line.discount]),
                     ("MOA", ["131", discount_amount]),
-                }
+                ]
 
             lines.extend([
                 ("PRI", ["AAB", product_price_unit, "", "", "", "PCE"]),
-                alc_pcd_moa_segment,
             ])
+
+            lines.extend(alc_pcd_moa_segment if line.discount else [])
 
             lines.append(("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]))
         
