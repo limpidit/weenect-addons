@@ -112,7 +112,7 @@ class AccountMove(models.Model):
         partner_gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         partner_gln.ensure_one()
 
-        partner_names = [partner.name[i:i+35] for i in range(0, len(partner.name), 35)]
+        partner_names = [partner.display_name[i:i+35] for i in range(0, len(partner.display_name), 35)]
         
         return (
             "NAD",
@@ -147,7 +147,7 @@ class AccountMove(models.Model):
 
         return [
             ("PAT", "3"),
-            ("DTM", ["209", self.invoice_date.strftime("%Y%m%d"), "102"]),
+            ("DTM", ["209", self.invoice_date_due.strftime("%Y%m%d"), "102"]),
         ]
         
     def _edifact_invoice_get_header(self):
@@ -256,16 +256,25 @@ class AccountMove(models.Model):
                 ("IMD", "A", "", libelle_segment),
                 ("QTY", ["47", line.quantity, "PCE"]),
                 ("MOA", ["203", line_price_subltotal]),
-                ("PRI", ["AAB", product_price_unit, "", "", "", "PCE"]),
+                # TODO Alexandre : Der Positionsrabatt ist falsch übermittelt.
+                
             ])
 
             if line.discount:
                 discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
                 lines.extend([
+                    ("MOA", ["131", - discount_amount])
+                ])
+                alc_pcd_moa_segment = {
                     ("ALC", "A", "", "", "1", "DI"),
                     ("PCD", ["3", line.discount]),
                     ("MOA", ["131", discount_amount]),
-                ])
+                }
+
+            lines.extend([
+                ("PRI", ["AAB", product_price_unit, "", "", "", "PCE"]),
+                alc_pcd_moa_segment,
+            ])
 
             lines.append(("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]))
         
