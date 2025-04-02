@@ -29,7 +29,7 @@ class AccountMove(models.Model):
         if self.edifact_attachment_id:
             self.edifact_attachment_id.unlink()
         
-        edifact_content = base64.b64encode(data.encode('utf-8'))   
+        edifact_content = base64.b64encode(data.encode('utf-8'))
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",
             'type': 'binary',
@@ -128,23 +128,6 @@ class AccountMove(models.Model):
         )
         
     def _get_payment_terms_segment_block(self):
-        # term_lines = None
-        # discount_percentage, discount_days, payment_term_days = 0, 0, 0
-        # if self.invoice_payment_term_id:
-        #     term_lines = self.invoice_payment_term_id.line_ids
-        #     discount_percentage, discount_days, payment_term_days = (
-        #         term_lines.discount_percentage,
-        #         term_lines.discount_days if len(term_lines) == 1 else 0,
-        #         term_lines.days
-        #     )
-        # if term_lines:
-        #     return [
-        #         ("CUX", ["2", "EUR", "4"]),
-        #         ("PAT", "7", "", ["5", "3", "D", payment_term_days]),
-        #         ("PAT", "22", "", ["5", "3", "D", discount_days]),
-        #         ("PCD", "12", discount_percentage),
-        #     ]
-
         return [
             ("PAT", "3"),
             ("DTM", ["209", self.invoice_date_due.strftime("%Y%m%d"), "102"]),
@@ -172,27 +155,6 @@ class AccountMove(models.Model):
             ("FTX", "ZZZ", "", "", "Zentralregulierung über SAGAFLOR AG"),
             ("FTX", "ZZZ", "", "", "Mehrwertsteuerbefreiung, art. 262 ter-l französisches Steuergesetzbuch"),
         ]
-        
-        # TODO LIMPIDIT : Voir avec Fitzner concnernaut pour les inforamtions suivantes
-        
-        # if self.tracking_numbers:
-        #     header.append(("FTX", "ZZZ", "", "", self.tracking_numbers))
-            
-        # if self.payment_reference:
-        #     payment_ref_text = "Bitte benutzen Sie den folgenden Verwendungszweck für Ihre Zahlung: %s" % self.payment_reference
-        #     header.append(("FTX", "ZZZ", "", "", payment_ref_text))
-        
-        # if self.invoice_payment_term_id.note:
-        #     clean_text = re.sub(r'<.*?>', '', self.invoice_payment_term_id.note)
-        #     header.append(("FTX", "ZZZ", "", "", clean_text))
-            
-        # if self.narration:
-        #     clean_text = re.sub(r'<.*?>', '', self.narration)
-        #     header.append(("FTX", "ZZZ", "", "", clean_text))
-        
-        # if self.fiscal_position_id:
-        #     clean_text = re.sub(r'<.*?>', '', self.fiscal_position_id.note)
-        #     header.append(("FTX", "ZZZ", "", "", clean_text))
             
         header.extend([
             ("RFF", ["ON", source_order.name]),
