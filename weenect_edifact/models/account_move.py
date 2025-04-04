@@ -228,7 +228,7 @@ class AccountMove(models.Model):
                 alc_pcd_moa_segment = [
                     ("ALC", "A", "", "", "1", "DI"),
                     ("PCD", ["3", line.discount]),
-                    ("MOA", ["131", discount_amount]),
+                    ("MOA", ["8", discount_amount]),
                 ]
 
             lines.extend([
