@@ -14,6 +14,8 @@
         # Views
         'views/crosslog_connection.xml',
         'views/product_template.xml',
+        # Wizard
+        'wizard/crosslog_product_synchronization.xml',
         # Menus
         'views/menu.xml',
     ],

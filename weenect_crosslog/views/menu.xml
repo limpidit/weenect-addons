@@ -1,34 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-
     <menuitem
         id="crosslog_menu_root"
         name="Crosslog"
         web_icon="weenect_crosslog,static/description/icon.png"
-        groups="stock.group_stock_manager,stock.group_stock_user">
+        groups="stock.group_stock_manager,stock.group_stock_user"/>
+
+    <menuitem
+        id="crosslog_stock_menu"
+        name="Stock"
+        sequence="10"
+        parent="crosslog_menu_root">
 
         <menuitem
-            id="crosslog_stock_menu"
-            name="Stock">
+            id="crosslog_products_menu"
+            name="Products"
+            action="crosslog_product_template_action"/>
 
-            <menuitem
-                id="crosslog_products_menu"
-                name="Products"
-                action="crosslog_product_template_action"/>
+    </menuitem>
 
-        </menuitem>
+    <menuitem
+        id="crosslog_operations_menu"
+        name="Operations"
+        sequence="20"
+        parent="crosslog_menu_root"
+        groups="stock.group_stock_manager">
+
+        <menuitem 
+            id="crosslog_get_products_menu" 
+            name="Synchronize products from Crosslog"
+            action="crosslog_product_synchronization_action"
+            sequence="10"/>
+    
+    </menuitem>
+
+    <menuitem
+        id="crosslog_configuration_menu"
+        name="Configuration"
+        sequence="90"
+        parent="crosslog_menu_root">
 
         <menuitem
-            id="crosslog_configuration_menu"
-            name="Configuration">
-
-            <menuitem
-                id="crosslog_api_connection_menu"
-                name="API Connections"
-                action="crosslog_connection_action"/>
-
-        </menuitem>
+            id="crosslog_api_connection_menu"
+            name="API Connections"
+            action="crosslog_connection_action"/>
 
     </menuitem>
 
