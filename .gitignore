@@ -21,3 +21,4 @@ weenect_crosslog/models/__pycache__/
 
 .DS_Store
 weenect_crosslog/DS_Store/
+weenect_crosslog/wizard/__pycache__/

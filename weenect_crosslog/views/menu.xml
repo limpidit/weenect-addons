@@ -24,7 +24,14 @@
         id="crosslog_operations_menu"
         name="Operations"
         sequence="20"
-        parent="crosslog_menu_root">
+        parent="crosslog_menu_root"
+        groups="stock.group_stock_manager">
+
+        <menuitem 
+            id="crosslog_get_products_menu" 
+            name="Synchronize products from Crosslog"
+            action="crosslog_product_synchronization_action"
+            sequence="10"/>
     
     </menuitem>
 

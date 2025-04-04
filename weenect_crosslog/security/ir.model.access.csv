@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_crosslog_connection_manager,access.crosslog.connection.manager,model_crosslog_connection,stock.group_stock_manager,1,1,1,1
 access_crosslog_connection_user,access.crosslog.connection.user,model_crosslog_connection,stock.group_stock_user,0,0,0,0
+access_crosslog_product_synchronization,access.crosslog.product.synchronization,model_crosslog_product_synchronization,stock.group_stock_manager,1,1,1,1
