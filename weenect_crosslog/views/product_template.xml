@@ -5,7 +5,7 @@
         <field name="name">Crosslog Products Action</field>
         <field name="model_id" ref="product.model_product_template"/>
         <field name="state">code</field>
-        <field name="code">action = model.action_open_products()</field>
+        <field name="code">action = model.action_open_crosslog_products()</field>
     </record>
 
     <record id="crosslog_product_template_action" model="ir.actions.act_window">

@@ -16,9 +16,8 @@ class ProductTemplate(models.Model):
         return res
 
     @api.model
-    def action_open_products(self):
+    def action_open_crosslog_products(self):
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
-        print(warehouses)
         return {
             'type': 'ir.actions.act_window',
             'name': 'Products available on Crosslog',
@@ -26,7 +25,7 @@ class ProductTemplate(models.Model):
             'view_mode': 'tree,form',
             'domain': [('available_on_crosslog', '=', True)],
             'context': {
-                'salesupply': True,
+                'crosslog': True,
                 'warehouse': warehouses.ids,
                 'search_default_consumable': 1,
                 'default_detailed_type': 'product',
