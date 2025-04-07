@@ -1,5 +1,5 @@
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 import requests
 from xml.etree import ElementTree as ET
@@ -25,11 +25,10 @@ class CrosslogConnection(models.Model):
     def _prepare_soap_request(self, method_name, params=None):
         """Prepare the SOAP request for the given method and parameters."""
 
-        match method_name:
-            case 'ExistProduct':
-                soap_body = self._prepare_exist_product_request(params['product_code'])
-            case 'GetProductInformation':
-                soap_body = self._prepare_get_product_information_request(params['product_code'])
+        if method_name == 'ExistProduct':
+            soap_body = self._prepare_exist_product_request(params['product_code'])
+        elif method_name == 'GetProductInformation':
+            soap_body = self._prepare_get_product_information_request(params['product_code'])
 
         soap_request = f"""<?xml version="1.0" encoding="UTF-8"?>
         <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:mob="http://mobile.crossdesk.com/">
@@ -45,12 +44,14 @@ class CrosslogConnection(models.Model):
         </soap:Envelope>"""
         return soap_request
 
+    @api.model
     def _prepare_exist_product_request(self, product_code):
         """Prepare the request for the ExistProduct method."""
         return f"""<mob:ExistProduct>
             <mob:productCode>{product_code}</mob:productCode>
         </mob:ExistProduct>"""
 
+    @api.model
     def _prepare_get_product_information_request(self, product_code):
         """Prepare the request for the GetProductInformation method."""
         return f"""<mob:GetProductInformation>
@@ -72,26 +73,26 @@ class CrosslogConnection(models.Model):
             _logger.error(f"SOAP request failed: {str(e)}")
             raise UserError(_("Failed to connect to Crosslog API"))
 
+    @api.model
     def _parse_soap_response(self, response_text, method_name):
         try:
             root = ET.fromstring(response_text)
             ns = {'ns': 'http://mobile.crossdesk.com/'}
             
-            match method_name:
-                case 'ExistProduct':
-                    result = root.find('.//ns:ExistProductResult', ns)
-                    return result.text.lower() == 'true'
-                case 'GetProductInformation':
-                    result = root.find('.//ns:GetProductInformationResult', ns)
-                    return {
-                        'code': result.find('ns:Code', ns).text,
-                        'barcode': result.find('ns:BarCode', ns).text,
-                        'available_qty': float(result.find('ns:AvailableQuantity', ns).text),
-                        'reserved_qty': float(result.find('ns:ReservedQuantity', ns).text),
-                        'receipt_qty': float(result.find('ns:ReceiptQuantity', ns).text),
-                        'rubbish_qty': float(result.find('ns:RubbishQuantity', ns).text),
-                        'security_qty': float(result.find('ns:SecurityQuantity', ns).text),
-                    }
+            if method_name == 'ExistProduct':
+                result = root.find('.//ns:ExistProductResult', ns)
+                return result.text.lower() == 'true'
+            elif method_name == 'GetProductInformation':
+                result = root.find('.//ns:GetProductInformationResult', ns)
+                return {
+                    'code': result.find('ns:Code', ns).text,
+                    'barcode': result.find('ns:BarCode', ns).text,
+                    'available_qty': float(result.find('ns:AvailableQuantity', ns).text),
+                    'reserved_qty': float(result.find('ns:ReservedQuantity', ns).text),
+                    'receipt_qty': float(result.find('ns:ReceiptQuantity', ns).text),
+                    'rubbish_qty': float(result.find('ns:RubbishQuantity', ns).text),
+                    'security_qty': float(result.find('ns:SecurityQuantity', ns).text),
+                }
                 
         except ET.ParseError as e:
             _logger.error(f"Failed to parse SOAP response: {str(e)}")

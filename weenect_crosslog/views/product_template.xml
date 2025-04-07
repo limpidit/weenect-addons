@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="crosslog_product_template_action_server" model="ir.actions.server">
+        <field name="name">Crosslog Products Action</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_products()</field>
+    </record>
+
     <record id="crosslog_product_template_action" model="ir.actions.act_window">
         <field name="name">Products</field>
         <field name="res_model">product.template</field>

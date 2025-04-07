@@ -16,7 +16,7 @@
         <menuitem
             id="crosslog_products_menu"
             name="Products"
-            action="crosslog_product_template_action"/>
+            action="crosslog_product_template_action_server"/>
 
     </menuitem>
 
