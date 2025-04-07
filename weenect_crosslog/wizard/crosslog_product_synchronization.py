@@ -29,7 +29,7 @@ class CrosslogProductSynchronization(models.TransientModel):
         existing_quants = quant_object
         quant_vals = []
 
-        for product in product_object:
+        for product in product_object.search([]):
             if self.api_connection_id.process_exist_item_request(product.default_code):
                 product.available_on_crosslog = True
                 # TODO : Gérer le cas des produits suivi par lot
