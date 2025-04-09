@@ -12,10 +12,13 @@
         # Security 
         'security/ir.model.access.csv',
         # Views
+        'views/crosslog_order_state.xml',
         'views/crosslog_connection.xml',
         'views/product_template.xml',
         # Wizard
         'wizard/crosslog_product_synchronization.xml',
+        #Data
+        'data/crosslog_order_state.xml',
         # Menus
         'views/menu.xml',
     ],
