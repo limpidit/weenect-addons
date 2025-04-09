@@ -7,6 +7,8 @@ import logging
 import base64
 import re
 
+from edifact_invoic_d01b import EdifactInvoicD01b
+
 _logger = logging.getLogger(__name__)
 
 
@@ -19,27 +21,29 @@ class AccountMove(models.Model):
         self.ensure_one()
         
         try:
-            data = self.edifact_invoice_generate_data()
+            if self.partner_id.export_format == 'd01b':
+                generator = EdifactInvoicD01b(self)
+                data = generator.generate()
+                attachment = self.env['ir.attachment'].create(generator.to_attachment())
+            elif self.partner_id.export_format == 'd96a':
+                data = self.edifact_invoice_generate_data()
+                edifact_content = base64.b64encode(data.encode('utf-8'))
+                attachment = self.env['ir.attachment'].create({
+                    'name': f"Invoice {self.name}.txt",
+                    'type': 'binary',
+                    'datas': edifact_content,
+                    'res_model': 'account.move',
+                    'res_id': self.id,
+                    'mimetype': 'text/plain'
+                })
         except Exception as e:
             raise UserError(_("Error while generating EDIFACT: %s" % e))
         
         _logger.info(f"Generated edifact invoice for move {self.name}")
         _logger.info(data)
         
-        if self.edifact_attachment_id:
-            self.edifact_attachment_id.unlink()
-        
-        edifact_content = base64.b64encode(data.encode('utf-8'))
-        attachment = self.env['ir.attachment'].create({
-            'name': f"Invoice {self.name}.txt",
-            'type': 'binary',
-            'datas': edifact_content,
-            'res_model': 'account.move',
-            'res_id': self.id,
-            'mimetype': 'text/plain'
-        })
-        
-        self.edifact_attachment_id = attachment.id
+        if attachment:
+            self.edifact_attachment_id = attachment.id
         
         return {
             'type': 'ir.actions.act_url',
@@ -127,11 +131,12 @@ class AccountMove(models.Model):
             partner.country_id.code
         )
         
-    def _get_payment_terms_segment_block(self):
-        return [
-            ("PAT", "3"),
-            ("DTM", ["209", self.invoice_date_due.strftime("%Y%m%d"), "102"]),
-        ]
+    # I M'a gonflé l'autre
+    # def _get_payment_terms_segment_block(self):
+    #     return [
+    #         ("PAT", "3"),
+    #         ("DTM", ["209", self.invoice_date_due.strftime("%Y%m%d"), "102"]),
+    #     ]
         
     def _edifact_invoice_get_header(self):
         source_order = self.line_ids.sale_line_ids.order_id
