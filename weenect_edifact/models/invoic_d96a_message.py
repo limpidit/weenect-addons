@@ -103,7 +103,7 @@ class InvoicD96AMessage(Message):
                 self.add_segment(Segment("PCD", ["3", f"{line.discount:.2f}"]))
                 self.add_segment(Segment("MOA", ["8", f"{discount_amount:.2f}"]))
 
-            self.add_segment(Segment(("TAX", "7", "VAT", "", "", ["", "", "", f"{round(product_tax, 2):.2f}"])))
+            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", f"{round(product_tax, 2):.2f}"]))
 
         # Summary
         self.add_segment(Segment("UNS", "S"))
