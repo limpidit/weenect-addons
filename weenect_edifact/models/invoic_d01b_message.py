@@ -17,7 +17,8 @@ class InvoicD01BMessage(Message):
         delivery_date = self._get_delivery_date()
 
         company_gln = self._get_gln(self.invoice.company_id.partner_id)
-        delivery_gln = self._get_gln(self.invoice.partner_id)
+        delivery = self.invoice.partner_id.parent_id or self.invoice.partner_id
+        delivery_gln = self._get_gln(delivery)
 
         self.add_segment(self.get_header_segment())
 
@@ -32,28 +33,44 @@ class InvoicD01BMessage(Message):
         if delivery_date:
             self.add_segment(Segment("DTM", ["171", delivery_date.strftime("%Y%m%d"), "102"]))
 
-        self.add_segment(Segment("NAD", ["SU", company_gln]))
-        self.add_segment(Segment("NAD", ["BY", "4333671000007"])) # Tout le temps le même GLN pour le client Futterhaus
-        self.add_segment(Segment("NAD", ["DP", delivery_gln]))
+        self.add_segment(Segment("NAD", "SU", company_gln))
+        self.add_segment(Segment("NAD", "BY", "4333671000007")) # Tout le temps le même GLN pour le client Futterhaus
+        self.add_segment(Segment("NAD", "DP", delivery_gln))
+
+        self.add_segment(Segment("RFF", ["VA", delivery.vat]))
 
         if date_due:
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
 
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
-            self.add_segment(Segment("LIN", [str(idx), "", line.product_id.barcode or "", "EN"]))
-            self.add_segment(Segment("IMD", ["A", "", "", line.name[:70]]))
+            self.add_segment(Segment("LIN", [str(idx), "", line.product_id.ean_weenect or "", "EN"]))
+            self.add_segment(Segment("IMD", "A", "", ["", "", line.name[:70]]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
             self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
             self.add_segment(Segment("TAX", ["7", "VAT"]))
 
         self.add_segment(Segment("UNS", ["S"]))
-        self.add_segment(Segment("MOA", ["77", f"{round(self.invoice.amount_total, 2):.2f}"]))
-        self.add_segment(Segment("MOA", ["79", f"{round(self.invoice.amount_untaxed, 2):.2f}"]))
 
+        # Résumé global
+        total = round(self.invoice.amount_total, 2)
+        untaxed = round(self.invoice.amount_untaxed, 2)
+        tax = round(self.invoice.amount_tax, 2)
+
+        self.add_segment(Segment("MOA", ["77", f"{total:.2f}"]))     # Total TTC
+        self.add_segment(Segment("MOA", ["79", f"{untaxed:.2f}"]))   # Total HT
+        self.add_segment(Segment("MOA", ["125", f"{untaxed:.2f}"]))  # Base imposable
+        self.add_segment(Segment("MOA", ["124", f"{tax:.2f}"]))      # Montant TVA
+
+        # Détail par taux de taxe
         taxes = self._get_taxes_by_rate()
         for rate, base in taxes.items():
-            self.add_segment(Segment("MOA", ["125", f"{round(base, 2):.2f}"]))
-            self.add_segment(Segment("MOA", ["124", f"{round(base * rate / 100, 2):.2f}"]))
+            rate_int = int(rate)  # arrondi pour correspondre au format ':::<taux>+E'
+            tax_amount = round(base * rate / 100, 2)
+
+            self.add_segment(Segment("TAX", ["7", "VAT", "", "", "", "", "", str(rate_int), "E"]))
+            self.add_segment(Segment("MOA", ["79", f"{base:.2f}"]))        # Montant HT pour ce taux
+            self.add_segment(Segment("MOA", ["125", f"{base:.2f}"]))       # Base imposable pour ce taux
+            self.add_segment(Segment("MOA", ["124", f"{tax_amount:.2f}"])) # TVA pour ce taux
 
         self.add_segment(self.get_footer_segment())
 
