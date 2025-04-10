@@ -112,7 +112,7 @@ class InvoicD96AMessage(Message):
         self.add_segment(Segment("MOA", ["79", f"{self.invoice.amount_untaxed:.2f}"]))   # Total HT
         
         for product_tax, price_total in taxes.items():
-            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", f"{product_tax:.2f}"])]))
+            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", f"{product_tax:.2f}"]))
             self.add_segment(Segment("MOA", ["125", f"{price_total:.2f}"]))
             self.add_segment(Segment("MOA", ["124", f"{(price_total * product_tax / 100):.2f}"]))
 
