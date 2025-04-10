@@ -118,7 +118,6 @@ class InvoicD96AMessage(Message):
 
         self.add_segment(self.get_footer_segment())
 
-
     def _get_picking(self):
         source_order = self.invoice.line_ids.sale_line_ids.order_id
         if not source_order:

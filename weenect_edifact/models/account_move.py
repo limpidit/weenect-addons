@@ -27,7 +27,8 @@ class AccountMove(models.Model):
             message = InvoicD96AMessage(self)
             interchange.add_message(message)
 
-        print(interchange.get_messages())
+        for segment in message.segments:
+            _logger.debug(f"Segment: {segment.tag} - {segment.elements}")
 
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",
