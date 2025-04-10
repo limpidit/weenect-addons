@@ -29,7 +29,7 @@ class InvoicD96AMessage(Message):
 
         source_order = self.invoice.line_ids.sale_line_ids.order_id
         if source_order:
-            self.add_segment(Segment("RFF", "ON", source_order.name))
+            self.add_segment(Segment("RFF", ["ON", source_order.name]))
             self.add_segment(Segment("DTM", ["171", source_order.date_order.date().strftime("%Y%m%d"), "102"]))
 
         if picking:
@@ -67,63 +67,60 @@ class InvoicD96AMessage(Message):
         self.add_segment(Segment("CUX", ["2", "EUR", "4"]))
 
         # Lines
-        taxes = {}        
+        taxes = {}
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
             product = line.product_id
 
-            line_pdf_description = line.product_id.client_friendly_name + " " + line.name
-
-            libelle_part1 = line_pdf_description[:35]  # Premier segment (max 35 caractères)
-            libelle_part2 = line_pdf_description[35:70] if len(line_pdf_description) > 35 else ""  # Deuxième segment (max 35 caractères)
+            line_pdf_description = (product.client_friendly_name or "") + " " + (line.name or "")
+            libelle_part1 = line_pdf_description[:35]
+            libelle_part2 = line_pdf_description[35:70] if len(line_pdf_description) > 35 else ""
             libelle_segment = ["", "", "", libelle_part1]
             if libelle_part2:
                 libelle_segment.append(libelle_part2)
 
             product_price_unit = round(line.price_unit, 2)
-            line_price_subltotal = round(line.price_subtotal, 2)
-            
+            line_price_subtotal = round(line.price_subtotal, 2)
+
             product_tax = 0
             if line.tax_ids and line.tax_ids.amount_type == "percent":
-                product_tax = line.tax_ids.amount
-                if product_tax not in taxes:
-                    taxes[product_tax] = line_price_subltotal
-                else:
-                    taxes[product_tax] += line_price_subltotal
+                product_tax = line.tax_ids[0].amount
+                taxes[product_tax] = taxes.get(product_tax, 0.0) + line_price_subtotal
 
             self.add_segment(Segment("LIN", str(idx), "", [product.ean_weenect, "EN"]))
-            self.add_segment(Segment("PIA", "5", [product.id, "SA", "", "91"]))
+            self.add_segment(Segment("PIA", "5", [str(product.id), "SA", "", "91"]))
             self.add_segment(Segment("IMD", "A", "", libelle_segment))
-            self.add_segment(Segment("QTY", ["47", line.quantity, "PCE"]))
-            self.add_segment(Segment("MOA", ["203", line_price_subltotal]))
+            self.add_segment(Segment("QTY", ["47", str(line.quantity), "PCE"]))
+            self.add_segment(Segment("MOA", ["203", line_price_subtotal]))
 
             if line.discount:
                 discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
-                self.add_segment(Segment("MOA", ["131", - discount_amount]))
+                self.add_segment(Segment("MOA", ["131", f"-{discount_amount:.2f}"]))
                 alc_pcd_moa_segment = [
                     ("ALC", "A", "", "", "1", "DI"),
-                    ("PCD", ["3", line.discount]),
-                    ("MOA", ["8", discount_amount]),
+                    ("PCD", ["3", f"{line.discount:.2f}"]),
+                    ("MOA", ["8", f"{discount_amount:.2f}"]),
                 ]
 
-            self.add_segment(Segment("PRI", ["AAB", product_price_unit, "", "", "", "PCE"]))
+            self.add_segment(Segment("PRI", ["AAB", f"{product_price_unit:.2f}", "", "", "", "PCE"]))
 
             if line.discount:
                 self.add_segment(Segment(*alc_pcd_moa_segment))
 
-            self.add_segment(Segment(("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)])))
+            self.add_segment(Segment(("TAX", "7", "VAT", "", "", ["", "", "", f"{round(product_tax, 2):.2f}"])))
 
         # Summary
         self.add_segment(Segment("UNS", "S"))
 
-        self.add_segment(Segment("MOA", ["77", round(self.invoice.amount_total, 2)]))     # Total TTC
-        self.add_segment(Segment("MOA", ["79", round(self.invoice.amount_untaxed, 2)]))   # Total HT
+        self.add_segment(Segment("MOA", ["77", f"{round(self.invoice.amount_total, 2):.2f}"]))     # Total TTC
+        self.add_segment(Segment("MOA", ["79", f"{round(self.invoice.amount_untaxed, 2):.2f}"]))   # Total HT
         
         for product_tax, price_total in taxes.items():
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]))
-            self.add_segment(Segment("MOA", ["125", round(price_total, 2)]))
-            self.add_segment(Segment("MOA", ["124", round(price_total * product_tax / 100, 2)]))
+            self.add_segment(Segment("MOA", ["125", f"{round(price_total, 2):.2f}"]))
+            self.add_segment(Segment("MOA", ["124", f"{round(price_total * product_tax / 100, 2):.2f}"]))
 
         self.add_segment(self.get_footer_segment())
+
 
     def _get_picking(self):
         source_order = self.invoice.line_ids.sale_line_ids.order_id
