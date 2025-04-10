@@ -95,16 +95,13 @@ class InvoicD96AMessage(Message):
             if line.discount:
                 discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
                 self.add_segment(Segment("MOA", ["131", f"-{discount_amount:.2f}"]))
-                alc_pcd_moa_segment = [
-                    ("ALC", "A", "", "", "1", "DI"),
-                    ("PCD", ["3", f"{line.discount:.2f}"]),
-                    ("MOA", ["8", f"{discount_amount:.2f}"]),
-                ]
 
             self.add_segment(Segment("PRI", ["AAB", f"{product_price_unit:.2f}", "", "", "", "PCE"]))
 
             if line.discount:
-                self.add_segment(Segment(*alc_pcd_moa_segment))
+                self.add_segment(Segment("ALC", "A", "", "", "1", "DI"))
+                self.add_segment(Segment("PCD", ["3", f"{line.discount:.2f}"]))
+                self.add_segment(Segment("MOA", ["8", f"{discount_amount:.2f}"]))
 
             self.add_segment(Segment(("TAX", "7", "VAT", "", "", ["", "", "", f"{round(product_tax, 2):.2f}"])))
 
