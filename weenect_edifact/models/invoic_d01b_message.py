@@ -67,7 +67,7 @@ class InvoicD01BMessage(Message):
             rate_int = int(rate)  # arrondi pour correspondre au format ':::<taux>+E'
             tax_amount = round(base * rate / 100, 2)
 
-            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", str(rate_int)], "E"))
+            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(rate_int)], "E"))
             self.add_segment(Segment("MOA", ["79", f"{base:.2f}"]))        # Montant HT pour ce taux
             self.add_segment(Segment("MOA", ["125", f"{base:.2f}"]))       # Base imposable pour ce taux
             self.add_segment(Segment("MOA", ["124", f"{tax_amount:.2f}"])) # TVA pour ce taux
