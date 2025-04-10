@@ -14,29 +14,24 @@ class AccountMove(models.Model):
         
     def generate_edifact_attachment(self):
         self.ensure_one()
-        
-        try:
-            interchange = self._edifact_invoice_get_interchange()
+        interchange = self._edifact_invoice_get_interchange()
 
-            if self.partner_id.export_format == 'd01b':
-                message = InvoicD01BMessage(self)
-                interchange.add_message(message)
+        if self.partner_id.export_format == 'd01b':
+            message = InvoicD01BMessage(self)
+            interchange.add_message(message)
 
-            if self.partner_id.export_format == 'd96a':
-                message = InvoicD96AMessage(self)
-                interchange.add_message(message)
+        if self.partner_id.export_format == 'd96a':
+            message = InvoicD96AMessage(self)
+            interchange.add_message(message)
 
-            attachment = self.env['ir.attachment'].create({
-                'name': f"Invoice {self.name}.txt",
-                'type': 'binary',
-                'datas': base64.b64encode(interchange.serialize().encode('utf-8')),
-                'res_model': 'account.move',
-                'res_id': self.id,
-                'mimetype': 'application/edi'
-            })
-
-        except Exception as e:
-            raise UserError(_("Error while generating EDIFACT: %s" % e))
+        attachment = self.env['ir.attachment'].create({
+            'name': f"Invoice {self.name}.txt",
+            'type': 'binary',
+            'datas': base64.b64encode(interchange.serialize().encode('utf-8')),
+            'res_model': 'account.move',
+            'res_id': self.id,
+            'mimetype': 'application/edi'
+        })
         
         if attachment:
             self.edifact_attachment_id = attachment.id
