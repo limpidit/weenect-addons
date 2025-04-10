@@ -2,6 +2,9 @@
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 
+from logging import getLogger
+_logger = getLogger(__name__)
+
 import base64
 
 from .invoic_d01b_message import InvoicD01BMessage
@@ -23,6 +26,8 @@ class AccountMove(models.Model):
         if self.partner_id.export_format == 'd96a':
             message = InvoicD96AMessage(self)
             interchange.add_message(message)
+
+        print(interchange.get_messages())
 
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",
