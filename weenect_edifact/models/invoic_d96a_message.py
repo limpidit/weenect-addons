@@ -108,13 +108,13 @@ class InvoicD96AMessage(Message):
         # Summary
         self.add_segment(Segment("UNS", "S"))
 
-        self.add_segment(Segment("MOA", ["77", f"{round(self.invoice.amount_total, 2):.2f}"]))     # Total TTC
-        self.add_segment(Segment("MOA", ["79", f"{round(self.invoice.amount_untaxed, 2):.2f}"]))   # Total HT
+        self.add_segment(Segment("MOA", ["77", f"{self.invoice.amount_total:.2f}"]))     # Total TTC
+        self.add_segment(Segment("MOA", ["79", f"{self.invoice.amount_untaxed:.2f}"]))   # Total HT
         
         for product_tax, price_total in taxes.items():
-            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", round(product_tax, 2)]))
-            self.add_segment(Segment("MOA", ["125", f"{round(price_total, 2):.2f}"]))
-            self.add_segment(Segment("MOA", ["124", f"{round(price_total * product_tax / 100, 2):.2f}"]))
+            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", f"{product_tax:.2f}"])]))
+            self.add_segment(Segment("MOA", ["125", f"{price_total:.2f}"]))
+            self.add_segment(Segment("MOA", ["124", f"{(price_total * product_tax / 100):.2f}"]))
 
         self.add_segment(self.get_footer_segment())
 
