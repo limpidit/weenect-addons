@@ -90,7 +90,7 @@ class InvoicD96AMessage(Message):
             self.add_segment(Segment("PIA", "5", [str(product.id), "SA", "", "91"]))
             self.add_segment(Segment("IMD", "A", "", libelle_segment))
             self.add_segment(Segment("QTY", ["47", str(line.quantity), "PCE"]))
-            self.add_segment(Segment("MOA", ["203", line_price_subtotal]))
+            self.add_segment(Segment("MOA", ["203", f"{line_price_subtotal:.2f}"]))
 
             if line.discount:
                 discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
