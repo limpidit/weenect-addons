@@ -10,9 +10,6 @@
                 <!-- <button string="Generate edifact Futterhaus" name="generate_futterhaus_edifact_attachment" type="object" class="oe_highlight"/> -->
                 <button string="Generate edifact Sagaflor" name="generate_edifact_attachment" type="object" class="oe_highlight"/>
             </field>
-            <field name="to_check" position="after">
-                <field name="note"/>
-            </field>
         </field>
     </record>
 

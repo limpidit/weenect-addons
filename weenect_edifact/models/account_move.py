@@ -2,15 +2,9 @@
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 
-from datetime import datetime
-import logging
 import base64
-import re
 
-from edifact_invoic_d01b import EdifactInvoicD01b
-
-_logger = logging.getLogger(__name__)
-
+from .invoic_d01b_message import InvoicD01BMessage
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -21,26 +15,33 @@ class AccountMove(models.Model):
         self.ensure_one()
         
         try:
+            interchange = self._edifact_invoice_get_interchange()
+
             if self.partner_id.export_format == 'd01b':
-                generator = EdifactInvoicD01b(self)
-                data = generator.generate()
-                attachment = self.env['ir.attachment'].create(generator.to_attachment())
-            elif self.partner_id.export_format == 'd96a':
-                data = self.edifact_invoice_generate_data()
-                edifact_content = base64.b64encode(data.encode('utf-8'))
-                attachment = self.env['ir.attachment'].create({
-                    'name': f"Invoice {self.name}.txt",
-                    'type': 'binary',
-                    'datas': edifact_content,
-                    'res_model': 'account.move',
-                    'res_id': self.id,
-                    'mimetype': 'text/plain'
-                })
+                message = InvoicD01BMessage(self)
+                interchange.add_message(message)
+            # elif self.partner_id.export_format == 'd96a':
+            #     data = self.edifact_invoice_generate_data()
+            #     edifact_content = base64.b64encode(data.encode('utf-8'))
+            #     attachment = self.env['ir.attachment'].create({
+            #         'name': f"Invoice {self.name}.txt",
+            #         'type': 'binary',
+            #         'datas': edifact_content,
+            #         'res_model': 'account.move',
+            #         'res_id': self.id,
+            #         'mimetype': 'text/plain'
+            #     })
+
+            attachment = self.env['ir.attachment'].create({
+                'name': f"Invoice {self.name}.txt",
+                'type': 'binary',
+                'datas': base64.b64encode(interchange.serialize().encode('utf-8')),
+                'res_model': 'account.move',
+                'res_id': self.id,
+                'mimetype': 'application/edi'
+            })
         except Exception as e:
             raise UserError(_("Error while generating EDIFACT: %s" % e))
-        
-        _logger.info(f"Generated edifact invoice for move {self.name}")
-        _logger.info(data)
         
         if attachment:
             self.edifact_attachment_id = attachment.id
