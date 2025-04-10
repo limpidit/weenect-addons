@@ -43,7 +43,7 @@ class InvoicD96AMessage(Message):
             raise ValueError("Company GLN not found")
         company_names = [company.display_name[i:i+35] for i in range(0, len(company.display_name), 35)]
         self.add_segment(Segment("NAD", "SU", [company_gln, "", "9"], "", company_names, company.street, company.city, "", company.zip, company.country_id.code))
-        self.add_segment(Segment("RFF", ["VA", self.company_id.vat]))
+        self.add_segment(Segment("RFF", ["VA", self.invoice.company_id.vat]))
 
         # Buyer
         buyer = self.invoice.partner_id
