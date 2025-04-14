@@ -1,0 +1,42 @@
+<odoo>
+    <record id="view_partner_form_inherit_visite" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.visite</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Visites">
+                    <field name="visite_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="date_visite"/>
+                            <field name="user_id"/>
+                        </tree>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="action_generate_visites_from_partner" model="ir.actions.server">
+        <field name="name">Générer Visites</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_generate_visites()
+        </field>
+    </record>
+
+    <record id="action_geo_localize_partners" model="ir.actions.server">
+        <field name="name">Géolocaliser les clients</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">
+            records.action_geo_localize()
+        </field>
+    </record>
+
+
+</odoo>

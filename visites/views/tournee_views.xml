@@ -1,0 +1,67 @@
+<odoo>
+    <record id="view_tournee_form" model="ir.ui.view">
+        <field name="name">tournee.form</field>
+        <field name="model">visite.tournee</field>
+        <field name="arch" type="xml">
+            <form string="Tournée">
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable':1}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="user_id"/>
+                    </group>
+                    <group>
+                        <field name="date_debut_tournee"/>
+                        <field name="date_fin_tournee"/>
+                    </group>
+                    <group>
+                        <field name="visite_ids">
+                            <tree open="true">  <!-- ✅ Permet d'ouvrir la visite en cliquant -->
+                                <field name="name"/>
+                                <field name="date_visite"/>
+                                <field name="client_id"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tournee_tree" model="ir.ui.view">
+        <field name="name">tournee.tree</field>
+        <field name="model">visite.tournee</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date_debut_tournee"/>
+                <field name="date_fin_tournee"/>
+                <field name="user_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_tournee_list" model="ir.actions.act_window">
+        <field name="name">Tournées</field>
+        <field name="res_model">visite.tournee</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Gérez vos tournées de visites.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_tournee"
+              name="Tournées"
+              parent="menu_visite_root"
+              action="action_tournee_list"
+              sequence="20"/>
+</odoo>

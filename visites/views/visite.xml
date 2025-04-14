@@ -1,0 +1,67 @@
+<odoo>
+
+    <!-- Action pour inclure la vue Map -->
+    <record id="action_visite" model="ir.actions.act_window">
+        <field name="name">Visites</field>
+        <field name="res_model">visite.visite</field>
+        <field name="view_mode">tree,form,map</field>
+    </record>
+    <record id="view_visite_form" model="ir.ui.view">
+        <field name="name">visite.form</field>
+        <field name="model">visite.visite</field>
+        <field name="arch" type="xml">
+            <form string="Visite">
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable':1}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="user_id"/>
+                        <field name="date_visite"/>
+                        <field name="client_id"/>
+                        <field name="tournee_id"/>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                        <field name="photos" widget="many2many_binary"/>
+                        <field name="resume"/>
+                        <field name="partner_latitude"/>
+                        <field name="partner_longitude"/>
+                    </group>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_visite_tree" model="ir.ui.view">
+        <field name="name">visite.tree</field>
+        <field name="model">visite.visite</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="date_visite"/>
+                <field name="client_id"/>
+                <field name="tournee_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_visite_map" model="ir.ui.view">
+        <field name="name">visite.map</field>
+        <field name="model">visite.visite</field>
+        <field name="arch" type="xml">
+            <map string="Carte des Visites" res_partner="client_id" routing="true">
+                <field name="name" string="Visite"/>
+            </map>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <!-- Groupe Visites Admin -->
+        <record id="access_visite_admin" model="res.groups">
+            <field name="name">Visites Admin</field>
+        </record>
+
+        <!-- Groupe Visites User -->
+        <record id="access_visite_user" model="res.groups">
+            <field name="name">Visites User</field>
+        </record>
+    </data>
+</odoo>
