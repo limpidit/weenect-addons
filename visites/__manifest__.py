@@ -6,6 +6,7 @@
     "depends":["base","crm","mail","web_map"
     ],
     "data": [
+        'security/groups.xml',
         "security/ir.model.access.csv",
         'views/visite.xml',
         'views/visite_menu.xml',
