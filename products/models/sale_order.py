@@ -130,11 +130,11 @@ class SaleOrder(models.Model):
             if any(line.traceur_demo for line in order.order_line):
                 self.env['mail.activity'].create({
                     'activity_type_id': activity_type.id,
-                    'res_model_id': self.env['ir.model']._get_id('sale.order'),
-                    'res_id': order.id,
+                    'res_model_id': self.env['ir.model']._get_id('res.partner'),  # Lien avec le partenaire
+                    'res_id': order.partner_id.id,
                     'user_id': order.partner_id.user_id.id or self.env.user.id,  # Vendeur du client ou utilisateur actuel
                     'summary': _("Démo à réaliser"),
-                    'note': _("Démo à réaliser."),
+                    'note': _("Démo à réaliser pour une ou plusieurs lignes de la commande %s.") % order.name,
                     'date_deadline': fields.Date.today() + timedelta(days=7),  # Échéance dans 7 jours
                 })
 

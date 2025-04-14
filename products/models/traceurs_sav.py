@@ -1,5 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import date
+
 
 class TraceursSAV(models.Model):
     _name = 'traceurs.sav'
@@ -34,11 +36,15 @@ class TraceursSAV(models.Model):
 
     @api.onchange('traceur_demo_realisee')
     def _onchange_traceur_demo_realisee(self):
-        if self.traceur_demo_realisee and not self.imei:
-            self.traceur_demo_realisee = False
-            return {
-                'warning': {
-                    'title': _("Attention"),
-                    'message': _("Vous devez renseigner l'IMEI avant de marquer la démo comme réalisée."),
+        if self.traceur_demo_realisee:
+            if not self.imei:
+                self.traceur_demo_realisee = False
+                return {
+                    'warning': {
+                        'title': _("Attention"),
+                        'message': _("Vous devez renseigner l'IMEI avant de marquer la démo comme réalisée."),
+                    }
                 }
-            }
+            # Remplissage automatique de la date si non renseignée
+            if not self.date_demo:
+                self.date_demo = date.today()
