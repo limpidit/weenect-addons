@@ -1,0 +1,35 @@
+<odoo>
+    <record id="view_generate_visites_wizard" model="ir.ui.view">
+        <field name="name">generate.visites.wizard.form</field>
+        <field name="model">visite.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Génération de Visites">
+                <group>
+                    <field name="latitude_centre"/>
+                    <field name="longitude_centre"/>
+                    <field name="rayon_km"/>
+                    <field name="nombre_visites"/>
+                    <field name="jours_depuis_derniere_visite"/>
+                </group>
+                <group>
+                    <field name="domain_filter_id" string="Filtre Client"/>
+                    <field name="user_id" string="Vendeur Assigné"/>
+                </group>
+                <footer>
+                    <button name="generate_visites" type="object" string="Générer" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_visites_wizard" model="ir.actions.act_window">
+        <field name="name">Générer des Visites</field>
+        <field name="res_model">visite.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_generate_visites" parent="menu_visite_root" name="Générer des Visites"
+              action="action_generate_visites_wizard"/>
+</odoo>

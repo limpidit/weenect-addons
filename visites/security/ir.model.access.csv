@@ -1,0 +1,5 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_visite_user,access_visite_user,model_visite_visite,base.group_user,1,1,1,1
+access_generate_visites_wizard,access_generate_visites_wizard,model_visite_generate_wizard,,1,1,1,1
+access_visite_tournee,access_visite_tournee,model_visite_tournee,base.group_user,1,1,1,1
+
