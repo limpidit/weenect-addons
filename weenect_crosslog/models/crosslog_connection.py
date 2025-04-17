@@ -1,8 +1,10 @@
 
-from odoo import models, fields, api
-
+from odoo import models, fields, api, _
 import requests
 from xml.etree import ElementTree as ET
+from odoo.exceptions import UserError
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class CrosslogConnection(models.Model):
