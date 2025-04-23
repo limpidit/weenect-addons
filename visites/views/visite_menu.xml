@@ -1,12 +1,13 @@
 <odoo>
 
+    <menuitem id="menu_visite_root" name="Visites" web_icon="visites,static/description/icon.png"/>
+
     <record id="action_visite" model="ir.actions.act_window">
         <field name="name">Visites</field>
         <field name="res_model">visite.visite</field>
         <field name="view_mode">tree,form,map</field>
     </record>
 
-    <menuitem id="menu_visite_root" name="Visites" sequence="10"/>
     
     <menuitem id="menu_visite" parent="menu_visite_root" name="Toutes les Visites" action="action_visite"/>
     

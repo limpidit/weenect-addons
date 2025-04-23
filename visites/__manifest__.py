@@ -3,7 +3,7 @@
     "summary":"Visites LimpidIT",
     "version":"17.0.0.1",
     "author":"Limpid IT",
-    "depends":["base","crm","mail","web_map"
+    "depends":["base","crm","mail","base_geolocalize","web_map"
     ],
     "data": [
         'security/groups.xml',

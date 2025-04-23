@@ -36,6 +36,8 @@ class GenerateVisitesWizard(models.TransientModel):
         compute="_compute_clients_potentiels_count"
     )
 
+    filter_company=fields.Boolean("Filtrer les sociétés uniquement", default=True)
+
     @api.onchange('client_depart_id')
     def _onchange_client_depart_id(self):
         for wizard in self:
@@ -59,6 +61,8 @@ class GenerateVisitesWizard(models.TransientModel):
         date_limite = datetime.now() - timedelta(days=self.jours_depuis_derniere_visite)
 
         domain = [('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]
+        if self.filter_company:
+            domain.append(('is_company', '=', True))
         if self.domain_filter_id and self.domain_filter_id.domain:
             domain.extend(eval(self.domain_filter_id.domain))
 
@@ -132,12 +136,14 @@ class GenerateVisitesWizard(models.TransientModel):
 
     @api.depends(
         'latitude_centre', 'longitude_centre', 'rayon_km',
-        'jours_depuis_derniere_visite', 'domain_filter_id', 'tag_ids'
+        'jours_depuis_derniere_visite', 'domain_filter_id', 'tag_ids','filter_company'
     )
     def _compute_clients_potentiels_count(self):
         visite_model = self.env['visite.visite']
         for wizard in self:
             domain = [('partner_latitude', '!=', False), ('partner_longitude', '!=', False)]
+            if self.filter_company:
+                domain.append(('is_company', '=', True))
 
             if wizard.domain_filter_id and wizard.domain_filter_id.domain:
                 domain.extend(eval(wizard.domain_filter_id.domain))

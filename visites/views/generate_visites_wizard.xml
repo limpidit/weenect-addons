@@ -19,6 +19,7 @@
                     <group string="🎛️ Filtres Client">
                         <field name="jours_depuis_derniere_visite"/>
                         <field name="domain_filter_id"/>
+                        <field name="filter_company"/>
                         <field name="tag_ids" widget="many2many_tags"/>
                     </group>
                 </group>
