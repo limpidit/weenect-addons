@@ -5,6 +5,14 @@
         <field name="arch" type="xml">
             <form string="Tournée">
                 <header>
+                <header>
+                        <button name="action_afficher_plan_tournee"
+                                type="object"
+                                string="🗺️ Plan sur carte"
+                                class="oe_highlight"
+                                icon="fa-map"/>
+                    </header>
+
                     <field name="state" widget="statusbar" options="{'clickable':1}"/>
                 </header>
                 <sheet>

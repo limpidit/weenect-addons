@@ -24,3 +24,18 @@ class Tournee(models.Model):
         for record in self:
             if record.date_fin_tournee < record.date_debut_tournee:
                 raise ValidationError("La date de fin doit être postérieure ou égale à la date de début.")
+
+    def action_afficher_plan_tournee(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f"Plan de tournée : {self.name}",
+            'res_model': 'visite.visite',
+            'view_mode': 'map,tree,form',
+            'domain': [('tournee_id', '=', self.id)],
+            'context': {
+                'default_tournee_id': self.id,
+            },
+            'target': 'current',
+        }
+
