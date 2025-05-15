@@ -54,6 +54,10 @@ class AccountMove(models.Model):
 
         for segment in message.segments:
             _logger.info(f"Segment: {segment.tag} - {segment.elements}")
+            for elem in segment.elements:
+                if not isinstance(elem, (str, list)):
+                    _logger.warning(f"Segment element not string or list: {repr(elem)}")
+
 
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",
