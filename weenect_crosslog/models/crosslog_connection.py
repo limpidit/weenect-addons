@@ -19,7 +19,7 @@ class CrosslogConnection(models.Model):
     password = fields.Char(string="API password", required=True)
 
     warehouse_id = fields.Many2one(comodel_name='stock.warehouse', string="Warehouse")
-
+    crosslog_order_state_ids = fields.Many2many(comodel_name='crosslog.order.state', string="Crosslog orders state")
 
 
     ################ Requests preparation ################

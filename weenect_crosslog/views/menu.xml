@@ -46,6 +46,11 @@
             name="API Connections"
             action="crosslog_connection_action"/>
 
+        <menuitem 
+            id="crosslog_order_state_menu"   
+            name="Crosslog orders state"
+            action="crosslog_order_state_action"/>
+
     </menuitem>
 
 </odoo>
