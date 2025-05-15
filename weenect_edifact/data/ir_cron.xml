@@ -12,8 +12,8 @@
             <field name="active" eval="False"/>
             <field name="state">code</field>
             <field name="code">
-                moves = model.search([('state', '=', 'posted'), ('partner_id.export_format', '=', 'd96a')])
-                moves.cron_send_sagaflor_edifact_attachments()
+moves = model.search([('state', '=', 'posted'), ('partner_id.export_format', '=', 'd96a')])
+moves.cron_send_sagaflor_edifact_attachments()
             </field>
         </record>
     
