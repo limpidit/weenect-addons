@@ -11,6 +11,10 @@
         'account_invoice_edifact'
     ],
     "data": [
+        # Data
+        'data/email_template.xml',
+        'data/ir_cron.xml',
+        # Views
         'views/account_move.xml',
     ],
     "installable": True,

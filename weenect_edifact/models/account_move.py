@@ -14,8 +14,30 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     edifact_attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Edifact attachment")
+
+    def cron_send_sagaflor_edifact_attachments(self):
+        _logger.info("Cron job to send EDIFACT attachments started.")
+        mail_template = self.env.ref('weenect_edifact.email_template_edi_invoic_sagaflor')
+        attachments = []
+
+        for record in self:
+            record._generate_edifact_attachment()
+            attachments.append(record.edifact_attachment_id.id)
+            
+        if attachments:
+            mail_template.attachment_ids = [(6, 0, attachments)]
+            mail_template.send_mail(self.id, force_send=True)
+
+    def download_edifact_attachment(self):
+        self.ensure_one()
+        self._generate_edifact_attachment()
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{self.edifact_attachment_id.id}?download=true',
+            'target': 'self',
+        }
         
-    def generate_edifact_attachment(self):
+    def _generate_edifact_attachment(self):
         self.ensure_one()
         interchange = self._edifact_invoice_get_interchange()
 
@@ -23,9 +45,12 @@ class AccountMove(models.Model):
             message = InvoicD01BMessage(self)
             interchange.add_message(message)
 
-        if self.partner_id.export_format == 'd96a':
+        elif self.partner_id.export_format == 'd96a':
             message = InvoicD96AMessage(self)
             interchange.add_message(message)
+
+        else:
+            raise UserError(_("The selected export format is not supported."))
 
         for segment in message.segments:
             _logger.info(f"Segment: {segment.tag} - {segment.elements}")
@@ -41,12 +66,6 @@ class AccountMove(models.Model):
         
         if attachment:
             self.edifact_attachment_id = attachment.id
-        
-        return {
-            'type': 'ir.actions.act_url',
-            'url': f'/web/content/{attachment.id}?download=true',
-            'target': 'self',
-        }
         
     def _edifact_invoice_get_interchange(self):
         sender = self.env.company.partner_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")

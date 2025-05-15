@@ -1,0 +1,21 @@
+<odoo>
+
+    <data noupdate="1">
+    
+        <record id="email_template_edi_invoic_sagaflor" model="mail.template">
+            <field name="name">Export des factures Sagaflor EDIFACT INVOIC D96A</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="subject">INVOIC WEENECT</field>
+            <field name="email_from">franck@weenect.com</field>
+            <field name="email_to">sagaflor-ag@datawizard.sagaflor-ag.viat.biz</field>
+            <field name="body_html"><![CDATA[
+                <!-- Vide : corps vide obligatoire -->
+            ]]></field>
+            <field name="report_template" eval="False"/> <!-- Pas de rapport PDF joint -->
+            <field name="auto_delete" eval="True"/> <!-- Nettoyage auto des emails -->
+          </record>
+    
+    </data>
+    
+  </odoo>
+  
