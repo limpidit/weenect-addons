@@ -3,3 +3,4 @@ access_visite_admin_visite,Visite Admin Access,model_visite_visite,access_visite
 access_visite_admin_wizard,Visite Wizard Admin Access,model_visite_generate_wizard,access_visite_admin,1,1,1,1
 access_visite_admin_tournee,Visite Tournee Admin Access,model_visite_tournee,access_visite_admin,1,1,1,1
 access_visite_user_access,Visite User Access,model_visite_visite,access_visite_user,1,1,1,1
+access_visite_readonly_user,Visite Readonly Access,model_visite_visite,base.group_user,1,0,0,0
