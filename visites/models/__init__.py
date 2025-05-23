@@ -1,0 +1,1 @@
+from . import visite, res_partner, generate_visites_wizard, visite_tournee

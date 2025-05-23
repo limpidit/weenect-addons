@@ -117,3 +117,35 @@ class SaleOrder(models.Model):
                             })
 
         return res
+
+    def action_confirm(self):
+            res = super().action_confirm()
+            self._create_traceur_demo_activity()
+            self._create_traceur_demo_entry()  # Ajout de la création du traceur
+            return res
+
+    def _create_traceur_demo_activity(self):
+        activity_type = self.env.ref('mail.mail_activity_data_todo')  # Type d'activité TODO
+        for order in self:
+            if any(line.traceur_demo for line in order.order_line):
+                self.env['mail.activity'].create({
+                    'activity_type_id': activity_type.id,
+                    'res_model_id': self.env['ir.model']._get_id('res.partner'),  # Lien avec le partenaire
+                    'res_id': order.partner_id.id,
+                    'user_id': order.partner_id.user_id.id or self.env.user.id,  # Vendeur du client ou utilisateur actuel
+                    'summary': _("Démo à réaliser"),
+                    'note': _("Démo à réaliser pour une ou plusieurs lignes de la commande %s.") % order.name,
+                    'date_deadline': fields.Date.today() + timedelta(days=7),  # Échéance dans 7 jours
+                })
+
+    def _create_traceur_demo_entry(self):
+        """Création d'un enregistrement dans traceurs.sav pour chaque ligne de commande avec traceur_demo = True"""
+        for order in self:
+            traceur_demo_lines = order.order_line.filtered(lambda l: l.traceur_demo)
+            for line in traceur_demo_lines:
+                self.env['traceurs.sav'].create({
+                    'client_id': order.partner_id.id,
+                    'product_id': line.product_id.id,
+                    'type': 'demo',
+                    'traceur_demo_realisee': False,  # La démo n'a pas encore été réalisée
+                })

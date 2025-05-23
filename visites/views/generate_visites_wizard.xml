@@ -1,0 +1,57 @@
+<odoo>
+    <record id="view_generate_visites_wizard" model="ir.ui.view">
+        <field name="name">generate.visites.wizard.form</field>
+        <field name="model">visite.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="🗺️ Génération de Visites">
+                <group>
+                    <group string="🚩 Point de départ">
+                        <field name="client_depart_id"/>
+                        <field name="inclure_client_depart"/>
+                    </group>
+
+                    <group string="📍 Zone géographique">
+                        <field name="latitude_centre"/>
+                        <field name="longitude_centre"/>
+                        <field name="rayon_km"/>
+                    </group>
+
+                    <group string="🎛️ Filtres Client">
+                        <field name="jours_depuis_derniere_visite"/>
+                        <field name="domain_filter_id"/>
+                        <field name="filter_company"/>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+
+                <group>
+                    <group string="⚙️ Paramètres de génération">
+                        <field name="nombre_jours_tournee"/>
+                        <field name="nombre_visites_par_jour"/>
+                        <field name="date_debut_tournee"/>
+                        <field name="clients_potentiels_count" readonly="1"/>
+                    </group>
+
+                    <group string="👤 Assignation">
+                        <field name="user_id"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="generate_visites" type="object" string="🚀 Générer" class="btn-primary"/>
+                    <button string="❌ Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_generate_visites_wizard" model="ir.actions.act_window">
+        <field name="name">Générer des Visites</field>
+        <field name="res_model">visite.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_generate_visites" parent="menu_visite_root" name="Générer des Visites"
+              action="action_generate_visites_wizard"/>
+</odoo>
