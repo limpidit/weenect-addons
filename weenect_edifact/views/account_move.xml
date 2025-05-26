@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <field name="state" position="before">
                 <!-- <button string="Generate edifact Futterhaus" name="generate_futterhaus_edifact_attachment" type="object" class="oe_highlight"/> -->
-                <button string="Generate edifact Sagaflor" name="generate_edifact_attachment" type="object" class="oe_highlight"/>
+                <button string="Generate edifact invoice" name="download_edifact_attachment" type="object" class="oe_highlight"/>
             </field>
         </field>
     </record>
