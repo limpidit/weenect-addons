@@ -41,11 +41,11 @@ class AccountMove(models.Model):
         self.ensure_one()
         interchange = self._edifact_invoice_get_interchange()
 
-        if self.partner_id.export_format == 'd01b':
+        if self.partner_id.export_format == 'd01b' or (self.partner_id.parent_id and self.partner_id.parent_id.export_format == 'd01b'):
             message = InvoicD01BMessage(self)
             interchange.add_message(message)
 
-        elif self.partner_id.export_format == 'd96a':
+        elif self.partner_id.export_format == 'd96a' or (self.partner_id.parent_id and self.partner_id.parent_id.export_format == 'd96a'):
             message = InvoicD96AMessage(self)
             interchange.add_message(message)
 
