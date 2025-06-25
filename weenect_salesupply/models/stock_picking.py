@@ -60,6 +60,8 @@ class StockPicking(models.Model):
                 expected_qty = move.product_uom_qty
                 delivered_qty = salesupply_row["ItemQuantityDelivered"]
                 
+                move.quantity_done = delivered_qty
+                
                 if expected_qty != delivered_qty:
                     log_object.log_info(_(f"The reception {picking.name} is not yet delivered to Salesupply"))
                     is_delivered = False

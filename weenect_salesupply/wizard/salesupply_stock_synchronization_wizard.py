@@ -116,7 +116,7 @@ class SalesupplyStockSynchronizationWizard(models.TransientModel):
                 assigned_reception = picking_object.search([
                     ('location_dest_id', '=', warehouse.lot_stock_id.id), 
                     ('state', '=', 'assigned'),
-                    ('name', '=', salesupply_json_reception['OrderCode']),
+                    ('origin', '=', salesupply_json_reception['OrderCode']),
                     ('salesupply_synchronized', '=', False)
                 ])
                 if assigned_reception:
