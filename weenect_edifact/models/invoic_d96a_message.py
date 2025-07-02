@@ -15,7 +15,7 @@ class InvoicD96AMessage(Message):
         self.add_segment(self.get_header_segment())
 
         doc_code = "380" if self.invoice.move_type == "out_invoice" else "381"
-        self.add_segment(Segment("BGM", [doc_code, self.invoice.name, "9"]))
+        self.add_segment(Segment("BGM", doc_code, self.invoice.name, "9"))
 
         date_invoice = self.invoice.invoice_date or self.invoice.create_date.date()
         self.add_segment(Segment("DTM", ["137", date_invoice.strftime("%Y%m%d"), "102"]))
@@ -99,6 +99,7 @@ class InvoicD96AMessage(Message):
             self.add_segment(Segment("PRI", ["AAB", f"{product_price_unit:.2f}", "", "", "", "PCE"]))
 
             if line.discount:
+                discount_amount = round(line.quantity * product_price_unit * line.discount / 100, 2)
                 self.add_segment(Segment("ALC", "A", "", "", "1", "DI"))
                 self.add_segment(Segment("PCD", ["3", f"{line.discount:.2f}"]))
                 self.add_segment(Segment("MOA", ["8", f"{discount_amount:.2f}"]))
