@@ -16,7 +16,7 @@ class ProductTemplate(models.Model):
         return res
     
     @api.model
-    def action_open_products(self):
+    def action_open_salesupply_products(self):
         warehouses = self.env['stock.warehouse'].search([('is_salesupply', '=', True)])
         return {
             'type': 'ir.actions.act_window',
