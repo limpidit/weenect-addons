@@ -15,3 +15,8 @@ edi
 weenect_salesupply/models/__pycache__/
 
 weenect_salesupply/wizard/__pycache__/
+
+weenect_stock_rule_push_separation/__pycache__/
+
+weenect_stock_rule_push_separation/models/__pycache__/
+
