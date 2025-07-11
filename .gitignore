@@ -20,3 +20,9 @@ weenect_stock_rule_push_separation/__pycache__/
 
 weenect_stock_rule_push_separation/models/__pycache__/
 
+weenect_crosslog/__pycache__/
+weenect_crosslog/models/__pycache__/
+
+.DS_Store
+weenect_crosslog/DS_Store/
+weenect_crosslog/wizard/__pycache__/
