@@ -19,19 +19,35 @@
         <field name="model">edifact.message</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="generate_edifact_content" type="object" string="Generate EDIFACT Content" class="btn-primary" />
+                </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="message_type" widget="radio"/>
-                        <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-danger="state == 'error'"/>
-                    </group>
-                    <group>
-                        <field name="sender_id" />
-                        <field name="receiver_id" />
+                        <group>
+                            <field name="name"/>
+                            <field name="message_type" widget="radio"/>
+                            <field name="sender_id" />
+                            <field name="receiver_id" />
+                        </group>
+                        <group>
+                            <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-danger="state == 'error'"/>
+                            <field name="error_message"/>
+                        </group>
                     </group>
                     <notebook>
                         <page name="edifact_content" string="Exchange Content">
                             <field name="message_content" type="text"/>
+                        </page>
+                        <page name="related_moves" string="Related Moves">
+                            <field name="move_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="amount_total"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-danger="state == 'draft'"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -49,6 +65,7 @@
         id="edifact_message_menu"
         name="Edifact Messages"
         parent="account_accountant.menu_accounting"
+        action="action_edifact_message"
         sequence="10"/>
         
 </odoo>

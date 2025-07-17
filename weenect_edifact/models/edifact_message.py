@@ -23,8 +23,8 @@ class EdifactMessage(models.Model):
     
     move_ids = fields.Many2many('account.move', string='Related Moves')
 
-    sender_id = fields.Many2one(comodel_name='res.partner', string='Sender', required=True)
-    receiver_id = fields.Many2one(comodel_name='res.partner', string='Receiver', required=True)
+    sender_id = fields.Many2one(comodel_name='res.partner.id_number', string='Sender', required=True)
+    receiver_id = fields.Many2one(comodel_name='res.partner.id_number', string='Receiver', required=True)
     message_content = fields.Text(string='Message Content')
 
     def cron_send_sagaflor_edifact_attachments(self):
@@ -56,18 +56,23 @@ class EdifactMessage(models.Model):
 
         interchange = self._edifact_invoice_get_interchange()
 
-        if self.message_type == 'd01b':
-            for move in self.move_ids:
-                message = InvoicD01BMessage(move)
-                interchange.add_message(message)
+        try:
+            if self.message_type == 'd01b':
+                for move in self.move_ids:
+                    message = InvoicD01BMessage(move)
+                    interchange.add_message(message)   
+            elif self.message_type == 'd96a':
+                for move in self.move_ids:
+                    message = InvoicD96AMessage(move)
+                    interchange.add_message(message)
+            else:
+                raise UserError(_("The selected export format is not supported."))
 
-        elif self.message_type == 'd96a':
-            for move in self.move_ids:
-                message = InvoicD96AMessage(move)
-                interchange.add_message(message)
-
-        else:
-            raise UserError(_("The selected export format is not supported."))
+        except Exception as e:
+            _logger.error(f"Error generating EDIFACT content: {e}")
+            self.state = 'error'
+            self.error_message = str(e)
+            return
 
         for segment in interchange.segments:
             _logger.info(f"Segment: {segment.tag} - {segment.elements}")
@@ -75,7 +80,7 @@ class EdifactMessage(models.Model):
                 if not isinstance(elem, (str, list)):
                     _logger.warning(f"Segment element not string or list: {repr(elem)}")
 
-        self.message_content = base64.b64encode(interchange.serialize().encode('utf-8'))
+        self.message_content = interchange.serialize()
 
     def send_edifact_message(self):
         for record in self:    
@@ -118,11 +123,9 @@ class EdifactMessage(models.Model):
         Returns:
             recordset: The created EDIFACT interchange record.
         """
-        sender = self.sender_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
-        receiver = self.receiver_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
 
-        sender_edifact = [sender, "14"]
-        recipient_edifact = [receiver, "14"]
+        sender_edifact = [self.sender_id.name, "14"]
+        recipient_edifact = [self.receiver_id.name, "14"]
         syntax_identifier = ["UNOC", "3"]
 
         return self.env["base.edifact"].create_interchange(

@@ -19,6 +19,7 @@
         'data/ir_cron.xml',
         # Views
         'views/account_move.xml',
+        'views/edifact_message.xml',
         'views/res_partner.xml',
     ],
     "installable": True,
