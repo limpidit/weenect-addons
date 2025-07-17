@@ -20,18 +20,25 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="generate_edifact_content" type="object" string="Generate EDIFACT Content" class="btn-primary" />
+                    <field name="state" invisible="1"/>
+                    <button name="generate_edifact_content" type="object" string="Generate EDIFACT Content" class="btn-primary"/>
+                    <button name="link_moves" type="object" string="Link Moves" class="btn-secondary"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="set_to_draft" type="object" string="Reset to Draft" class="btn-secondary"
+                            attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <button name="action_send_edifact_message" type="object" string="Send by email" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,linked,sent" />
                 </header>
+
                 <sheet>
                     <group>
                         <group>
                             <field name="name"/>
                             <field name="message_type" widget="radio"/>
-                            <field name="sender_id" />
-                            <field name="receiver_id" />
                         </group>
                         <group>
-                            <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-danger="state == 'error'"/>
+                            <field name="sender_id" />
+                            <field name="receiver_id" />
                             <field name="error_message"/>
                         </group>
                     </group>
@@ -51,6 +58,10 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
