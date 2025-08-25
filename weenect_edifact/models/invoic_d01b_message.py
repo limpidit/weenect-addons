@@ -46,6 +46,8 @@ class InvoicD01BMessage(Message):
             taxes = line.tax_ids
             if taxes:
                 tax_rate = taxes[0].amount
+                if tax_rate == int(tax_rate):
+                    tax_rate = int(tax_rate)
             else:
                 tax_rate = 0
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
