@@ -17,7 +17,7 @@ class InvoicD01BMessage(Message):
         delivery_date = self._get_delivery_date()
 
         company_gln = self._get_gln(self.invoice.company_id.partner_id)
-        delivery = self.invoice.partner_id.parent_id or self.invoice.partner_id
+        delivery = self.invoice.partner_shipping_id or self.invoice.partner_id.parent_id or self.invoice.partner_id
         delivery_gln = self._get_gln(delivery)
 
         self.add_segment(self.get_header_segment())
