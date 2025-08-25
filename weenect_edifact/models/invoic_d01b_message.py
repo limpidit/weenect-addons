@@ -33,9 +33,9 @@ class InvoicD01BMessage(Message):
         if delivery_date:
             self.add_segment(Segment("DTM", ["171", delivery_date.strftime("%Y%m%d"), "102"]))
 
-        self.add_segment(Segment("NAD", "SU", company_gln))
-        self.add_segment(Segment("NAD", "BY", "4333671000007")) # Tout le temps le même GLN pour le client Futterhaus
-        self.add_segment(Segment("NAD", "DP", delivery_gln))
+        self.add_segment(Segment("NAD", "SU", [company_gln, "", "9"]))
+        self.add_segment(Segment("NAD", "BY", ["4333671000007", "", "9"])) # Tout le temps le même GLN pour le client Futterhaus
+        self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"]))
 
         self.add_segment(Segment("RFF", ["VA", delivery.vat]))
 
@@ -43,11 +43,16 @@ class InvoicD01BMessage(Message):
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
 
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
-            self.add_segment(Segment("LIN", [str(idx), "", line.product_id.ean_weenect or "", "EN"]))
+            tax = line.tax_ids[0]
+            if tax:
+                tax_rate = tax.amount
+            else:
+                tax_rate = 0
+            self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
             self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70]]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
             self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
-            self.add_segment(Segment("TAX", ["7", "VAT"]))
+            self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
 
         self.add_segment(Segment("UNS", ["S"]))
 
