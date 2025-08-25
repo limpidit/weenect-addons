@@ -43,9 +43,9 @@ class InvoicD01BMessage(Message):
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
 
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
-            tax = line.tax_ids[0]
-            if tax:
-                tax_rate = tax.amount
+            taxes = line.tax_ids
+            if taxes:
+                tax_rate = taxes[0].amount
             else:
                 tax_rate = 0
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
