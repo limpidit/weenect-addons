@@ -1,1 +1,2 @@
 from . import crosslog_product_synchronization
+from . import crosslog_picking_synchronization

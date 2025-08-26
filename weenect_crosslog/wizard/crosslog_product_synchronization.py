@@ -1,6 +1,7 @@
 
 from odoo import models, fields
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class CrosslogProductSynchronization(models.TransientModel):
     _name = 'crosslog.product.synchronization'
@@ -24,6 +25,7 @@ class CrosslogProductSynchronization(models.TransientModel):
         self.ensure_one()
         product_object = self.env['product.product']
         quant_object = self.env['stock.quant']
+        lot_object = self.env['stock.lot']
         
         warehouse = self.api_connection_id.warehouse_id
         existing_quants = quant_object
@@ -32,19 +34,51 @@ class CrosslogProductSynchronization(models.TransientModel):
         for product in product_object.search([]):
             if self.api_connection_id.process_exist_item_request(product.default_code):
                 product.available_on_crosslog = True
-                # TODO : Gérer le cas des produits suivi par lot
-                if self.synchronize_stock and product.tracking != 'lot':
+                if self.synchronize_stock:
                     product_information_result = self.api_connection_id.process_get_product_information_request(product.default_code)
-                    existing_quant = quant_object.search([('product_id', '=', product.id), ('location_id', '=', warehouse.lot_stock_id.id)], limit=1)
-                    if existing_quant:
-                        existing_quant.write({'inventory_quantity': product_information_result['available_qty'] + product_information_result['reserved_qty']})
-                        existing_quants |= existing_quant
+                    if product.tracking == 'lot':
+                        lots_data = product_information_result.get('lots') or []
+                        if not lots_data:
+                            _logger.info("No lot retrieved for %s (%s), skipping.", product.display_name, product.default_code)
+                        else:
+                            for lot_info in lots_data:
+                                lot_name = (lot_info.get('lot_number') or '').strip()
+                                qty = float(lot_info.get('quantity') or 0.0)
+
+                                if not lot_name:
+                                    _logger.warning("Lot without name for %s, ignored.", product.default_code)
+                                    continue
+
+                                lot = lot_object.search([('name', '=', lot_name), ('product_id', '=', product.id)], limit=1)
+                                if lot:
+                                    lot.available_on_crosslog = True
+                                    existing_quant = quant_object.search([('product_id', '=', product.id), ('location_id', '=', warehouse.lot_stock_id.id), ('lot_id', '=', lot.id)],  limit=1)
+                                    if existing_quant:
+                                        existing_quant.write({'inventory_quantity': qty})
+                                        existing_quants |= existing_quant
+                                else:
+                                    lot = lot_object.create({
+                                        'name': lot_name,
+                                        'product_id': product.id,
+                                        'available_on_crosslog': True
+                                    })
+                                    quant_vals.append({
+                                        'product_id': product.id,
+                                        'location_id': warehouse.lot_stock_id.id,
+                                        'lot_id': lot.id,
+                                        'inventory_quantity': qty,
+                                    })
                     else:
-                        quant_vals.append({
-                            'product_id': product.id,
-                            'location_id': warehouse.lot_stock_id.id,
-                            'inventory_quantity': product_information_result['available_qty'] + product_information_result['reserved_qty'],
-                        })
+                        existing_quant = quant_object.search([('product_id', '=', product.id), ('location_id', '=', warehouse.lot_stock_id.id)], limit=1)
+                        if existing_quant:
+                            existing_quant.write({'inventory_quantity': product_information_result['available_qty'] + product_information_result['reserved_qty']})
+                            existing_quants |= existing_quant
+                        else:
+                            quant_vals.append({
+                                'product_id': product.id,
+                                'location_id': warehouse.lot_stock_id.id,
+                                'inventory_quantity': product_information_result['available_qty'] + product_information_result['reserved_qty'],
+                            })
             else:
                 product.available_on_crosslog = False
 

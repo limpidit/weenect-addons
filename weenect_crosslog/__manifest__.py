@@ -15,8 +15,11 @@
         'views/crosslog_order_state.xml',
         'views/crosslog_connection.xml',
         'views/product_template.xml',
+        'views/stock_picking.xml',
+        'views/stock_lot_views.xml',
         # Wizard
         'wizard/crosslog_product_synchronization.xml',
+        'wizard/crosslog_picking_synchronization.xml',
         #Data
         'data/crosslog_order_state.xml',
         # Menus

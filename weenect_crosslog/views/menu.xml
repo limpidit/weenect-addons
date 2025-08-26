@@ -18,6 +18,11 @@
             name="Products"
             action="crosslog_product_template_action_server"/>
 
+        <menuitem
+            id="crosslog_lots_menu"
+            name="Lots"
+            action="crosslog_stock_lot_action_server"/>
+
     </menuitem>
 
     <menuitem
@@ -32,6 +37,33 @@
             name="Synchronize products from Crosslog"
             action="crosslog_product_synchronization_action"
             sequence="10"/>
+
+        <menuitem 
+            id="crosslog_get_pickings_menu" 
+            name="Synchronize pickings from Crosslog"
+            action="weenect_crosslog.crosslog_picking_synchronization_action"
+            sequence="20"/>
+    
+    </menuitem>
+
+     <menuitem
+        id="crosslog_inventory_menu"
+        name="Inventory"
+        sequence="30"
+        parent="crosslog_menu_root"
+        groups="stock.group_stock_manager">
+
+        <menuitem 
+            id="crosslog_receptions_menu" 
+            name="Receptions"
+            action="crosslog_receptions_action"
+            sequence="10"/>
+
+        <menuitem 
+            id="crosslog_deliveries_menu" 
+            name="Deliveries"
+            action="crosslog_deliveries_action"
+            sequence="20"/>
     
     </menuitem>
 

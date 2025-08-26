@@ -60,6 +60,11 @@ class CrosslogConnection(models.Model):
             <mob:productCode>{product_code}</mob:productCode>
         </mob:GetProductInformation>"""
 
+    @api.model
+    def _prepare_get_customer_orders_updated_request(self):
+        """Prepare the request for the GetCustomerOrdersUpdated method."""
+        return f"""<mob:GetCustomerOrdersUpdated></mob:GetCustomerOrdersUpdated>"""
+
 
 
     ################ Requests execution ################
@@ -84,9 +89,10 @@ class CrosslogConnection(models.Model):
             if method_name == 'ExistProduct':
                 result = root.find('.//ns:ExistProductResult', ns)
                 return result.text.lower() == 'true'
+                
             elif method_name == 'GetProductInformation':
                 result = root.find('.//ns:GetProductInformationResult', ns)
-                return {
+                data = {
                     'code': result.find('ns:Code', ns).text,
                     'barcode': result.find('ns:BarCode', ns).text,
                     'available_qty': float(result.find('ns:AvailableQuantity', ns).text),
@@ -94,8 +100,18 @@ class CrosslogConnection(models.Model):
                     'receipt_qty': float(result.find('ns:ReceiptQuantity', ns).text),
                     'rubbish_qty': float(result.find('ns:RubbishQuantity', ns).text),
                     'security_qty': float(result.find('ns:SecurityQuantity', ns).text),
+                    'lots': [],
                 }
-                
+                lots = result.findall('.//ns:XLFlowProductLotReturnEntity', ns)
+                for lot in lots:
+                    data['lots'].append({
+                        'lot_number': lot.find('ns:LotNumber', ns).text,
+                        'expired_date': lot.find('ns:ExpiredDate', ns).text,
+                        'quantity': float(lot.find('ns:Quantity', ns).text),
+                    })
+                return data
+            elif method_name == 'GetCustomerOrdersUpdated':
+                result = root.findall('.//ns:XLFlowCustomerOrderReturnEntity', ns)
         except ET.ParseError as e:
             _logger.error(f"Failed to parse SOAP response: {str(e)}")
             raise UserError(_("Invalid SOAP response format"))
@@ -116,4 +132,11 @@ class CrosslogConnection(models.Model):
         soap_request = self._prepare_soap_request('GetProductInformation', {'product_code': product_code})
         response_text = self._send_soap_request(soap_request)
         result = self._parse_soap_response(response_text, 'GetProductInformation')
+        return result
+
+    def process_get_customer_orders_updated_request(self):
+        """Process the GetCustomerOrdersUpdated request and return the result."""
+        soap_request = self._prepare_soap_request('GetCustomerOrdersUpdated')
+        response_text = self._send_soap_request(soap_request)
+        result = self._parse_soap_response(response_text, 'GetCustomerOrdersUpdated')
         return result

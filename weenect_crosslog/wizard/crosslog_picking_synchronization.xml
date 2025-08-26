@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crosslog_picking_synchronization_wizard_view_form" model="ir.ui.view">
+        <field name="name">crosslog.picking.synchronization.wizard.form</field>
+        <field name="model">crosslog.picking.synchronization</field>
+        <field name="arch" type="xml">
+            <form string="Get Picking from Crosslog">
+                <sheet>
+                    <group>
+                        <field name="api_connection_id" required="1"/>
+                        <field name="sync_deliveries"/>
+                        <field name="sync_receptions"/>
+                    </group>
+                    <footer>
+                        <button name="synchronize_picking" string="Synchronize pickings" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="crosslog_picking_synchronization_action" model="ir.actions.act_window">
+        <field name="name">Synchronize pickings from Crosslog</field>
+        <field name="res_model">crosslog.picking.synchronization</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+</odoo>

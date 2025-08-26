@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crosslog_stock_lot_action_server" model="ir.actions.server">
+        <field name="name">Crosslog Stock Lots Action</field>
+        <field name="model_id" ref="stock.model_stock_lot"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_crosslog_lots()</field>
+    </record>
+
+    <record id="crosslog_stock_lot_action" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">stock.lot</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('available_on_crosslog', '=', True)]</field>
+        <field name="context">
+            {
+                'crosslog': True,
+                'search_default_consumable': 1, 
+                'default_detailed_type': 'product',
+                'group_by': 'product_id',
+            }
+        </field>
+    </record>
+
+    <record id="crosslog_view_production_lot_form" model="ir.ui.view">
+        <field name="name">crosslog.view.production.lot.form</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//group[@name='main_group']//group/field[@name='company_id' and @groups='base.group_multi_company']" position="after">
+                <field name="available_on_crosslog"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crosslog_view_production_lot_tree" model="ir.ui.view">
+        <field name="name">crosslog_stock.production.lot.tree</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='company_id' and @groups='base.group_multi_company']" position="after">
+                <field name="product_qty" optional="show"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
