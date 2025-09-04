@@ -6,7 +6,7 @@ class StockPicking(models.Model):
 
     crosslog_code = fields.Char(string="Crosslog code")
     crosslog_order_id = fields.Char(string="Crosslog order id")
-    crosslog_synchronized = fields.Boolean(string="Synchronized with crosslog", default=False, copy=False)
+    crosslog_synchronized = fields.Boolean(string="Synchronized with Crosslog", default=False, copy=False)
     is_transfered_to_crosslog = fields.Boolean(store=True)
     is_delivered_from_crosslog = fields.Boolean(store=True)
     is_returned_to_crosslog = fields.Boolean(store=True)

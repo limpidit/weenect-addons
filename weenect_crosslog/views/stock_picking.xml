@@ -5,8 +5,7 @@
         <field name="name">Internal transfers to Crosslog warehouses</field>
         <field name="res_model">stock.picking</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('is_transfered_to_crosslog', '=', True)]</field>
-        <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
+        <field name="domain">[('crosslog_synchronized', '=', True), ('picking_type_id.code', '=', 'internal')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No transfer found. Let's create one!
@@ -20,14 +19,31 @@
         <field name="name">Deliveries from Crosslog warehouses</field>
         <field name="res_model">stock.picking</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('is_delivered_from_crosslog', '=', True)]</field>
-        <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
+        <field name="domain">[('crosslog_synchronized', '=', True), ('picking_type_id.code', '=', 'outgoing')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No transfer found. Let's create one!
             </p><p>
                 Transfers allow you to move products from one location to another.
             </p>
+        </field>
+    </record>
+
+    <record id="crosslog_stock_picking_view_form" model="ir.ui.view">
+        <field name="name">crosslog.stock.picking.view.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="crosslog" string="Crosslog">
+                    <group>
+                        <group>
+                            <field name="crosslog_synchronized"/>
+                            <field name="crosslog_code"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
         </field>
     </record>
 

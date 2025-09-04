@@ -1,5 +1,6 @@
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api
+from datetime import datetime
 import requests
 from xml.etree import ElementTree as ET
 from odoo.exceptions import UserError
@@ -20,6 +21,10 @@ class CrosslogConnection(models.Model):
 
     warehouse_id = fields.Many2one(comodel_name='stock.warehouse', string="Warehouse")
     crosslog_order_state_ids = fields.Many2many(comodel_name='crosslog.order.state', string="Crosslog orders state")
+    crosslog_reception_state_ids = fields.Many2many(comodel_name='crosslog.reception.state', string="Crosslog receptions state")
+
+    default_delivery_partner_id = fields.Many2one(comodel_name='res.partner', string="Default delivery user")
+
 
 
     ################ Requests preparation ################
@@ -31,6 +36,10 @@ class CrosslogConnection(models.Model):
             soap_body = self._prepare_exist_product_request(params['product_code'])
         elif method_name == 'GetProductInformation':
             soap_body = self._prepare_get_product_information_request(params['product_code'])
+        elif method_name == 'GetCustomerOrdersUpdated':
+            soap_body = self._prepare_get_customer_orders_updated_request()
+        elif method_name == 'GetSupplierOrdersUpdated':
+            soap_body = self._prepare_get_supplier_orders_updated_request()
 
         soap_request = f"""<?xml version="1.0" encoding="UTF-8"?>
         <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:mob="http://mobile.crossdesk.com/">
@@ -65,6 +74,11 @@ class CrosslogConnection(models.Model):
         """Prepare the request for the GetCustomerOrdersUpdated method."""
         return f"""<mob:GetCustomerOrdersUpdated></mob:GetCustomerOrdersUpdated>"""
 
+    @api.model
+    def _prepare_get_supplier_orders_updated_request(self):
+        """Prepare the request for the GetSupplierOrdersUpdated method."""
+        return f"""<mob:GetSupplierOrdersUpdated></mob:GetSupplierOrdersUpdated>"""
+
 
 
     ################ Requests execution ################
@@ -87,34 +101,119 @@ class CrosslogConnection(models.Model):
             ns = {'ns': 'http://mobile.crossdesk.com/'}
             
             if method_name == 'ExistProduct':
-                result = root.find('.//ns:ExistProductResult', ns)
-                return result.text.lower() == 'true'
-                
+                return self._parse_exist_item_response(root, ns)
             elif method_name == 'GetProductInformation':
-                result = root.find('.//ns:GetProductInformationResult', ns)
-                data = {
-                    'code': result.find('ns:Code', ns).text,
-                    'barcode': result.find('ns:BarCode', ns).text,
-                    'available_qty': float(result.find('ns:AvailableQuantity', ns).text),
-                    'reserved_qty': float(result.find('ns:ReservedQuantity', ns).text),
-                    'receipt_qty': float(result.find('ns:ReceiptQuantity', ns).text),
-                    'rubbish_qty': float(result.find('ns:RubbishQuantity', ns).text),
-                    'security_qty': float(result.find('ns:SecurityQuantity', ns).text),
-                    'lots': [],
-                }
-                lots = result.findall('.//ns:XLFlowProductLotReturnEntity', ns)
-                for lot in lots:
-                    data['lots'].append({
-                        'lot_number': lot.find('ns:LotNumber', ns).text,
-                        'expired_date': lot.find('ns:ExpiredDate', ns).text,
-                        'quantity': float(lot.find('ns:Quantity', ns).text),
-                    })
-                return data
+                return self._parse_get_product_information_response(root, ns)
             elif method_name == 'GetCustomerOrdersUpdated':
-                result = root.findall('.//ns:XLFlowCustomerOrderReturnEntity', ns)
+                return self._parse_get_customer_orders_updated_response(root, ns)
+            elif method_name == 'GetSupplierOrdersUpdated':
+                return self._parse_get_supplier_orders_updated_response(root, ns)
+
         except ET.ParseError as e:
             _logger.error(f"Failed to parse SOAP response: {str(e)}")
             raise UserError(_("Invalid SOAP response format"))
+
+
+    def _parse_exist_item_response(self, root, ns):
+        result = root.find('.//ns:ExistProductResult', ns)
+        return result.text.lower() == 'true'
+
+    def _parse_get_product_information_response(self, root, ns):
+        result = root.find('.//ns:GetProductInformationResult', ns)
+        data = {
+            'code': self._txt(result, 'ns:Code', ns),
+            'barcode': self._txt(result, 'ns:BarCode', ns),
+            'available_qty': (self._txt(result, 'ns:AvailableQuantity', ns)),
+            'reserved_qty': (self._txt(result, 'ns:ReservedQuantity', ns)),
+            'receipt_qty': (self._txt(result, 'ns:ReceiptQuantity', ns)),
+            'rubbish_qty': (self._txt(result, 'ns:RubbishQuantity', ns)),
+            'security_qty': (self._txt(result, 'ns:SecurityQuantity', ns)),
+            'lots': [],
+        }
+        lots = result.findall('.//ns:XLFlowProductLotReturnEntity', ns)
+        for lot in lots:
+            data['lots'].append({
+                'lot_number': self._txt(lot, 'ns:LotNumber', ns),
+                'expired_date': self._txt(lot, 'ns:ExpiredDate', ns),
+                'quantity': (self._txt(lot, 'ns:Quantity', ns)),
+            })
+        return data
+
+
+    def _parse_get_customer_orders_updated_response(self, root, ns):
+        orders = root.findall('.//ns:XLFlowCustomerOrderReturnEntity', ns)
+        data = []
+        for order in orders:
+            order_dict = {
+                'order_number': self._txt(order, 'ns:OrderNumber', ns),
+                'state': self._txt(order, 'ns:State', ns),
+                'order_lines': [],
+            }
+            lines_parent = order.find('ns:OrderLines', ns)
+            if lines_parent is not None:
+                for line in lines_parent.findall('ns:XLFlowOrderLineReturnEntity', ns):
+                    line_dict = {
+                        'code': self._txt(line, 'ns:Code', ns),
+                        'initial_qty': (self._txt(line, 'ns:InitialQuantity', ns)),
+                        'reserved_qty': (self._txt(line, 'ns:ReservedQuantity', ns)),
+                        'returned_qty': (self._txt(line, 'ns:ReturnedQuantity', ns)),
+                        'sent_qty': (self._txt(line, 'ns:SentQuantity', ns)),
+                        'lots': [],
+                    }
+                    lots_parent = line.find('ns:OrderLineProductLots', ns)
+                    if lots_parent is not None:
+                        for lot in lots_parent.findall('ns:XLFlowOrderLineProductLotReturnEntity', ns):
+                            line_dict['lots'].append({
+                                'lot_code': self._txt(lot, 'ns:ProductLotCode', ns),
+                                'quantity': (self._txt(lot, 'ns:Quantity', ns)),
+                            })
+                    order_dict['order_lines'].append(line_dict)
+                    
+            date_str = None
+            order_events_parent = order.find('ns:OrderEvents', ns)
+            if order_events_parent is not None:
+                order_events = order_events_parent.findall('ns:XLFlowOrderEventReturnEntity', ns)
+                if order_events:
+                    last_event = order_events[-1]
+                    date_val = last_event.find('ns:Date', ns)
+                    if date_val is not None and date_val.text:
+                        date_str = date_val.text.strip()
+                        try:
+                            date_obj = datetime.fromisoformat(date_str)
+                            order_dict['last_date'] = date_obj
+                        except Exception:
+                            order_dict['last_date'] = date_str
+                    else:
+                        order_dict['last_date'] = None
+                else:
+                    order_dict['last_date'] = None
+            else:
+                order_dict['last_date'] = None
+
+            data.append(order_dict)
+        return data
+
+    def _parse_get_supplier_orders_updated_response(self, root, ns):
+        orders = root.findall('.//ns:XLFlowSupplierOrderReturnEntity', ns)
+        data = []
+        for order in orders:
+            order_dict = {
+                'order_number': self._txt(order, 'ns:OrderNumber', ns),
+                'state': self._txt(order, 'ns:State', ns),
+                'arrival_date': self._txt(order, 'ns:ArrivalDate', ns),
+                'order_lines': [],
+            }
+            lines_parent = order.find('ns:OrderLines', ns)
+            if lines_parent is not None:
+                for line in lines_parent.findall('ns:XLFlowSupplierOrderLineReturnEntity', ns):
+                    line_dict = {
+                        'code': self._txt(line, 'ns:Code', ns),
+                        'initial_qty': (self._txt(line, 'ns:InitialQuantity', ns)),
+                        'receipt_qty': (self._txt(line, 'ns:ReceiptQuantity', ns))
+                    }
+                    order_dict['order_lines'].append(line_dict)
+            data.append(order_dict)
+        return data
 
 
 
@@ -140,3 +239,18 @@ class CrosslogConnection(models.Model):
         response_text = self._send_soap_request(soap_request)
         result = self._parse_soap_response(response_text, 'GetCustomerOrdersUpdated')
         return result
+
+    def process_get_supplier_orders_updated_request(self):
+        """Process the GetSupplierOrdersUpdated request and return the result."""
+        soap_request = self._prepare_soap_request('GetSupplierOrdersUpdated')
+        response_text = self._send_soap_request(soap_request)
+        result = self._parse_soap_response(response_text, 'GetSupplierOrdersUpdated')
+        return result
+
+
+    ############## Utils ################
+
+    def _txt(self, node, path, ns, default=None):
+        """Retourne node.find(path, ns).text en safe."""
+        el = node.find(path, ns)
+        return el.text.strip() if (el is not None and el.text is not None) else default

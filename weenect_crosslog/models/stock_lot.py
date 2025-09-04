@@ -4,6 +4,7 @@ from odoo import models, fields, api
 class StockLot(models.Model):
     _inherit = 'stock.lot'
 
+    is_default_crosslog_lot = fields.Boolean(string="Is default Crosslog lot", readonly=True, default=False)
     available_on_crosslog = fields.Boolean(string="Available on Crosslog", readonly=True)
 
     @api.model

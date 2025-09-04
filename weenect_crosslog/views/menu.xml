@@ -76,12 +76,26 @@
         <menuitem
             id="crosslog_api_connection_menu"
             name="API Connections"
-            action="crosslog_connection_action"/>
+            action="crosslog_connection_action"
+            sequence="10"/>
+
+        <menuitem
+            id="salesupply_menu_log"
+            name="Synchronization logs"
+            action="crosslog_log_action"
+            sequence="20"/>
 
         <menuitem 
             id="crosslog_order_state_menu"   
             name="Crosslog orders state"
-            action="crosslog_order_state_action"/>
+            action="crosslog_order_state_action"
+            sequence="30"/>
+
+        <menuitem 
+            id="crosslog_reception_state_menu"   
+            name="Crosslog receptions state"
+            action="crosslog_reception_state_action"
+            sequence="40"/>
 
     </menuitem>
 

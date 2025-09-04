@@ -13,7 +13,7 @@
                         <field name="sync_receptions"/>
                     </group>
                     <footer>
-                        <button name="synchronize_picking" string="Synchronize pickings" type="object" class="btn-primary"/>
+                        <button name="synchronize_pickings" string="Synchronize pickings" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-secondary" special="cancel"/>
                     </footer>
                 </sheet>

@@ -17,6 +17,8 @@
         'views/product_template.xml',
         'views/stock_picking.xml',
         'views/stock_lot_views.xml',
+        'views/crosslog_log.xml',
+        'views/crosslog_reception_state.xml',
         # Wizard
         'wizard/crosslog_product_synchronization.xml',
         'wizard/crosslog_picking_synchronization.xml',

@@ -30,7 +30,9 @@
                         </group>
                         <group string="Other">
                             <field name="warehouse_id" />
+                            <field name="default_delivery_partner_id"/>
                             <field name="crosslog_order_state_ids" widget="many2many_tags"/>
+                            <field name="crosslog_reception_state_ids" widget="many2many_tags"/>
                         </group>
                     </group>
                 </sheet>
