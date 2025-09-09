@@ -19,10 +19,12 @@
         'views/stock_lot_views.xml',
         'views/crosslog_log.xml',
         'views/crosslog_reception_state.xml',
+        'views/crosslog_return_state.xml',
         # Wizard
         'wizard/crosslog_product_synchronization.xml',
         'wizard/crosslog_picking_synchronization.xml',
         #Data
+        'data/ir_cron.xml',
         'data/crosslog_order_state.xml',
         # Menus
         'views/menu.xml',

@@ -53,7 +53,8 @@ class CrosslogLog(models.Model):
             'res_id': new_log.id,
             'target': 'current',
         }
-        
+
+    @api.model   
     def remove_older_logs(self):
         date_limit = datetime.today() - timedelta(days=30)
         logs_to_remove = self.search([('execution_date', '<', date_limit)])

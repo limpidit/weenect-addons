@@ -9,3 +9,5 @@ access_crosslog_log_manager,access.crosslog.log.manager,model_crosslog_log,stock
 access_crosslog_log_user,access.crosslog.log.user,model_crosslog_log,stock.group_stock_user,1,0,0,0
 access_crosslog_reception_state_manager,access.crosslog.reception.state.manager,model_crosslog_reception_state,stock.group_stock_manager,1,1,1,1
 access_crosslog_reception_state_user,access.crosslog.reception.state.user,model_crosslog_reception_state,stock.group_stock_user,1,0,0,0
+access_crosslog_return_state_manager,access.crosslog.return.state.manager,model_crosslog_return_state,stock.group_stock_manager,1,1,1,1
+access_crosslog_return_state_user,access.crosslog.return.state.user,model_crosslog_return_state,stock.group_stock_user,1,0,0,0

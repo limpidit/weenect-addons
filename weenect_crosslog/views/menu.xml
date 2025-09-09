@@ -64,6 +64,12 @@
             name="Deliveries"
             action="crosslog_deliveries_action"
             sequence="20"/>
+
+        <menuitem 
+            id="crosslog_returns_menu" 
+            name="Returns"
+            action="crosslog_returns_action"
+            sequence="30"/>
     
     </menuitem>
 
@@ -96,6 +102,12 @@
             name="Crosslog receptions state"
             action="crosslog_reception_state_action"
             sequence="40"/>
+
+        <menuitem 
+            id="crosslog_return_state_menu"   
+            name="Crosslog returns state"
+            action="crosslog_return_state_action"
+            sequence="50"/>
 
     </menuitem>
 

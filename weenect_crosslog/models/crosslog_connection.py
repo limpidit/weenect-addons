@@ -20,8 +20,9 @@ class CrosslogConnection(models.Model):
     password = fields.Char(string="API password", required=True)
 
     warehouse_id = fields.Many2one(comodel_name='stock.warehouse', string="Warehouse")
-    crosslog_order_state_ids = fields.Many2many(comodel_name='crosslog.order.state', string="Crosslog orders state")
-    crosslog_reception_state_ids = fields.Many2many(comodel_name='crosslog.reception.state', string="Crosslog receptions state")
+    crosslog_order_state_ids = fields.Many2many(comodel_name='crosslog.order.state', string="Crosslog order states corresponding to 'shipped'")
+    crosslog_reception_state_ids = fields.Many2many(comodel_name='crosslog.reception.state', string="Crosslog receptions status corresponding to 'receveid'")
+    crosslog_return_state_ids = fields.Many2many(comodel_name='crosslog.return.state', string="Crosslog returns status corresponding to 'receveid'")
 
     default_delivery_partner_id = fields.Many2one(comodel_name='res.partner', string="Default delivery user")
 
@@ -40,6 +41,8 @@ class CrosslogConnection(models.Model):
             soap_body = self._prepare_get_customer_orders_updated_request()
         elif method_name == 'GetSupplierOrdersUpdated':
             soap_body = self._prepare_get_supplier_orders_updated_request()
+        elif method_name == 'GetCustomerReturnsUpdated':
+            soap_body = self._prepare_get_customer_returns_updated_request()
 
         soap_request = f"""<?xml version="1.0" encoding="UTF-8"?>
         <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:mob="http://mobile.crossdesk.com/">
@@ -79,6 +82,10 @@ class CrosslogConnection(models.Model):
         """Prepare the request for the GetSupplierOrdersUpdated method."""
         return f"""<mob:GetSupplierOrdersUpdated></mob:GetSupplierOrdersUpdated>"""
 
+    @api.model
+    def _prepare_get_customer_returns_updated_request(self):
+        """Prepare the request for the GetSupplierOrdersUpdated method."""
+        return f"""<mob:GetCustomerReturnsUpdated></mob:GetCustomerReturnsUpdated>"""
 
 
     ################ Requests execution ################
@@ -87,7 +94,7 @@ class CrosslogConnection(models.Model):
         """Send the SOAP request to the API and return the response."""
         headers = {'Content-Type': 'text/xml; charset=utf-8'}
         try:
-            response = requests.post(self.api_url, data=soap_request, headers=headers, timeout=10)
+            response = requests.post(self.api_url, data=soap_request, headers=headers, timeout=60)
             response.raise_for_status()
             return response.text
         except requests.exceptions.RequestException as e:
@@ -108,6 +115,8 @@ class CrosslogConnection(models.Model):
                 return self._parse_get_customer_orders_updated_response(root, ns)
             elif method_name == 'GetSupplierOrdersUpdated':
                 return self._parse_get_supplier_orders_updated_response(root, ns)
+            elif method_name == 'GetCustomerReturnsUpdated':
+                return self._parse_get_customer_returns_updated_response(root, ns)
 
         except ET.ParseError as e:
             _logger.error(f"Failed to parse SOAP response: {str(e)}")
@@ -168,30 +177,9 @@ class CrosslogConnection(models.Model):
                                 'quantity': (self._txt(lot, 'ns:Quantity', ns)),
                             })
                     order_dict['order_lines'].append(line_dict)
-                    
-            date_str = None
-            order_events_parent = order.find('ns:OrderEvents', ns)
-            if order_events_parent is not None:
-                order_events = order_events_parent.findall('ns:XLFlowOrderEventReturnEntity', ns)
-                if order_events:
-                    last_event = order_events[-1]
-                    date_val = last_event.find('ns:Date', ns)
-                    if date_val is not None and date_val.text:
-                        date_str = date_val.text.strip()
-                        try:
-                            date_obj = datetime.fromisoformat(date_str)
-                            order_dict['last_date'] = date_obj
-                        except Exception:
-                            order_dict['last_date'] = date_str
-                    else:
-                        order_dict['last_date'] = None
-                else:
-                    order_dict['last_date'] = None
-            else:
-                order_dict['last_date'] = None
-
             data.append(order_dict)
         return data
+
 
     def _parse_get_supplier_orders_updated_response(self, root, ns):
         orders = root.findall('.//ns:XLFlowSupplierOrderReturnEntity', ns)
@@ -215,6 +203,27 @@ class CrosslogConnection(models.Model):
             data.append(order_dict)
         return data
 
+    def _parse_get_customer_returns_updated_response(self, root, ns):
+        orders = root.findall('.//ns:XLFlowCustomerReturnReturnEntity', ns)
+        data = []
+        for order in orders:
+            order_dict = {
+                'return_number': self._txt(order, 'ns:ReturnNumber', ns),
+                'order_number': self._txt(order, 'ns:OrderNumber', ns),
+                'state': self._txt(order, 'ns:State', ns),
+                'order_lines': [],
+            }
+            lines_parent = order.find('ns:ReturnLines', ns)
+            if lines_parent is not None:
+                for line in lines_parent.findall('ns:XLFlowCustomerReturnLineReturnEntity', ns):
+                    line_dict = {
+                        'code': self._txt(line, 'ns:Code', ns),
+                        'receipt_qty': (self._txt(line, 'ns:ReceiptQuantity', ns))
+                    }
+                    order_dict['order_lines'].append(line_dict)
+            data.append(order_dict)
+        return data
+        
 
 
     ################ Business methods ################
@@ -245,6 +254,13 @@ class CrosslogConnection(models.Model):
         soap_request = self._prepare_soap_request('GetSupplierOrdersUpdated')
         response_text = self._send_soap_request(soap_request)
         result = self._parse_soap_response(response_text, 'GetSupplierOrdersUpdated')
+        return result
+
+    def process_get_customer_returns_updated_request(self):
+        """Process the GetCustomerReturnsUpdated request and return the result."""
+        soap_request = self._prepare_soap_request('GetCustomerReturnsUpdated')
+        response_text = self._send_soap_request(soap_request)
+        result = self._parse_soap_response(response_text, 'GetCustomerReturnsUpdated')
         return result
 
 

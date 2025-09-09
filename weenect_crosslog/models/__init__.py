@@ -5,3 +5,4 @@ from . import stock_picking
 from . import stock_lot
 from . import crosslog_log
 from . import crosslog_reception_state
+from . import crosslog_return_state

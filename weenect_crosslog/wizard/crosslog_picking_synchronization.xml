@@ -11,6 +11,7 @@
                         <field name="api_connection_id" required="1"/>
                         <field name="sync_deliveries"/>
                         <field name="sync_receptions"/>
+                        <field name="sync_returns" />
                     </group>
                     <footer>
                         <button name="synchronize_pickings" string="Synchronize pickings" type="object" class="btn-primary"/>

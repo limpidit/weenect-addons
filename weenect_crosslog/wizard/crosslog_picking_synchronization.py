@@ -15,10 +15,10 @@ class CrosslogPickingSynchronization(models.TransientModel):
 
     sync_deliveries = fields.Boolean(string="Synchronize deliveries")
     sync_receptions = fields.Boolean(string="Synchronize receptions")
+    sync_returns = fields.Boolean(string="Synchronize returns")
 
     def synchronize_deliveries(self):
         """Synchronize deliveries with Crosslog."""
-        print('')
         self.ensure_one()
         picking_object = self.env['stock.picking']
         log_object = self.env['crosslog.log']
@@ -41,18 +41,17 @@ class CrosslogPickingSynchronization(models.TransientModel):
                     is_shipping = state in shipping_codes
 
                     picking = picking_object.search([
-                            ('crosslog_code', '=', delivery.get('order_number')),
-                            ('picking_type_id.code', '=', 'outgoing'),
-                            ('location_id', '=', warehouse.lot_stock_id.id),
-                            ('crosslog_synchronized', '=', True)
-                        ], limit=1)
+                        ('crosslog_code', '=', delivery.get('order_number')),
+                        ('picking_type_id.code', '=', 'outgoing'),
+                        ('location_id', '=', warehouse.lot_stock_id.id),
+                        ('crosslog_synchronized', '=', True)
+                    ], limit=1)
 
                     if is_shipping:
                         if picking:
-                            if picking.state != 'done':
-                                picking.action_confirm()
-                                picking.action_assign()
-                                picking._action_done()
+                            if picking.state not in ['done', 'cancel']:
+                                self.make_picking_ready(picking)
+                                self.validate_picking(picking)
                         else:
                             new_picking = self.create_delivery(delivery, warehouse, partner, picking_object)
                             if new_picking:
@@ -131,10 +130,6 @@ class CrosslogPickingSynchronization(models.TransientModel):
         return new_shipment
 
     def synchronize_receptions(self):
-        #Vérifier le statut de la commande fournisseur
-        #Si statut = reçu, vérifier si transfert interne est présent dans Odoo en se basant sur les lignes de commandes (a voir si on se base sur autre chose)
-        #Si transfert interne est présent dans Odoo on vérifie son statut
-        #Si non validé on le valide
         """Synchronize receptions with Crosslog."""
         self.ensure_one()
         picking_object = self.env['stock.picking']
@@ -144,7 +139,6 @@ class CrosslogPickingSynchronization(models.TransientModel):
         move_line_object = self.env['stock.move.line']
 
         warehouse = self.api_connection_id.warehouse_id
-        partner = self.api_connection_id.default_delivery_partner_id
         arrival_status = self.api_connection_id.crosslog_reception_state_ids
 
         try:
@@ -188,13 +182,12 @@ class CrosslogPickingSynchronization(models.TransientModel):
                                 move = picking.move_ids.filtered(lambda m: m.product_id.id == product.id)
                                 if move:
                                     move._action_confirm()
-                                    move._do_unreserve()  # on part propre : pas de reliquats précédents
+                                    move._do_unreserve()
                                     move.write({'product_uom_qty': receipt_qty})
                                     move._action_assign()
 
-                                    ml = move.move_line_ids[:1]  # la ligne de réservation
+                                    ml = move.move_line_ids[:1]
                                     if not ml:
-                                        # fallback : s'il n'y a pas eu de ligne, on en crée une
                                         ml = move_line_object.create({
                                             'move_id': move.id,
                                             'product_id': move.product_id.id,
@@ -202,13 +195,12 @@ class CrosslogPickingSynchronization(models.TransientModel):
                                             'picking_id': move.picking_id.id,
                                             'location_id': move.location_id.id,
                                             'location_dest_id': move.location_dest_id.id,
-                                            'reserved_uom_qty': receipt_qty,  # réservé
+                                            'reserved_uom_qty': receipt_qty,
                                         })
 
-                                    # 3) Transformer la ligne réservée en "faite"
                                     ml.write({
                                         'qty_done': receipt_qty,
-                                        'reserved_uom_qty': receipt_qty,   # garder aligné évite des reliquats bizarres
+                                        'reserved_uom_qty': receipt_qty,
                                     })
                                 else:
                                     move_vals = {
@@ -241,6 +233,137 @@ class CrosslogPickingSynchronization(models.TransientModel):
         except Exception as e:
             log_object.log_error(title=_(f"Error during receptions synchronization."), message=(e))
 
+    def synchronize_returns(self):
+        """Synchronize returns with Crosslog."""
+        self.ensure_one()
+        picking_object = self.env['stock.picking']
+        log_object = self.env['crosslog.log']
+        product_product_object = self.env['product.product']
+        move_object = self.env['stock.move']
+        move_line_object = self.env['stock.move.line']
+
+        warehouse = self.api_connection_id.warehouse_id
+        return_status = self.api_connection_id.crosslog_return_state_ids
+
+        try:
+            log_object.log_info(title=_(f"Returns synchronization started."))
+            returns = self.api_connection_id.process_get_customer_returns_updated_request()
+            return_codes = {str(c) for c in return_status.mapped('code') if c is not None}
+            valid_returns = [
+                re for re in returns
+                if re.get('state') in return_codes
+            ]
+            #Gérer les batchs
+            for re in valid_returns:
+                try:
+                    return_number = re.get('return_number') or []
+                    order_number = re.get('order_number') or []
+                    lines = re.get('order_lines') or []
+
+                    if not return_number:
+                        log_object.log_warning(f"Return number is missing in the response.")
+                        continue
+                    if not order_number:
+                        log_object.log_warning(f"Order number is missing in the response for {return_number} return.")
+                        continue
+                    if not lines:
+                        log_object.log_warning(f"No order lines from Crosslog for {order_number} return.")
+                        continue
+                    
+                    exist_return = picking_object.search([
+                        ('crosslog_code', '=', return_number),
+                        ('picking_type_id.code', '=', 'incoming'),
+                        ('location_dest_id', '=', warehouse.lot_stock_id.id),
+                        ('crosslog_synchronized', '=', True)
+                    ])
+                    if exist_return:
+                        log_object.log_info(f"Return {return_number} already exist in Odoo.")
+                        continue
+
+                    delivery = picking_object.search([
+                        ('crosslog_code', '=', order_number),
+                        ('picking_type_id.code', '=', 'outgoing'),
+                        ('location_id', '=', warehouse.lot_stock_id.id),
+                        ('crosslog_synchronized', '=', True)
+                    ], limit=1)
+
+                    if not delivery:
+                        log_object.log_warning(f"Synchronized delivery not found with {order_number} code for {return_number} return.")
+                        continue
+
+                    
+                    return_picking = False
+                    for line in lines:
+                        receipt_qty = float(line['receipt_qty'] or 0.0)
+                        if receipt_qty > 0:
+                            product = product_product_object.search([('default_code', '=', line['code'])], limit=1)
+                            if not product:
+                                log_object.log_warning(f"Product {line['code']} not found in Odoo for {return_number} return.")
+                                continue
+
+                            move = delivery.move_ids.filtered(lambda m: m.product_id.id == product.id)
+                            if not move:
+                                log_object.log_warning(f"No line on {order_number} delivery with {line['code']} product matched for {return_number} return.")
+                                continue
+                            
+                            if not return_picking:
+                                return_type = delivery.picking_type_id.return_picking_type_id or delivery.picking_type_id
+                                return_picking = picking_object.create({
+                                    'picking_type_id': return_type.id,
+                                    'company_id': delivery.company_id.id,
+                                    'origin': f"Return of {delivery.name}",
+                                    'partner_id': delivery.partner_id.id,
+                                    'location_id': delivery.location_dest_id.id,
+                                    'location_dest_id': delivery.location_id.id,
+                                })
+
+                            ret_move = move_object.create({
+                                'name': move.name or product.display_name,
+                                'product_id': product.id,
+                                'product_uom_qty': receipt_qty,
+                                'product_uom': move.product_uom.id,
+                                'picking_id': return_picking.id,
+                                'location_id': return_picking.location_id.id,
+                                'location_dest_id': return_picking.location_dest_id.id,
+                                'origin_returned_move_id': move.id,
+                                'procure_method': 'make_to_stock',
+                            })
+                            ret_move._action_confirm()
+                            ret_move._action_assign()
+
+                            ml_vals = {
+                                'move_id': ret_move.id,
+                                'picking_id': return_picking.id,
+                                'product_id': product.id,
+                                'product_uom_id': move.product_uom.id,
+                                'qty_done': receipt_qty,
+                                'location_id': return_picking.location_id.id,
+                                'location_dest_id': return_picking.location_dest_id.id,
+                            }
+
+                            if product.tracking in ('lot', 'serial'):
+                                orig_ml = move.move_line_ids.filtered(lambda l: l.qty_done > 0)[:1]
+                                if orig_ml.lot_id:
+                                    ml_vals['lot_id'] = orig_ml.lot_id.id
+                                elif orig_ml.lot_name:
+                                    ml_vals['lot_name'] = orig_ml.lot_name
+
+                            move_line_object.create(ml_vals)
+
+                    return_picking.button_validate()
+
+                    return_picking.crosslog_synchronized = True
+                    return_picking.crosslog_code = return_number
+
+                except Exception as e:
+                    log_object.log_error(title=_(f"Error during {return_number} return synchronization."), message=(e))
+
+            log_object.log_info(title=_(f"Returns synchronization successfully completed."))
+
+        except Exception as e:
+            log_object.log_error(title=_(f"Error during returns synchronization."), message=(e))
+
+
     def make_picking_ready(self, picking):
         picking.action_confirm()
         picking.action_assign()
@@ -251,11 +374,14 @@ class CrosslogPickingSynchronization(models.TransientModel):
     def synchronize_pickings(self):
         """Synchronize pickings with Crosslog."""
         self.ensure_one()
-        if not self.sync_deliveries and not self.sync_receptions:
-            raise UserError("Please select at least one synchronization option (deliveries or receptions).")
+        if not self.sync_deliveries and not self.sync_receptions and not self.sync_returns:
+            raise UserError("Please select at least one synchronization option (deliveries, receptions or returns).")
 
         if self.sync_deliveries:
             self.synchronize_deliveries()
 
         if self.sync_receptions:
             self.synchronize_receptions()
+
+        if self.sync_returns:
+            self.synchronize_returns()
