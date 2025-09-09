@@ -23,7 +23,7 @@ class InvoicD01BMessage(Message):
         self.add_segment(self.get_header_segment())
 
         doc_code = "380" if self.invoice.move_type == "out_invoice" else "381"
-        self.add_segment(Segment("BGM", [doc_code, self.invoice.name, "9"]))
+        self.add_segment(Segment("BGM", doc_code, self.invoice.name, "9"))
         self.add_segment(Segment("DTM", ["137", date_invoice.strftime("%Y%m%d"), "102"]))
 
         picking = self._get_picking()
