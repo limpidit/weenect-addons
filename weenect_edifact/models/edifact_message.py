@@ -1,5 +1,5 @@
 
-from odoo import models, fields, _
+from odoo import models, fields, _, api
 from odoo.exceptions import UserError
 
 from logging import getLogger
@@ -28,29 +28,43 @@ class EdifactMessage(models.Model):
     receiver_id = fields.Many2one(comodel_name='res.partner.id_number', string='Receiver', required=True)
     message_content = fields.Text(string='Message Content')
 
-    def cron_send_sagaflor_edifact_attachments(self):
-        self.ensure_one()
+    @api.model
+    def cron_generate_sagaflor_edifact_message(self):
+        existing_in_progress_message = self.search([
+            ('state', 'in', ['draft', 'linked']), ('message_type', '=', 'd96a')
+        ], limit=1)
+        if existing_in_progress_message:
+            existing_in_progress_message.link_moves()
+        else:
+            sender_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.sender_gln'),
+            receiver_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.sagaflor_gln')
+            new_message = self.create({
+                'name': f"Sagaflor_Message_{fields.Date.today().strftime('%Y%m%d')}",
+                'message_type': 'd96a',
+                'sender_id': self.env['res.partner.id_number'].browse(sender_id) if sender_id else False,
+                'receiver_id': self.env['ir.config_parameter'].browse(receiver_id) if receiver_id else False,
+            })
+            new_message.link_moves()
+        _logger.info(f"Created EDIFACT message for Sagaflor.")
 
-        _logger.info("Cron job to send EDIFACT attachments started.")
-        mail_template = self.env.ref('weenect_edifact.email_template_edi_invoic_sagaflor')
-
-        if not self.message_content:
-            self.generate_edifact_content()
-    
-        attachments = []
-        attachment = self.env['ir.attachment'].create({
-            'name': f"Message_{self.id}.txt",
-            'type': 'binary',
-            'datas': self.message_content,
-            'res_model': 'account.move',
-            'res_id': self.id,
-            'mimetype': 'application/edi'
-        })
-        attachments.append(attachment.id)
-            
-        if attachments:
-            mail_template.attachment_ids = [(6, 0, attachments)]
-            mail_template.send_mail(self.id, force_send=True)
+    @api.model
+    def cron_generate_futterhaus_edifact_message(self):
+        existing_in_progress_message = self.search([
+            ('state', 'in', ['draft', 'linked']), ('message_type', '=', 'd01b')
+        ], limit=1)
+        if existing_in_progress_message:
+            existing_in_progress_message.link_moves()
+        else:
+            sender_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.sender_gln'),
+            receiver_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.futterhaus_gln')
+            new_message = self.create({
+                'name': f"Futterhaus_Message_{fields.Date.today().strftime('%Y%m%d')}",
+                'message_type': 'd01b',
+                'sender_id': self.env['res.partner.id_number'].browse(sender_id) if sender_id else False,
+                'receiver_id': self.env['ir.config_parameter'].browse(receiver_id) if receiver_id else False,
+            })
+            new_message.link_moves()
+        _logger.info(f"Created EDIFACT message for Futterhaus.")
 
     def link_moves(self):
         """

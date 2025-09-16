@@ -42,11 +42,11 @@ class AccountMove(models.Model):
         self.ensure_one()
         interchange = self._edifact_invoice_get_interchange()
 
-        if self.partner_id.export_format == 'd01b' or (self.partner_id.parent_id and self.partner_id.parent_id.export_format == 'd01b'):
+        if self.partner_id.edi_export_format == 'd01b' or (self.partner_id.parent_id and self.partner_id.parent_id.edi_export_format == 'd01b'):
             message = InvoicD01BMessage(self)
             interchange.add_message(message)
 
-        elif self.partner_id.export_format == 'd96a' or (self.partner_id.parent_id and self.partner_id.parent_id.export_format == 'd96a'):
+        elif self.partner_id.edi_export_format == 'd96a' or (self.partner_id.parent_id and self.partner_id.parent_id.edi_export_format == 'd96a'):
             message = InvoicD96AMessage(self)
             interchange.add_message(message)
 
@@ -58,7 +58,6 @@ class AccountMove(models.Model):
             for elem in segment.elements:
                 if not isinstance(elem, (str, list)):
                     _logger.warning(f"Segment element not string or list: {repr(elem)}")
-
 
         attachment = self.env['ir.attachment'].create({
             'name': f"Invoice {self.name}.txt",

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_res_config_settings" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.weenect.edifact</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='account_digitalization']" position="after">
+                <h2>Edifact</h2>
+                <div class="row mt16 o_settings_container" id="account_edifact">
+                    <div class="col-12 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane" id="digitalizeocr">
+                            <span class="o_form_label">Configuration des GLNs</span>
+                            <div class="text-muted">
+                                GLNS à utiliser lors de la génération des messages EDIFACT.
+                            </div>
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="sender_gln_id" class="col-lg-2 o_light_label" string="GLN expéditeur" />
+                                    <field name="sender_gln_id"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="sagaflor_gln_id" class="col-lg-2 o_light_label" string="GLN Sagaflor" />
+                                    <field name="sagaflor_gln_id"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="sagaflor_gln_id" class="col-lg-2 o_light_label" string="GLN Futterhaus" />
+                                    <field name="futterhaus_gln_id"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
