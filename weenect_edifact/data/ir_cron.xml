@@ -4,17 +4,25 @@
     <data noupdate="1">
 
         <record id="sagaflor_edifact_cron" model="ir.cron">
-            <field name="name">EDIFACT : Sending Sagaflor edifact attachments</field>
-            <field name="model_id" ref="model_account_move"/>
+            <field name="name">EDIFACT : Generating Sagaflor message</field>
+            <field name="model_id" ref="model_edifact_message"/>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="False"/>
             <field name="state">code</field>
-            <field name="code">
-moves = model.search([('state', '=', 'posted'), ('partner_id.export_format', '=', 'd96a')])
-moves.cron_send_sagaflor_edifact_attachments()
-            </field>
+            <field name="code">model.cron_generate_sagaflor_edifact_message()</field>
+        </record>
+
+        <record id="futterhaus_edifact_cron" model="ir.cron">
+            <field name="name">EDIFACT : Generating Futterhaus message</field>
+            <field name="model_id" ref="model_edifact_message"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_generate_futterhaus_edifact_message()</field>
         </record>
     
     </data>

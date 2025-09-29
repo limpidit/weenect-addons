@@ -1,0 +1,435 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* weenect_edifact
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-18 11:42+0000\n"
+"PO-Revision-Date: 2025-07-18 13:47+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.6\n"
+
+#. module: weenect_edifact
+#: model:mail.template,body_html:weenect_edifact.email_template_edi_invoic_sagaflor
+msgid ""
+"\n"
+"                <!-- Vide : corps vide obligatoire -->\n"
+"            "
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_needaction
+msgid "Action Needed"
+msgstr "Action Nécessaire"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_state
+msgid "Activity State"
+msgstr "État de l’activité"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d’activité"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__edifact_message__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.edifact_res_partner_view_form
+msgid "EDI Export"
+msgstr "Export EDI"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_res_partner__edi_export_format
+#: model:ir.model.fields,field_description:weenect_edifact.field_res_users__edi_export_format
+msgid "EDI invoice export format"
+msgstr "Format d’export des factures EDI"
+
+#. module: weenect_edifact
+#: model:ir.actions.server,name:weenect_edifact.sagaflor_edifact_cron_ir_actions_server
+#: model:ir.cron,cron_name:weenect_edifact.sagaflor_edifact_cron
+msgid "EDIFACT : Sending Sagaflor edifact attachments"
+msgstr "EDIFACT : Envoi de l’EDI Sagaflor"
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_edifact_message
+msgid "EDIFACT Message"
+msgstr "Message EDIFACT"
+
+#. module: weenect_edifact
+#: model:ir.actions.act_window,name:weenect_edifact.action_edifact_message
+msgid "EDIFACT Messages"
+msgstr "Messages EDIFACT"
+
+#. module: weenect_edifact
+#: model:ir.ui.menu,name:weenect_edifact.edifact_message_menu
+msgid "Edifact Messages"
+msgstr "Messages EDIFACT"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_account_bank_statement_line__edifact_attachment_id
+#: model:ir.model.fields,field_description:weenect_edifact.field_account_move__edifact_attachment_id
+#: model:ir.model.fields,field_description:weenect_edifact.field_account_payment__edifact_attachment_id
+msgid "Edifact attachment"
+msgstr "Pièces jointe"
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr "Assistant de composition d'emails"
+
+#. module: weenect_edifact
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__edifact_message__state__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__error_message
+msgid "Error Message"
+msgstr "Message d’erreur"
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.view_edifact_message_form
+msgid "Exchange Content"
+msgstr "Contenu de l’échange"
+
+#. module: weenect_edifact
+#: model:mail.template,name:weenect_edifact.email_template_edi_invoic_sagaflor
+msgid "Export des factures Sagaflor EDIFACT INVOIC D96A"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__edifact_message__message_type__d01b
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__res_partner__edi_export_format__d01b
+msgid "Futterhaus"
+msgstr ""
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.view_edifact_message_form
+msgid "Generate EDIFACT Content"
+msgstr "Générer le contenu EDIFACT"
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.edifact_view_move_form
+msgid "Generate edifact invoice"
+msgstr "Générer la facture EDIFACT"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_account_bank_statement_line__has_been_sent
+#: model:ir.model.fields,field_description:weenect_edifact.field_account_move__has_been_sent
+#: model:ir.model.fields,field_description:weenect_edifact.field_account_payment__has_been_sent
+msgid "Has been sent"
+msgstr "A été envoyée"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__id
+msgid "ID"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:mail.template,subject:weenect_edifact.email_template_edi_invoic_sagaflor
+msgid "INVOIC WEENECT"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__message_has_error
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__edifact_message__state__linked
+msgid "Invoices linked"
+msgstr "Pièces comptables liées"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.view_edifact_message_form
+msgid "Link Moves"
+msgstr "Lier les pièces comptables"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_main_attachment_id
+msgid "Main Attachment"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_content
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__name
+msgid "Message Name"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_type
+msgid "Message Type"
+msgstr "Type de message"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_mail_mail
+msgid "Outgoing Mails"
+msgstr "Emails sortants"
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_res_partner_id_category
+msgid "Partner ID Category"
+msgstr "Catégorie d'identifiants"
+
+#. module: weenect_edifact
+#: model:ir.model,name:weenect_edifact.model_res_partner_id_number
+msgid "Partner ID Number"
+msgstr "Identifiants"
+
+#. module: weenect_edifact
+#. odoo-python
+#: code:addons/weenect_edifact/models/account_move.py:0
+#, python-format
+msgid "Partner is not allowed to use the feature."
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__receiver_id
+msgid "Receiver"
+msgstr "Destinataire"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__move_ids
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.view_edifact_message_form
+msgid "Related Moves"
+msgstr "Pièces comptables associées"
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.view_edifact_message_form
+msgid "Reset to Draft"
+msgstr "Remettre en brouillon"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__edifact_message__message_type__d96a
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__res_partner__edi_export_format__d96a
+msgid "Sagaflor"
+msgstr ""
+
+#. module: weenect_edifact
+#: model_terms:ir.ui.view,arch_db:weenect_edifact.view_edifact_message_form
+msgid "Send by email"
+msgstr "Envoyer par mail"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__sender_id
+msgid "Sender"
+msgstr "Expéditeur"
+
+#. module: weenect_edifact
+#: model:ir.model.fields.selection,name:weenect_edifact.selection__edifact_message__state__sent
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__state
+msgid "State"
+msgstr "Statut"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: weenect_edifact
+#. odoo-python
+#: code:addons/weenect_edifact/models/account_move.py:0
+#: code:addons/weenect_edifact/models/edifact_message.py:0
+#, python-format
+msgid "The selected export format is not supported."
+msgstr "Le format sélectionné n’est pas supporté"
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,field_description:weenect_edifact.field_edifact_message__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: weenect_edifact
+#: model:ir.model.fields,help:weenect_edifact.field_edifact_message__website_message_ids
+msgid "Website communication history"
+msgstr ""
