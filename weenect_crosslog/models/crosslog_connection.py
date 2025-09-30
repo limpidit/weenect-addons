@@ -45,6 +45,8 @@ class CrosslogConnection(models.Model):
             soap_body = self._prepare_get_customer_returns_updated_request()
         elif method_name == 'ValidateSupplierOrdersUpdated':
             soap_body = self._prepare_validate_supplier_orders_updated_request()
+        elif method_name == 'ValidateCustomerOrdersUpdated':
+            soap_body = self._prepare_validate_customer_orders_updated_request()
 
         soap_request = f"""<?xml version="1.0" encoding="UTF-8"?>
         <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:mob="http://mobile.crossdesk.com/">
@@ -94,6 +96,11 @@ class CrosslogConnection(models.Model):
         """Prepare the request for the ValidateSupplierOrdersUpdated method."""
         return f"""<mob:ValidateSupplierOrdersUpdated></mob:ValidateSupplierOrdersUpdated>"""
 
+    @api.model
+    def _prepare_validate_customer_orders_updated_request(self):
+        """Prepare the request for the ValidateCustomerOrdersUpdated method."""
+        return f"""<mob:ValidateCustomerOrdersUpdated></mob:ValidateCustomerOrdersUpdated>"""
+
 
     ################ Requests execution ################
 
@@ -124,8 +131,6 @@ class CrosslogConnection(models.Model):
                 return self._parse_get_supplier_orders_updated_response(root, ns)
             elif method_name == 'GetCustomerReturnsUpdated':
                 return self._parse_get_customer_returns_updated_response(root, ns)
-            elif method_name == 'ValidateSupplierOrdersUpdated':
-                return self._parse_validate_supplier_orders_updated_response(status_code)
 
         except ET.ParseError as e:
             _logger.error(f"Failed to parse SOAP response: {str(e)}")
@@ -274,6 +279,12 @@ class CrosslogConnection(models.Model):
     def process_validate_suppplier_orders_updated_request(self):
         """Process the ValidateSupplierOrdersUpdated request and return the result."""
         soap_request = self._prepare_soap_request('ValidateSupplierOrdersUpdated')
+        status_code, response_text = self._send_soap_request(soap_request)
+        return status_code
+
+    def process_validate_customer_orders_updated_request(self):
+        """Process the ValidateCustomerOrdersUpdated request and return the result."""
+        soap_request = self._prepare_soap_request('ValidateCustomerOrdersUpdated')
         status_code, response_text = self._send_soap_request(soap_request)
         return status_code
 
