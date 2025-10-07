@@ -147,6 +147,12 @@ class EdifactMessage(models.Model):
 
         self.message_content = interchange.serialize()
 
+        if self.state == 'error':
+            if self.move_ids:
+                self.state = 'linked'
+            else:
+                self.state = 'draft'
+
     def _edifact_invoice_get_interchange(self):
         """
         Generates and returns an EDIFACT interchange object for an invoice message.
