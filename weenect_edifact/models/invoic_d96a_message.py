@@ -21,8 +21,10 @@ class InvoicD96AMessage(Message):
         self.add_segment(Segment("DTM", ["137", date_invoice.strftime("%Y%m%d"), "102"]))
 
         picking = self._get_picking()
-        if picking:
+        if picking and picking.date_done:
             self.add_segment(Segment("DTM", ["35", picking.date_done.date().strftime("%Y%m%d"), "102"]))
+        elif picking and picking.scheduled_date:
+            self.add_segment(Segment("DTM", ["35", picking.scheduled_date.date().strftime("%Y%m%d"), "102"]))
 
         self.add_segment(Segment("FTX", "ZZZ", "", "", "Zentralregulierung über SAGAFLOR AG"))
         self.add_segment(Segment("FTX", "ZZZ", "", "", "Mehrwertsteuerbefreiung, art. 262 ter-l französisches Steuergesetzbuch"))
@@ -32,9 +34,12 @@ class InvoicD96AMessage(Message):
             self.add_segment(Segment("RFF", ["ON", source_order.name]))
             self.add_segment(Segment("DTM", ["171", source_order.date_order.date().strftime("%Y%m%d"), "102"]))
 
-        if picking:
+        if picking and picking.date_done:
             self.add_segment(Segment("RFF", ["DQ", picking.name]))
             self.add_segment(Segment("DTM", ["171", picking.date_done.date().strftime("%Y%m%d"), "102"]))
+        elif picking and picking.scheduled_date:
+            self.add_segment(Segment("RFF", ["DQ", picking.name]))
+            self.add_segment(Segment("DTM", ["171", picking.scheduled_date.date().strftime("%Y%m%d"), "102"]))
 
         # Supplier
         company = self.invoice.company_id.partner_id
@@ -127,10 +132,6 @@ class InvoicD96AMessage(Message):
         return source_order.picking_ids.filtered(
             lambda p: p.state != 'cancel' and p.picking_type_id.code == picking_type
         ).sorted(key=lambda p: p.date_done)[-1:] or None
-
-    def _get_delivery_date(self):
-        picking = self._get_picking()
-        return picking.date_done.date() if picking and picking.date_done else None
 
     def _get_gln(self, partner):
         gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
