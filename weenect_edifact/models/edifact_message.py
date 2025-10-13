@@ -41,8 +41,8 @@ class EdifactMessage(models.Model):
             new_message = self.create({
                 'name': f"Sagaflor_Message_{fields.Date.today().strftime('%Y%m%d')}",
                 'message_type': 'd96a',
-                'sender_id': self.env['res.partner.id_number'].browse(sender_id) if sender_id else False,
-                'receiver_id': self.env['res.partner.id_number'].browse(receiver_id) if receiver_id else False,
+                'sender_id': sender_id,
+                'receiver_id': receiver_id,
             })
             new_message.link_moves()
         _logger.info(f"Created EDIFACT message for Sagaflor.")
@@ -60,8 +60,8 @@ class EdifactMessage(models.Model):
             new_message = self.create({
                 'name': f"Futterhaus_Message_{fields.Date.today().strftime('%Y%m%d')}",
                 'message_type': 'd01b',
-                'sender_id': self.env['res.partner.id_number'].browse(sender_id) if sender_id else False,
-                'receiver_id': self.env['res.partner.id_number'].browse(receiver_id) if receiver_id else False,
+                'sender_id': sender_id,
+                'receiver_id': receiver_id,
             })
             new_message.link_moves()
         _logger.info(f"Created EDIFACT message for Futterhaus.")
