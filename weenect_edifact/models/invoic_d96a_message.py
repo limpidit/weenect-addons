@@ -55,14 +55,14 @@ class InvoicD96AMessage(Message):
         self.add_segment(Segment("RFF", ["VA", buyer.vat]))
 
         # Delivery
-        delivery = self.invoice.partner_shipping_id
-        if delivery and delivery != buyer:
-            delivery_gln = self._get_gln(delivery)
-            if not delivery_gln:
-                raise ValueError("Delivery GLN not found")
-            delivery_names = [delivery.display_name[i:i+35] for i in range(0, len(delivery.display_name), 35)]
-            self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"], "", delivery_names, delivery.street, delivery.city, "", delivery.zip, delivery.country_id.code))
-            self.add_segment(Segment("RFF", ["VA", delivery.vat]))
+        # delivery = self.invoice.partner_shipping_id
+        # if delivery and delivery != buyer:
+        #     delivery_gln = self._get_gln(delivery)
+        #     if not delivery_gln:
+        #         raise ValueError("Delivery GLN not found")
+        #     delivery_names = [delivery.display_name[i:i+35] for i in range(0, len(delivery.display_name), 35)]
+        #     self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"], "", delivery_names, delivery.street, delivery.city, "", delivery.zip, delivery.country_id.code))
+        #     self.add_segment(Segment("RFF", ["VA", delivery.vat]))
 
         self.add_segment(Segment("CUX", ["2", "EUR", "4"]))
 
@@ -134,4 +134,6 @@ class InvoicD96AMessage(Message):
 
     def _get_gln(self, partner):
         gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        if not gln and partner.parent_id:
+            gln = partner.parent_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         return gln[0].name if gln else False
