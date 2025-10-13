@@ -51,7 +51,7 @@ class InvoicD96AMessage(Message):
         self.add_segment(Segment("RFF", ["VA", self.invoice.company_id.vat]))
 
         # Buyer
-        buyer = self.invoice.partner_id
+        buyer = self.invoice.partner_id.commercial_partner_id
         buyer_gln = self._get_gln(buyer)
         if not buyer_gln:
             raise ValueError("Buyer GLN not found")
