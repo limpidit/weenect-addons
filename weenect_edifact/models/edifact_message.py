@@ -99,6 +99,15 @@ class EdifactMessage(models.Model):
             'error_message': '',
         })
 
+    def mark_moves_as_sent(self):
+        """
+        Marks all linked account moves as sent by setting their 'has_been_sent' field to True.
+        """
+        self.ensure_one()
+        for move in self.move_ids:
+            move.has_been_sent = True
+        self.state = 'sent'
+
     def generate_edifact_content(self):
         """
         Generates the EDIFACT message content for the current record based on the selected message type.
