@@ -1,7 +1,7 @@
 {
     "name":"Visites LimpidIT",
     "summary":"Visites LimpidIT",
-    "version":"17.0.0.1",
+    "version":"19.0.0.1",
     "author":"Limpid IT",
     "depends":["base","crm","mail","base_geolocalize","web_map"
     ],

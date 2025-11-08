@@ -3,18 +3,16 @@
         <field name="name">tournee.form</field>
         <field name="model">visite.tournee</field>
         <field name="arch" type="xml">
-            <form string="Tournée">
+            <form string="Tournée" chatter="true">
                 <header>
-                <header>
-                        <button name="action_afficher_plan_tournee"
-                                type="object"
-                                string="🗺️ Plan sur carte"
-                                class="oe_highlight"
-                                icon="fa-map"/>
-                    </header>
-
-                    <field name="state" widget="statusbar" options="{'clickable':1}"/>
+                    <button name="action_afficher_plan_tournee"
+                            type="object"
+                            string="🗺️ Plan sur carte"
+                            class="oe_highlight"
+                            icon="fa-map"/>
+                    <field name="state" widget="statusbar" options="{'clickable': 1}"/>
                 </header>
+
                 <sheet>
                     <group>
                         <field name="name"/>
@@ -26,21 +24,16 @@
                     </group>
                     <group>
                         <field name="visite_ids">
-                            <tree open="true">  <!-- ✅ Permet d'ouvrir la visite en cliquant -->
+                            <list open="true">
                                 <field name="name"/>
                                 <field name="date_visite"/>
                                 <field name="client_id"/>
-                            </tree>
+                            </list>
                         </field>
                     </group>
                 </sheet>
-                
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
             </form>
+
         </field>
     </record>
 
@@ -48,20 +41,20 @@
         <field name="name">tournee.tree</field>
         <field name="model">visite.tournee</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="date_debut_tournee"/>
                 <field name="date_fin_tournee"/>
                 <field name="user_id"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="action_tournee_list" model="ir.actions.act_window">
         <field name="name">Tournées</field>
         <field name="res_model">visite.tournee</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p>Gérez vos tournées de visites.</p>
         </field>

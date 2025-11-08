@@ -1,7 +1,7 @@
 {
     "name": "Edifact Weenect LIT",
     "summary": "Edifact Weenect LIT",
-    "version": "16.0.2",
+    "version": "19.0.0.1",
     "author": "Limpid IT",
     "depends": [
         'account',
