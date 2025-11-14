@@ -290,6 +290,8 @@ class CrosslogPickingSynchronization(models.TransientModel):
             return self.api_connection_id.process_validate_suppplier_orders_updated_request()
         if batch_name == 'ValidateCustomerOrdersUpdated':
             return self.api_connection_id.process_validate_customer_orders_updated_request()
+        if batch_name == 'ValidateCustomerReturnsUpdated':
+            return self.api_connection_id.process_validate_customer_returns_updated_request()
     
     def batch_process(self, unvalid_pickings, unvalid_pickings_limit, pickings, batch_name):
         details = ", ".join(unvalid_pickings) if unvalid_pickings else _("Nothing")
@@ -309,7 +311,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
                 if result == 200:
                     log_object.log_info(
                         title=_(f"Batch validation successful. {len(unvalid_pickings)} {picking_name} were not validated."),
-                        message=("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
+                        message_=("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
                     )
                     if batch_name == 'ValidateSupplierOrdersUpdated':
                         self.synchronize_receptions()
@@ -322,5 +324,5 @@ class CrosslogPickingSynchronization(models.TransientModel):
         else:
             log_object.log_warning(
                 title=_(f"Batch validation skipped. {len(unvalid_pickings)} {picking_name} were not validated, exceeding the limit of {unvalid_pickings_limit}."),
-                message=("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
+                message_=("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
             )

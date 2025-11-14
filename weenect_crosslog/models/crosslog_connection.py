@@ -47,6 +47,8 @@ class CrosslogConnection(models.Model):
             soap_body = self._prepare_validate_supplier_orders_updated_request()
         elif method_name == 'ValidateCustomerOrdersUpdated':
             soap_body = self._prepare_validate_customer_orders_updated_request()
+        elif method_name == 'ValidateCustomerReturnsUpdated':
+            soap_body = self._prepare_validate_customer_returns_updated_request()
 
         soap_request = f"""<?xml version="1.0" encoding="UTF-8"?>
         <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:mob="http://mobile.crossdesk.com/">
@@ -100,6 +102,11 @@ class CrosslogConnection(models.Model):
     def _prepare_validate_customer_orders_updated_request(self):
         """Prepare the request for the ValidateCustomerOrdersUpdated method."""
         return f"""<mob:ValidateCustomerOrdersUpdated></mob:ValidateCustomerOrdersUpdated>"""
+
+    @api.model
+    def _prepare_validate_customer_returns_updated_request(self):
+        """Prepare the request for the ValidateCustomerOrdersUpdated method."""
+        return f"""<mob:ValidateCustomerReturnsUpdated></mob:ValidateCustomerReturnsUpdated>"""
 
 
     ################ Requests execution ################
@@ -285,6 +292,12 @@ class CrosslogConnection(models.Model):
     def process_validate_customer_orders_updated_request(self):
         """Process the ValidateCustomerOrdersUpdated request and return the result."""
         soap_request = self._prepare_soap_request('ValidateCustomerOrdersUpdated')
+        status_code, response_text = self._send_soap_request(soap_request)
+        return status_code
+
+    def process_validate_customer_returns_updated_request(self):
+        """Process the ValidateCustomerReturnsUpdated request and return the result."""
+        soap_request = self._prepare_soap_request('ValidateCustomerReturnsUpdated')
         status_code, response_text = self._send_soap_request(soap_request)
         return status_code
 
