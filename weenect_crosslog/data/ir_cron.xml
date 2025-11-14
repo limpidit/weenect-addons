@@ -22,7 +22,7 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="state">code</field>
-            <field name="code">model.synchronize_products()</field>
+            <field name="code">model.synchronize_products(synchronize_stock=True)</field>
         </record>
 
         <record id="synchronize_crosslog_pickings_cron" model="ir.cron">
