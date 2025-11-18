@@ -8,7 +8,6 @@
             <field name="subject">INVOIC WEENECT</field>
             <field name="email_to">franck@weenect.com</field>
             <field name="body_html"></field>
-            <field name="report_template" eval="False"/> <!-- Pas de rapport PDF joint -->
             <field name="auto_delete" eval="True"/> <!-- Nettoyage auto des emails -->
           </record>
     
