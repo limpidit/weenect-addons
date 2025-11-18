@@ -1,7 +1,7 @@
 {
     "name": "Base EDIFACT",
     "summary": "UN/EDIFACT/D96A utilities using pydifact parser",
-    "version": "19.0.1.5.1",
+    "version": "19.0.0.1",
     "category": "Tools",
     "website": "https://github.com/OCA/edi",
     "author": "ALBA Software, PlanetaTIC, Odoo Community Association (OCA)",
