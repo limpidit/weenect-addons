@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_edifact_message_tree" model="ir.ui.view">
-        <field name="name">edifact.message.tree</field>
+    <record id="view_edifact_message_list" model="ir.ui.view">
+        <field name="name">edifact.message.list</field>
         <field name="model">edifact.message</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="message_type"/>
                 <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-danger="state == 'error'"/>
                 <field name="sender_id" />
                 <field name="receiver_id" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -49,12 +49,12 @@
                         </page>
                         <page name="related_moves" string="Related Moves">
                             <field name="move_ids">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="date"/>
                                     <field name="amount_total"/>
                                     <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-danger="state == 'draft'"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -70,7 +70,7 @@
     <record id="action_edifact_message" model="ir.actions.act_window">
         <field name="name">EDIFACT Messages</field>
         <field name="res_model">edifact.message</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem
