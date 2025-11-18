@@ -9,7 +9,6 @@
             <field name="model_id" ref="model_crosslog_log"/>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
             <field name="state">code</field>
             <field name="code">model.remove_older_logs()</field>
         </record>
@@ -20,7 +19,6 @@
             <field name="model_id" ref="model_crosslog_product_synchronization"/>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
             <field name="state">code</field>
             <field name="code">model.synchronize_products(synchronize_stock=True)</field>
         </record>
@@ -30,7 +28,6 @@
             <field name="model_id" ref="model_crosslog_picking_synchronization"/>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
             <field name="state">code</field>
             <field name="code">model.synchronize_pickings()</field>
         </record>

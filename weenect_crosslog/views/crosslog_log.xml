@@ -5,14 +5,14 @@
         <field name="name">crosslog.log.view.tree</field>
         <field name="model">crosslog.log</field>
         <field name="arch" type="xml">
-            <tree string="Data retrieving from crosslog history">
+            <list string="Data retrieving from crosslog history">
                 <field name="name" />
                 <field name="execution_date" />
                 <field name="type" widget="badge" 
                     decoration-info="type == 'info'" 
                     decoration-danger="type == 'error'"
                     decoration-warning="type == 'warning'"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -44,7 +44,7 @@
     <record id="crosslog_log_action" model="ir.actions.act_window">
         <field name="name">Data retrieving from Crosslog history</field>
         <field name="res_model">crosslog.log</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p>
                 See there the last executions of data retrieving from Crosslog to Odoo.

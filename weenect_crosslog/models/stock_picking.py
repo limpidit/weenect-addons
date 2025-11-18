@@ -74,7 +74,7 @@ class StockPicking(models.Model):
                 'picking_type_id': warehouse.out_type_id.id,
                 'crosslog_synchronized': True,
                 'crosslog_code': delivery.get('order_number'),
-                'move_line_ids_without_package': move_line_vals,
+                'move_line_ids': move_line_vals,
             })
         return new_shipment
 
@@ -114,7 +114,7 @@ class StockPicking(models.Model):
                     })
 
                 ret_move = move_object.create({
-                    'name': move.name or product.display_name,
+                    'reference': move.reference or product.display_name,
                     'product_id': product.id,
                     'product_uom_qty': receipt_qty,
                     'product_uom': move.product_uom.id,
@@ -130,7 +130,7 @@ class StockPicking(models.Model):
                 ml_vals = []
 
                 if product.tracking in ('lot', 'serial'):
-                    if receipt_qty == move.quantity_done:
+                    if receipt_qty == move.quantity:
                         orig_mls = move.move_line_ids.filtered(lambda l: l.qty_done > 0)
                         for orig_ml in orig_mls:
                             if orig_ml.lot_id:
@@ -175,4 +175,4 @@ class StockPicking(models.Model):
         self.action_assign()
             
     def validate_picking(self):
-        self._action_done()
+        self.button_validate()

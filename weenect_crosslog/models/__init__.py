@@ -6,4 +6,3 @@ from . import stock_lot
 from . import crosslog_log
 from . import crosslog_reception_state
 from . import crosslog_return_state
-from . import stock_move

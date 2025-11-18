@@ -41,7 +41,7 @@ class StockLot(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Products lots available on Crosslog',
             'res_model': 'stock.lot',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'domain': [('available_on_crosslog', '=', True)],
             'context': {
                 'crosslog': True,

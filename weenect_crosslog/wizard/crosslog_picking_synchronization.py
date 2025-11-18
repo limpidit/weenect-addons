@@ -78,7 +78,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
             
             log_object.log_info(title=_(f"Orders synchronization successfully completed."))
         
-            self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
+            # self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
 
         except Exception as e:
             log_object.log_error(title=_(f"Error during orders synchronization."), message=_(e))
@@ -157,7 +157,6 @@ class CrosslogPickingSynchronization(models.TransientModel):
                             
                                 move._action_confirm()
                                 move._action_assign()
-                                move._set_done_from_reserved(receipt_qty)
 
                             else:
                                 skip_reception = True
@@ -182,7 +181,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
 
             log_object.log_info(title=_("Receptions synchronization successfully completed."))
 
-            self.batch_process(unvalid_pickings, unvalid_pickings_limit, receptions, 'ValidateSupplierOrdersUpdated')
+            # self.batch_process(unvalid_pickings, unvalid_pickings_limit, receptions, 'ValidateSupplierOrdersUpdated')
 
         except Exception as e:
             log_object.log_error(title=_("Error during receptions synchronization."), message=(e))
@@ -240,7 +239,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
                         ('crosslog_code', '=', order_number),
                         ('picking_type_id.code', '=', 'outgoing'),
                         ('location_id', '=', warehouse.lot_stock_id.id),
-                        ('crosslog_synchronized', '=', True)
+                        ('crosslog_synchronized', '=', True),
                         ('state', '=', 'done')
                     ], limit=1)
 
@@ -264,7 +263,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
             
             log_object.log_info(title=_(f"Returns synchronization successfully completed."))
 
-            self.batch_process(unvalid_pickings, unvalid_pickings_limit, returns, 'ValidateCustomerReturnsUpdated')
+            # self.batch_process(unvalid_pickings, unvalid_pickings_limit, returns, 'ValidateCustomerReturnsUpdated')
 
         except Exception as e:
             log_object.log_error(title=_(f"Error during returns synchronization."), message=(e))
@@ -311,7 +310,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
                 if result == 200:
                     log_object.log_info(
                         title=_(f"Batch validation successful. {len(unvalid_pickings)} {picking_name} were not validated."),
-                        message_=("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
+                        message=_("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
                     )
                     if batch_name == 'ValidateSupplierOrdersUpdated':
                         self.synchronize_receptions()
@@ -324,5 +323,5 @@ class CrosslogPickingSynchronization(models.TransientModel):
         else:
             log_object.log_warning(
                 title=_(f"Batch validation skipped. {len(unvalid_pickings)} {picking_name} were not validated, exceeding the limit of {unvalid_pickings_limit}."),
-                message_=("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
+                message=_("Unvalidated %s (%s/%s): %s") % (picking_name, len(unvalid_pickings), len(pickings), details)
             )
