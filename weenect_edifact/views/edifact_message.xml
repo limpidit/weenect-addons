@@ -22,10 +22,8 @@
                 <header>
                     <field name="state" invisible="1"/>
                     <button name="generate_edifact_content" type="object" string="Generate EDIFACT Content" class="btn-primary"/>
-                    <button name="link_moves" type="object" string="Link Moves" class="btn-secondary"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="set_to_draft" type="object" string="Reset to Draft" class="btn-secondary"
-                            attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <button name="link_moves" type="object" string="Link Moves" class="btn-secondary" invisible="state not in ('draft')"/>
+                    <button name="set_to_draft" type="object" string="Reset to Draft" class="btn-secondary" invisible="state not in ('draft')"/>
                     <button name="action_send_edifact_message" type="object" string="Send by email" class="btn-secondary"/>
                     <button name="mark_moves_as_sent" type="object" string="Mark Moves as Sent" class="btn-secondary"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,linked,sent" />
@@ -76,7 +74,7 @@
     <menuitem
         id="edifact_message_menu"
         name="Edifact Messages"
-        parent="account_accountant.menu_accounting"
+        parent="accountant.menu_accounting"
         action="action_edifact_message"
         sequence="10"/>
         

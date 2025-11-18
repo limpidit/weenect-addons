@@ -5,7 +5,7 @@
     "author": "Limpid IT",
     "depends": [
         'account',
-        'account_accountant',
+        'accountant',
         'base',
         'products',
         'sale_stock',
