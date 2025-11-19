@@ -211,7 +211,7 @@ class EdifactMessage(models.Model):
 
         ctx = {
             'default_model': 'edifact.message',
-            'default_res_ids': self.id,
+            'default_res_ids': self.ids,
             'default_use_template': bool(mail_template),
             'default_template_id': mail_template.id if mail_template else None,
             'default_composition_mode': 'comment',
