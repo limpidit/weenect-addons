@@ -26,6 +26,8 @@
         #Data
         'data/ir_cron.xml',
         'data/crosslog_order_state.xml',
+        'data/crosslog_reception_state.xml',
+        'data/crosslog_return_state.xml',
         # Menus
         'views/menu.xml',
     ],

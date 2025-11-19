@@ -20,7 +20,7 @@ class ProductTemplate(models.Model):
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Products available on Crosslog',
+            'name': 'Produits disponibles chez Crosslog',
             'res_model': 'product.template',
             'view_mode': 'list,form',
             'domain': [('available_on_crosslog', '=', True)],
