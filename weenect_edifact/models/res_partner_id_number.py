@@ -1,13 +1,12 @@
 
-from odoo import models, _
+from odoo import models, api
 
 
 class ResPartnerIdNumber(models.Model):
     _inherit = 'res.partner.id_number'
 
-    def name_get(self):
-        result = []
-        for record in self:
-            display_name = record.partner_id.name or record.name
-            result.append((record.id, display_name))
-        return result
+    @api.depends('partner_id')
+    def _compute_display_name(self):
+        super()._compute_display_name()
+        for id_number in self:
+            id_number.display_name = id_number.partner_id.name or id_number.name
