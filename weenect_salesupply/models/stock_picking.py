@@ -151,7 +151,7 @@ class StockPicking(models.Model):
                     move_line_vals.append(Command.create({
                         'product_id': product_id,
                         'lot_id': lot_id.id if lot_id else False,
-                        'qty_done': row['ItemQuantity'],
+                        'quantity': row['ItemQuantity'],
                     }))
 
                 new_shipment = self.create({
