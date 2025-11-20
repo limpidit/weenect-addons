@@ -117,7 +117,7 @@ class SalesupplyShop(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'name': "Linking Salesupply and Odoo products logs",
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'res_model': 'salesupply.log',
                 'target': 'new',
                 'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,

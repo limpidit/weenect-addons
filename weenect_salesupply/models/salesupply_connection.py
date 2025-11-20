@@ -90,7 +90,7 @@ class SalesupplyConnection(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': "Shops",
-            'view_mode': 'tree',
+            'view_mode': 'list,form',
             'res_model': 'salesupply.shop',
             'target': 'current',
         }
