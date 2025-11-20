@@ -74,14 +74,14 @@ class CrosslogPickingSynchronization(models.TransientModel):
                                 unvalid_pickings.append(order_number)
                 
                 except Exception as e:
-                    log_object.log_error(title=_(f"Error during synchronisation of Crosslog order {order_number}."), message=_(e))
+                    log_object.log_error(title=_(f"Error during synchronisation of Crosslog order {order_number}."), message=str(e))
             
             log_object.log_info(title=_(f"Orders synchronization successfully completed."))
         
             self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
 
         except Exception as e:
-            log_object.log_error(title=_(f"Error during orders synchronization."), message=_(e))
+            log_object.log_error(title=_(f"Error during orders synchronization."), message=str(e))
 
 
     def synchronize_receptions(self):
@@ -187,7 +187,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
                 except Exception as e:
                     log_object.log_error(
                         title=_(f"Error during synchronization of Crosslog reception {order_number}."),
-                        message=(e)
+                        message=str(e)
                     )
 
             log_object.log_info(title=_("Receptions synchronization successfully completed."))
@@ -195,7 +195,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
             self.batch_process(unvalid_pickings, unvalid_pickings_limit, receptions, 'ValidateSupplierOrdersUpdated')
 
         except Exception as e:
-            log_object.log_error(title=_("Error during receptions synchronization."), message=(e))
+            log_object.log_error(title=_("Error during receptions synchronization."), message=str(e))
 
     def synchronize_returns(self):
         """Synchronize returns with Crosslog."""
@@ -270,14 +270,14 @@ class CrosslogPickingSynchronization(models.TransientModel):
                     return_picking.crosslog_code = return_number
 
                 except Exception as e:
-                    log_object.log_error(title=_(f"Error during synchronization of return {return_number}."), message=(e))
+                    log_object.log_error(title=_(f"Error during synchronization of return {return_number}."), message=str(e))
             
             log_object.log_info(title=_(f"Returns synchronization successfully completed."))
 
             self.batch_process(unvalid_pickings, unvalid_pickings_limit, returns, 'ValidateCustomerReturnsUpdated')
 
         except Exception as e:
-            log_object.log_error(title=_(f"Error during returns synchronization."), message=(e))
+            log_object.log_error(title=_(f"Error during returns synchronization."), message=str(e))
 
     
     def synchronize_pickings(self):
