@@ -171,17 +171,16 @@ class StockPicking(models.Model):
                 log_object.log_error(title=_(f"Error creating delivery {shipment_code}"), message=str(e))
 
     def button_validate(self, date_done=None):
-        # Clean-up the context key at validation to avoid forcing the creation of immediate
-        # transfers.
-        ctx = dict(self.env.context)
-        ctx.pop('default_immediate_transfer', None)
-        self = self.with_context(ctx)
+        self = self.filtered(lambda p: p.state != 'done')
+        draft_picking = self.filtered(lambda p: p.state == 'draft')
+        draft_picking.action_confirm()
+        for move in draft_picking.move_ids:
+            if move.product_uom.is_zero(move.quantity) and not move.product_uom.is_zero(move.product_uom_qty):
+                move.quantity = move.product_uom_qty
 
         # Sanity checks.
         if not self.env.context.get('skip_sanity_check', False):
             self._sanity_check()
-
-        self.message_subscribe([self.env.user.partner_id.id])
 
         # Run the pre-validation wizards. Processing a pre-validation wizard should work on the
         # moves and/or the context and never call `_action_done`.
@@ -197,19 +196,23 @@ class StockPicking(models.Model):
             pickings_not_to_backorder |= self.browse(self.env.context['picking_ids_not_to_backorder']).filtered(
                 lambda p: p.picking_type_id.create_backorder != 'always'
             )
-        pickings_to_backorder = self - pickings_not_to_backorder
-        
-        # LIMPIDIT Override here
-        pickings_not_to_backorder.with_context(cancel_backorder=True)._action_done(date_done)
-        pickings_to_backorder.with_context(cancel_backorder=False)._action_done(date_done)
 
-        if self.user_has_groups('stock.group_reception_report'):
+        # LimpidIT override here (date_done)
+        pickings_to_backorder = self - pickings_not_to_backorder
+        if pickings_not_to_backorder:
+            pickings_not_to_backorder.with_context(cancel_backorder=True)._action_done(date_done)
+        if pickings_to_backorder:
+            pickings_to_backorder.with_context(cancel_backorder=False)._action_done(date_done)
+
+        report_actions = self._get_autoprint_report_actions()
+        another_action = False
+        if self.env.user.has_group('stock.group_reception_report'):
             pickings_show_report = self.filtered(lambda p: p.picking_type_id.auto_show_reception_report)
-            lines = pickings_show_report.move_ids.filtered(lambda m: m.product_id.type == 'product' and m.state != 'cancel' and m.quantity_done and not m.move_dest_ids)
+            lines = pickings_show_report.move_ids.filtered(lambda m: m.product_id.is_storable and m.state != 'cancel' and m.quantity and not m.move_dest_ids)
             if lines:
                 # don't show reception report if all already assigned/nothing to assign
                 wh_location_ids = self.env['stock.location']._search([('id', 'child_of', pickings_show_report.picking_type_id.warehouse_id.view_location_id.ids), ('usage', '!=', 'supplier')])
-                if self.env['stock.move'].search([
+                if self.env['stock.move'].search_count([
                         ('state', 'in', ['confirmed', 'partially_available', 'waiting', 'assigned']),
                         ('product_qty', '>', 0),
                         ('location_id', 'in', wh_location_ids),
@@ -218,9 +221,20 @@ class StockPicking(models.Model):
                         ('product_id', 'in', lines.product_id.ids)], limit=1):
                     action = pickings_show_report.action_view_reception_report()
                     action['context'] = {'default_picking_ids': pickings_show_report.ids}
-                    return action
+                    if not report_actions:
+                        return action
+                    another_action = action
+        if report_actions:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'do_multi_print',
+                'params': {
+                    'reports': report_actions,
+                    'anotherAction': another_action,
+                }
+            }
         return True
-                
+
     def _action_done(self, date_done=None):
         """Call `_action_done` on the `stock.move` of the `stock.picking` in `self`.
         This method makes sure every `stock.move.line` is linked to a `stock.move` by either
