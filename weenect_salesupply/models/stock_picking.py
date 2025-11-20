@@ -38,10 +38,6 @@ class StockPicking(models.Model):
     def _validate_internal_transfer_from_salesupply(self, salesupply_data):
         log_object = self.env['salesupply.log']
         
-        salesupply_date_done = salesupply_data['DateReceived']
-        date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
-        self.env.context.update({'shipping_date_done': date_done})
-        
         for picking in self:
             salesupply_rows = {row['ProductId']: row for row in salesupply_data.get("PurchaseOrderRows", [])}
             is_delivered = True
@@ -66,7 +62,9 @@ class StockPicking(models.Model):
                     is_delivered = False
                     
             if is_delivered:
-                picking.button_validate()
+                salesupply_date_done = salesupply_data['DateReceived']
+                date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+                picking.with_context(shipping_date_done=date_done).button_validate()
                 picking.salesupply_synchronized = True
                 log_object.log_info(_(f"The reception {picking.name} is now delivered"))
         
@@ -76,10 +74,6 @@ class StockPicking(models.Model):
         
         for salesupply_json_return in salesupply_returns:
             return_code = salesupply_json_return['ReturnCode']
-            
-            salesupply_date_done = salesupply_json_return['ReceivedDate']
-            date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
-            self.env.context.update({'shipping_date_done': date_done})
             
             try:
                 existing_return = self.search([('salesupply_code', '=', return_code), ('salesupply_synchronized', '=', True)])
@@ -102,7 +96,9 @@ class StockPicking(models.Model):
                 backorder_id = return_wizard._create_returns()[0]
                 backorder = self.browse(backorder_id)
                 backorder.move_ids._set_quantities_to_reservation()
-                backorder.button_validate()
+                salesupply_date_done = salesupply_json_return['ReceivedDate']
+                date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+                backorder.with_context(shipping_date_done=date_done).button_validate()
                 backorder.write({'salesupply_synchronized': True, 'salesupply_code': return_code})
                 log_object.log_info(title=_(f"{backorder.name} Backorder created from {delivery.name}"))
                     
@@ -117,10 +113,6 @@ class StockPicking(models.Model):
         
         for salesupply_json_shipment in salesupply_shipments[warehouse.id_salesupply]:
             shipment_code = salesupply_json_shipment['ShippingCode']
-            
-            salesupply_date_done = salesupply_json_shipment['ShippedTimestamp']
-            date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
-            self.env.context.update({'shipping_date_done': date_done})
             
             # There should no be already synchronized shipments in the API response
             existing_delivery = self.search([('salesupply_code', '=', shipment_code), ('salesupply_synchronized', '=', True)])
@@ -166,8 +158,10 @@ class StockPicking(models.Model):
                     'salesupply_code': shipment_code,
                     'move_line_ids': move_line_vals,
                 })
-                    
-                new_shipment.button_validate()
+
+                salesupply_date_done = salesupply_json_shipment['ShippedTimestamp']
+                date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+                new_shipment.with_context(shipping_date_done=date_done).button_validate()
                 log_object.log_info(title=_(f"Successfully delivered {shipment_code} -> {new_shipment.name}"))
 
             except Exception as e:
