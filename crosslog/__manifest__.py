@@ -1,7 +1,7 @@
 {
     "name":"Crosslog Weenect LIT",
     "summary":"Crosslog Weenect LIT",
-    "version":"16.0",
+    "version":"19.0",
     "author":"Limpid IT",
     "depends":[
         "base", "stock"

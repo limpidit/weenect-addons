@@ -7,11 +7,11 @@
             <notebook position="inside">
                 <page string="Visites">
                     <field name="visite_ids">
-                        <tree>
+                        <list>
                             <field name="name"/>
                             <field name="date_visite"/>
                             <field name="user_id"/>
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </notebook>

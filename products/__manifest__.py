@@ -1,12 +1,13 @@
 {
     "name":"Products Weenect LIT",
     "summary":"Products Weenect LIT",
-    "version":"16.0",
+    "version": "19.0.1.0.0",
     "author":"Limpid IT",
     "depends":[
         "base",'web_studio', "crm", "sale", "contacts", "stock"
     ],
     "installable":True,
+    "application":True,
     "data":[
         "views/product_template_views.xml",
         "views/res_partner_views.xml",
