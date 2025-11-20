@@ -72,7 +72,7 @@ class SalesupplySendProductWizard(models.TransientModel):
         return {
             'type': 'ir.actions.act_window',
             'name': "Sending products to Salesupply logs",
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'salesupply.log',
             'target': 'new',
             'id': self.env.ref('weenect_salesupply.salesupply_log_action').id,

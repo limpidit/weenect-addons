@@ -22,7 +22,7 @@ class ProductTemplate(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Products available on Salesupply',
             'res_model': 'product.template',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('available_on_salesupply', '=', True)],
             'context': {
                 'salesupply': True,

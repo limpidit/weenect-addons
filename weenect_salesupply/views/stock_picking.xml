@@ -4,7 +4,7 @@
     <record id="salesupply_receptions_action" model="ir.actions.act_window">
         <field name="name">Internal transfers to Salesupply warehouses</field>
         <field name="res_model">stock.picking</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('is_transfered_to_salesupply', '=', True)]</field>
         <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
         <field name="help" type="html">
@@ -19,7 +19,7 @@
     <record id="salesupply_deliveries_action" model="ir.actions.act_window">
         <field name="name">Deliveries from Salesupply warehouses</field>
         <field name="res_model">stock.picking</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('is_delivered_from_salesupply', '=', True)]</field>
         <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
         <field name="help" type="html">
@@ -34,7 +34,7 @@
     <record id="salesupply_returns_action" model="ir.actions.act_window">
         <field name="name">Returns to Salesupply warehouses</field>
         <field name="res_model">stock.picking</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('is_returned_to_salesupply', '=', True)]</field>
         <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
         <field name="help" type="html">

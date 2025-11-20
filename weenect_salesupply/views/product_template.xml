@@ -6,9 +6,11 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
-            <header position="inside">
-                <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard"/>
-            </header>
+            <field name="product_variant_count" position="before">
+                <header>
+                    <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard"/>
+                </header>
+            </field>
         </field>
     </record>
 
@@ -17,9 +19,11 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
-            <header position="inside">
-                <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard" class="btn-primary"/>
-            </header>
+            <sheet position="before">
+                <header>
+                    <button string="Upload to Salesupply" type="object" name="action_open_send_product_wizard" class="btn-primary"/>
+                </header>
+            </sheet>
             <div name="options" position="inside">
                 <span class="d-inline-block">
                     <field name="available_on_salesupply" readonly="1"/>
@@ -27,12 +31,12 @@
                 </span>
             </div>
             <notebook position="inside">
-                <page name="salesupply_info" string="Salesupply" attrs="{'invisible': [('available_on_salesupply', '=', False)]}">
+                <page name="salesupply_info" string="Salesupply" invisible="not available_on_salesupply">
                     <field name="salesupply_shop_product_ids">
-                        <tree string="Salesupply products Shop" editable="bottom" create="0" edit="0">
+                        <list string="Salesupply products Shop" editable="bottom" create="0" edit="0">
                             <field name="id_shop_group" />
                             <field name="id_salesupply" />
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </notebook>
@@ -49,7 +53,7 @@
     <record id="salesupply_product_template_action" model="ir.actions.act_window">
         <field name="name">Products available on Salesupply</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('available_on_salesupply', '=', True)]</field>
         <field name="context">
             {

@@ -5,14 +5,14 @@
         <field name="name">salesupply.log.view.tree</field>
         <field name="model">salesupply.log</field>
         <field name="arch" type="xml">
-            <tree string="Data retrieving from Salesupply history">
+            <list string="Data retrieving from Salesupply history">
                 <field name="name" />
                 <field name="execution_date" />
                 <field name="type" widget="badge" 
                     decoration-info="type == 'info'" 
                     decoration-danger="type == 'error'"
                     decoration-warning="type == 'warning'"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -44,7 +44,7 @@
     <record id="salesupply_log_action" model="ir.actions.act_window">
         <field name="name">Data retrieving from Salesupply history</field>
         <field name="res_model">salesupply.log</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p>
                 See there the last executions of data retrieving from Salesupply to Odoo.
