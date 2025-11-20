@@ -40,6 +40,7 @@ class StockPicking(models.Model):
         
         salesupply_date_done = salesupply_data['DateReceived']
         date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+        self.env.context.update({'shipping_date_done': date_done})
         
         for picking in self:
             salesupply_rows = {row['ProductId']: row for row in salesupply_data.get("PurchaseOrderRows", [])}
@@ -65,7 +66,7 @@ class StockPicking(models.Model):
                     is_delivered = False
                     
             if is_delivered:
-                picking.button_validate(date_done)
+                picking.button_validate()
                 picking.salesupply_synchronized = True
                 log_object.log_info(_(f"The reception {picking.name} is now delivered"))
         
@@ -78,6 +79,7 @@ class StockPicking(models.Model):
             
             salesupply_date_done = salesupply_json_return['ReceivedDate']
             date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+            self.env.context.update({'shipping_date_done': date_done})
             
             try:
                 existing_return = self.search([('salesupply_code', '=', return_code), ('salesupply_synchronized', '=', True)])
@@ -100,7 +102,7 @@ class StockPicking(models.Model):
                 backorder_id = return_wizard._create_returns()[0]
                 backorder = self.browse(backorder_id)
                 backorder.move_ids._set_quantities_to_reservation()
-                backorder.button_validate(date_done)
+                backorder.button_validate()
                 backorder.write({'salesupply_synchronized': True, 'salesupply_code': return_code})
                 log_object.log_info(title=_(f"{backorder.name} Backorder created from {delivery.name}"))
                     
@@ -118,6 +120,7 @@ class StockPicking(models.Model):
             
             salesupply_date_done = salesupply_json_shipment['ShippedTimestamp']
             date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
+            self.env.context.update({'shipping_date_done': date_done})
             
             # There should no be already synchronized shipments in the API response
             existing_delivery = self.search([('salesupply_code', '=', shipment_code), ('salesupply_synchronized', '=', True)])
@@ -164,78 +167,13 @@ class StockPicking(models.Model):
                     'move_line_ids': move_line_vals,
                 })
                     
-                new_shipment.button_validate(date_done)
+                new_shipment.button_validate()
                 log_object.log_info(title=_(f"Successfully delivered {shipment_code} -> {new_shipment.name}"))
 
             except Exception as e:
                 log_object.log_error(title=_(f"Error creating delivery {shipment_code}"), message=str(e))
 
-    def button_validate(self, date_done=None):
-        self = self.filtered(lambda p: p.state != 'done')
-        draft_picking = self.filtered(lambda p: p.state == 'draft')
-        draft_picking.action_confirm()
-        for move in draft_picking.move_ids:
-            if move.product_uom.is_zero(move.quantity) and not move.product_uom.is_zero(move.product_uom_qty):
-                move.quantity = move.product_uom_qty
-
-        # Sanity checks.
-        if not self.env.context.get('skip_sanity_check', False):
-            self._sanity_check()
-
-        # Run the pre-validation wizards. Processing a pre-validation wizard should work on the
-        # moves and/or the context and never call `_action_done`.
-        if not self.env.context.get('button_validate_picking_ids'):
-            self = self.with_context(button_validate_picking_ids=self.ids)
-        res = self._pre_action_done_hook()
-        if res is not True:
-            return res
-
-        # Call `_action_done`.
-        pickings_not_to_backorder = self.filtered(lambda p: p.picking_type_id.create_backorder == 'never')
-        if self.env.context.get('picking_ids_not_to_backorder'):
-            pickings_not_to_backorder |= self.browse(self.env.context['picking_ids_not_to_backorder']).filtered(
-                lambda p: p.picking_type_id.create_backorder != 'always'
-            )
-
-        # LimpidIT override here (date_done)
-        pickings_to_backorder = self - pickings_not_to_backorder
-        if pickings_not_to_backorder:
-            pickings_not_to_backorder.with_context(cancel_backorder=True)._action_done(date_done)
-        if pickings_to_backorder:
-            pickings_to_backorder.with_context(cancel_backorder=False)._action_done(date_done)
-
-        report_actions = self._get_autoprint_report_actions()
-        another_action = False
-        if self.env.user.has_group('stock.group_reception_report'):
-            pickings_show_report = self.filtered(lambda p: p.picking_type_id.auto_show_reception_report)
-            lines = pickings_show_report.move_ids.filtered(lambda m: m.product_id.is_storable and m.state != 'cancel' and m.quantity and not m.move_dest_ids)
-            if lines:
-                # don't show reception report if all already assigned/nothing to assign
-                wh_location_ids = self.env['stock.location']._search([('id', 'child_of', pickings_show_report.picking_type_id.warehouse_id.view_location_id.ids), ('usage', '!=', 'supplier')])
-                if self.env['stock.move'].search_count([
-                        ('state', 'in', ['confirmed', 'partially_available', 'waiting', 'assigned']),
-                        ('product_qty', '>', 0),
-                        ('location_id', 'in', wh_location_ids),
-                        ('move_orig_ids', '=', False),
-                        ('picking_id', 'not in', pickings_show_report.ids),
-                        ('product_id', 'in', lines.product_id.ids)], limit=1):
-                    action = pickings_show_report.action_view_reception_report()
-                    action['context'] = {'default_picking_ids': pickings_show_report.ids}
-                    if not report_actions:
-                        return action
-                    another_action = action
-        if report_actions:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'do_multi_print',
-                'params': {
-                    'reports': report_actions,
-                    'anotherAction': another_action,
-                }
-            }
-        return True
-
-    def _action_done(self, date_done=None):
+    def _action_done(self):
         """Call `_action_done` on the `stock.move` of the `stock.picking` in `self`.
         This method makes sure every `stock.move.line` is linked to a `stock.move` by either
         linking them to an existing one or a newly created one.
@@ -255,7 +193,8 @@ class StockPicking(models.Model):
         todo_moves._action_done(cancel_backorder=self.env.context.get('cancel_backorder'))
         
         # LIMPIDIT Override here
-        self.write({'date_done': date_done if date_done else fields.Datetime.now(), 'priority': '0'})
+        salesupply_date_done = self.env.context.get('salesupply_date_done')
+        self.write({'date_done': salesupply_date_done if salesupply_date_done else fields.Datetime.now(), 'priority': '0'})
 
         # if incoming/internal moves make other confirmed/partially_available moves available, assign them
         done_incoming_moves = self.filtered(lambda p: p.picking_type_id.code in ('incoming', 'internal')).move_ids.filtered(lambda m: m.state == 'done')
