@@ -5,12 +5,12 @@
         <field name="name">salesupply.connection.view.tree</field>
         <field name="model">salesupply.connection</field>
         <field name="arch" type="xml">
-            <tree string="Salesupply API configs">
+            <list string="Salesupply API configs">
                 <field name="name" />
                 <field name="api_username" />
                 <field name="api_password" password="True"/>
                 <field name="environment" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -47,7 +47,7 @@
     <record id="salesupply_connection_action" model="ir.actions.act_window">
         <field name="name">Salesupply API configs</field>
         <field name="res_model">salesupply.connection</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p>Define Salesupply API configuration here</p>
         </field>

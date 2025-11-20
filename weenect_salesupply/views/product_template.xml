@@ -29,10 +29,10 @@
             <notebook position="inside">
                 <page name="salesupply_info" string="Salesupply" attrs="{'invisible': [('available_on_salesupply', '=', False)]}">
                     <field name="salesupply_shop_product_ids">
-                        <tree string="Salesupply products Shop" editable="bottom" create="0" edit="0">
+                        <list string="Salesupply products Shop" editable="bottom" create="0" edit="0">
                             <field name="id_shop_group" />
                             <field name="id_salesupply" />
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </notebook>
@@ -49,7 +49,7 @@
     <record id="salesupply_product_template_action" model="ir.actions.act_window">
         <field name="name">Products available on Salesupply</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('available_on_salesupply', '=', True)]</field>
         <field name="context">
             {

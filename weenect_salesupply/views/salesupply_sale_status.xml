@@ -5,19 +5,19 @@
         <field name="name">salesupply.sale.status.view.tree</field>
         <field name="model">salesupply.sale.status</field>
         <field name="arch" type="xml">
-            <tree string="Salesupply order statuses" editable="bottom">
+            <list string="Salesupply order statuses" editable="bottom">
                 <field name="name" />
                 <field name="id_salesupply" />
                 <field name="id_base_status" />
                 <field name="id_type_status" />
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="salesupply_sale_status_action" model="ir.actions.act_window">
         <field name="name">Salesupply order statuses</field>
         <field name="res_model">salesupply.sale.status</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
         <field name="help" type="html">
             <p>
                 Define salesupply order statuses
