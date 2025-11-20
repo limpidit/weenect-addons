@@ -26,7 +26,7 @@ class ProductTemplate(models.Model):
             'domain': [('available_on_salesupply', '=', True)],
             'context': {
                 'salesupply': True,
-                'warehouse': warehouses.ids,
+                'search_warehouse': warehouses.ids,
                 'search_default_consumable': 1,
                 'default_detailed_type': 'product',
             },

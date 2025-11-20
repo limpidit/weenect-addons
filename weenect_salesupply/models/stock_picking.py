@@ -161,7 +161,7 @@ class StockPicking(models.Model):
                     'picking_type_id': warehouse.out_type_id.id,
                     'salesupply_synchronized': True,
                     'salesupply_code': shipment_code,
-                    'move_line_ids_without_package': move_line_vals,
+                    'move_line_ids': move_line_vals,
                 })
                     
                 new_shipment.button_validate(date_done)
