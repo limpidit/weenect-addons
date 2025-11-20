@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <record id="order_state_95" model="crosslog.order.state">
+            <field name="code">95</field>
+            <field name="name">Annulé</field>
+        </record>
+
+        <record id="order_state_83" model="crosslog.order.state">
+            <field name="code">83</field>
+            <field name="name">Colis perdu</field>
+        </record>
+
+        <record id="order_state_30" model="crosslog.order.state">
+            <field name="code">30</field>
+            <field name="name">Problème de livraison</field>
+        </record>
+
+        <record id="order_state_501" model="crosslog.order.state">
+            <field name="code">501</field>
+            <field name="name">Problème d'adresse - partiel</field>
+        </record>
+
+        <record id="order_state_99" model="crosslog.order.state">
+            <field name="code">99</field>
+            <field name="name">Livré</field>
+        </record>
+
+        <record id="order_state_98" model="crosslog.order.state">
+            <field name="code">98</field>
+            <field name="name">Livré - partiel</field>
+        </record>
+
+        <record id="order_state_97" model="crosslog.order.state">
+            <field name="code">97</field>
+            <field name="name">Livraison en cours</field>
+        </record>
+
+        <record id="order_state_96" model="crosslog.order.state">
+            <field name="code">96</field>
+            <field name="name">Livraison en cours - partiel</field>
+        </record>
+
+        <record id="order_state_15" model="crosslog.order.state">
+            <field name="code">15</field>
+            <field name="name">Pris en charge plateforme de Livraison</field>
+        </record>
+
+        <record id="order_state_141" model="crosslog.order.state">
+            <field name="code">141</field>
+            <field name="name">En acheminement vers plateforme de livraison - partiel</field>
+        </record>
+
+        <record id="order_state_12" model="crosslog.order.state">
+            <field name="code">12</field>
+            <field name="name">Expédiée</field>
+        </record>
+
+        <record id="order_state_102" model="crosslog.order.state">
+            <field name="code">102</field>
+            <field name="name">Colisée</field>
+        </record>
+
+        <record id="order_state_101" model="crosslog.order.state">
+            <field name="code">101</field>
+            <field name="name">En préparation</field>
+        </record>
+
+        <record id="order_state_116" model="crosslog.order.state">
+            <field name="code">116</field>
+            <field name="name">Complète</field>
+        </record>
+
+        <record id="order_state_10" model="crosslog.order.state">
+            <field name="code">10</field>
+            <field name="name">Incomplète</field>
+        </record>
+
+        <record id="order_state_0" model="crosslog.order.state">
+            <field name="code">0</field>
+            <field name="name">Inconnu</field>
+        </record>
+
+        <record id="order_state_90" model="crosslog.order.state">
+            <field name="code">90</field>
+            <field name="name">Litige clos</field>
+        </record>
+
+        <record id="order_state_80" model="crosslog.order.state">
+            <field name="code">80</field>
+            <field name="name">Litige ouvert</field>
+        </record>
+
+        <record id="order_state_82" model="crosslog.order.state">
+            <field name="code">82</field>
+            <field name="name">Colis détérioré</field>
+        </record>
+
+        <record id="order_state_84" model="crosslog.order.state">
+            <field name="code">84</field>
+            <field name="name">Prise en charge acceptée</field>
+        </record>
+
+        <record id="order_state_70" model="crosslog.order.state">
+            <field name="code">70</field>
+            <field name="name">Ordre de retour</field>
+        </record>
+
+        <record id="order_state_71" model="crosslog.order.state">
+            <field name="code">71</field>
+            <field name="name">Retourné au HUB</field>
+        </record>
+
+        <record id="order_state_72" model="crosslog.order.state">
+            <field name="code">72</field>
+            <field name="name">Retourné à la plateforme de livraison</field>
+        </record>
+
+        <record id="order_state_293" model="crosslog.order.state">
+            <field name="code">293</field>
+            <field name="name">Avis de passage</field>
+        </record>
+
+        <record id="order_state_35" model="crosslog.order.state">
+            <field name="code">35</field>
+            <field name="name">En instance en point de retrait</field>
+        </record>
+
+        <record id="order_state_124" model="crosslog.order.state">
+            <field name="code">124</field>
+            <field name="name">Colis Déclaré</field>
+        </record>
+
+        <record id="order_state_75" model="crosslog.order.state">
+            <field name="code">75</field>
+            <field name="name">Retourné au stock - partiel</field>
+        </record>
+
+        <record id="order_state_73" model="crosslog.order.state">
+            <field name="code">73</field>
+            <field name="name">Retourné au stock</field>
+        </record>
+
+        <record id="order_state_803" model="crosslog.order.state">
+            <field name="code">803</field>
+            <field name="name">Retard de livraison</field>
+        </record>
+
+        <record id="order_state_805" model="crosslog.order.state">
+            <field name="code">805</field>
+            <field name="name">Non livraison injustifiée</field>
+        </record>
+
+        <record id="order_state_806" model="crosslog.order.state">
+            <field name="code">806</field>
+            <field name="name">Colis ouvert produit manquant</field>
+        </record>
+
+        <record id="order_state_807" model="crosslog.order.state">
+            <field name="code">807</field>
+            <field name="name">Produit cassé</field>
+        </record>
+
+        <record id="order_state_14" model="crosslog.order.state">
+            <field name="code">14</field>
+            <field name="name">Arrivée en plateforme de tri</field>
+        </record>
+
+        <record id="order_state_145" model="crosslog.order.state">
+            <field name="code">145</field>
+            <field name="name">En acheminement vers plateforme de livraison</field>
+        </record>
+
+        <record id="order_state_305" model="crosslog.order.state">
+            <field name="code">305</field>
+            <field name="name">Non livré en attente d'instruction</field>
+        </record>
+
+        <record id="order_state_32" model="crosslog.order.state">
+            <field name="code">32</field>
+            <field name="name">Problème d'adresse</field>
+        </record>
+
+        <record id="order_state_33" model="crosslog.order.state">
+            <field name="code">33</field>
+            <field name="name">Non livré refus client</field>
+        </record>
+
+        <record id="order_state_36" model="crosslog.order.state">
+            <field name="code">36</field>
+            <field name="name">N'habite pas à l'adresse indiquée</field>
+        </record>
+
+        <record id="order_state_79" model="crosslog.order.state">
+            <field name="code">79</field>
+            <field name="name">Retourné à l'expéditeur</field>
+        </record>
+
+        <record id="order_state_121" model="crosslog.order.state">
+            <field name="code">121</field>
+            <field name="name">En acheminement vers plateforme de tri</field>
+        </record>
+
+        <record id="order_state_400" model="crosslog.order.state">
+            <field name="code">400</field>
+            <field name="name">Entrée en douane</field>
+        </record>
+
+        <record id="order_state_401" model="crosslog.order.state">
+            <field name="code">401</field>
+            <field name="name">Sortie de douane</field>
+        </record>
+
+        <record id="order_state_402" model="crosslog.order.state">
+            <field name="code">402</field>
+            <field name="name">Problème douane document manquant</field>
+        </record>
+
+        <record id="order_state_403" model="crosslog.order.state">
+            <field name="code">403</field>
+            <field name="name">Problème douane</field>
+        </record>
+
+        <record id="order_state_404" model="crosslog.order.state">
+            <field name="code">404</field>
+            <field name="name">Identification marchandise par la douane</field>
+        </record>
+
+        <record id="order_state_405" model="crosslog.order.state">
+            <field name="code">405</field>
+            <field name="name">En instance de dédouanement</field>
+        </record>
+
+        <record id="order_state_701" model="crosslog.order.state">
+            <field name="code">701</field>
+            <field name="name">Colis en retour</field>
+        </record>
+
+        <record id="order_state_34" model="crosslog.order.state">
+            <field name="code">34</field>
+            <field name="name">Non livré problème d'accès</field>
+        </record>
+
+        <record id="order_state_31" model="crosslog.order.state">
+            <field name="code">31</field>
+            <field name="name">Non livré client absent</field>
+        </record>
+
+        <record id="order_state_291" model="crosslog.order.state">
+            <field name="code">291</field>
+            <field name="name">Commande en Livraison</field>
+        </record>
+
+        <record id="order_state_290" model="crosslog.order.state">
+            <field name="code">290</field>
+            <field name="name">Commande en Livraison - partiel</field>
+        </record>
+
+        <record id="order_state_29" model="crosslog.order.state">
+            <field name="code">29</field>
+            <field name="name">Contacté et rendez-vous pris</field>
+        </record>
+
+        <record id="order_state_20" model="crosslog.order.state">
+            <field name="code">20</field>
+            <field name="name">Message répondeur</field>
+        </record>
+
+        <record id="order_state_142" model="crosslog.order.state">
+            <field name="code">142</field>
+            <field name="name">En acheminement vers région</field>
+        </record>
+
+        <record id="order_state_122" model="crosslog.order.state">
+            <field name="code">122</field>
+            <field name="name">Informations de livraison transmises</field>
+        </record>
+
+        <record id="order_state_143" model="crosslog.order.state">
+            <field name="code">143</field>
+            <field name="name">Rendez-vous planifié</field>
+        </record>
+
+        <record id="order_state_37" model="crosslog.order.state">
+            <field name="code">37</field>
+            <field name="name">Colis en attente de distribution</field>
+        </record>
+
+        <record id="order_state_38" model="crosslog.order.state">
+            <field name="code">38</field>
+            <field name="name">Colis réacheminé vers le destinataire</field>
+        </record>
+
+        <record id="order_state_39" model="crosslog.order.state">
+            <field name="code">39</field>
+            <field name="name">Colis réexpédié</field>
+        </record>
+
+        <record id="order_state_929" model="crosslog.order.state">
+            <field name="code">929</field>
+            <field name="name">Contacté et rendez-vous pris - partiel</field>
+        </record>
+
+        <record id="order_state_928" model="crosslog.order.state">
+            <field name="code">928</field>
+            <field name="name">En instance en point de retrait - partiel</field>
+        </record>
+
+        <record id="order_state_922" model="crosslog.order.state">
+            <field name="code">922</field>
+            <field name="name">Problème de livraison - partiel</field>
+        </record>
+
+        <record id="order_state_908" model="crosslog.order.state">
+            <field name="code">908</field>
+            <field name="name">Colis Déclaré - partiel</field>
+        </record>
+
+        <record id="order_state_904" model="crosslog.order.state">
+            <field name="code">904</field>
+            <field name="name">Expédiée - partiel</field>
+        </record>
+
+        <record id="order_state_905" model="crosslog.order.state">
+            <field name="code">905</field>
+            <field name="name">En acheminement vers plateforme de tri - partiel</field>
+        </record>
+
+        <record id="order_state_906" model="crosslog.order.state">
+            <field name="code">906</field>
+            <field name="name">Informations de livraison transmises - partiel</field>
+        </record>
+
+        <record id="order_state_913" model="crosslog.order.state">
+            <field name="code">913</field>
+            <field name="name">En acheminement vers région - partiel</field>
+        </record>
+
+        <record id="order_state_914" model="crosslog.order.state">
+            <field name="code">914</field>
+            <field name="name">Rendez-vous planifié - partiel</field>
+        </record>
+
+        <record id="order_state_915" model="crosslog.order.state">
+            <field name="code">915</field>
+            <field name="name">Pris en charge plateforme de Livraison - partiel</field>
+        </record>
+
+        <record id="order_state_920" model="crosslog.order.state">
+            <field name="code">920</field>
+            <field name="name">Avis de passage - partiel</field>
+        </record>
+
+        <record id="order_state_924" model="crosslog.order.state">
+            <field name="code">924</field>
+            <field name="name">Non livré en attente d'instruction - partiel</field>
+        </record>
+
+        <record id="order_state_925" model="crosslog.order.state">
+            <field name="code">925</field>
+            <field name="name">Non livré client absent - partiel</field>
+        </record>
+
+        <record id="order_state_926" model="crosslog.order.state">
+            <field name="code">926</field>
+            <field name="name">Non livré refus client - partiel</field>
+        </record>
+
+        <record id="order_state_927" model="crosslog.order.state">
+            <field name="code">927</field>
+            <field name="name">Non livré problème d'accès - partiel</field>
+        </record>
+
+        <record id="order_state_932" model="crosslog.order.state">
+            <field name="code">932</field>
+            <field name="name">N'habite pas à l'adresse indiquée - partiel</field>
+        </record>
+
+        <record id="order_state_933" model="crosslog.order.state">
+            <field name="code">933</field>
+            <field name="name">Colis en attente de distribution - partiel</field>
+        </record>
+
+        <record id="order_state_934" model="crosslog.order.state">
+            <field name="code">934</field>
+            <field name="name">Colis réacheminé vers le destinataire - partiel</field>
+        </record>
+
+        <record id="order_state_935" model="crosslog.order.state">
+            <field name="code">935</field>
+            <field name="name">Colis réexpédié - partiel</field>
+        </record>
+
+        <record id="order_state_937" model="crosslog.order.state">
+            <field name="code">937</field>
+            <field name="name">Entrée en douane - partiel</field>
+        </record>
+
+        <record id="order_state_938" model="crosslog.order.state">
+            <field name="code">938</field>
+            <field name="name">Sortie de douane - partiel</field>
+        </record>
+
+        <record id="order_state_939" model="crosslog.order.state">
+            <field name="code">939</field>
+            <field name="name">Problème douane document manquant - partiel</field>
+        </record>
+
+        <record id="order_state_940" model="crosslog.order.state">
+            <field name="code">940</field>
+            <field name="name">Problème douane - partiel</field>
+        </record>
+
+        <record id="order_state_941" model="crosslog.order.state">
+            <field name="code">941</field>
+            <field name="name">Identification marchandise par la douane - partiel</field>
+        </record>
+
+        <record id="order_state_942" model="crosslog.order.state">
+            <field name="code">942</field>
+            <field name="name">En instance de dédouanement - partiel</field>
+        </record>
+
+        <record id="order_state_946" model="crosslog.order.state">
+            <field name="code">946</field>
+            <field name="name">Ordre de retour - partiel</field>
+        </record>
+
+        <record id="order_state_948" model="crosslog.order.state">
+            <field name="code">948</field>
+            <field name="name">Colis en retour - partiel</field>
+        </record>
+
+        <record id="order_state_949" model="crosslog.order.state">
+            <field name="code">949</field>
+            <field name="name">Retourné au HUB - partiel</field>
+        </record>
+
+        <record id="order_state_950" model="crosslog.order.state">
+            <field name="code">950</field>
+            <field name="name">Retourné à la plateforme de livraison - partiel</field>
+        </record>
+
+        <record id="order_state_953" model="crosslog.order.state">
+            <field name="code">953</field>
+            <field name="name">Retourné à l'expéditeur - partiel</field>
+        </record>
+
+        <record id="order_state_954" model="crosslog.order.state">
+            <field name="code">954</field>
+            <field name="name">Litige ouvert - partiel</field>
+        </record>
+
+        <record id="order_state_957" model="crosslog.order.state">
+            <field name="code">957</field>
+            <field name="name">Retard de livraison - partiel</field>
+        </record>
+
+        <record id="order_state_959" model="crosslog.order.state">
+            <field name="code">959</field>
+            <field name="name">Non livraison injustifiée - partiel</field>
+        </record>
+
+        <record id="order_state_960" model="crosslog.order.state">
+            <field name="code">960</field>
+            <field name="name">Colis ouvert produit manquant - partiel</field>
+        </record>
+
+        <record id="order_state_961" model="crosslog.order.state">
+            <field name="code">961</field>
+            <field name="name">Produit cassé - partiel</field>
+        </record>
+
+        <record id="order_state_968" model="crosslog.order.state">
+            <field name="code">968</field>
+            <field name="name">Colis détérioré - partiel</field>
+        </record>
+
+        <record id="order_state_969" model="crosslog.order.state">
+            <field name="code">969</field>
+            <field name="name">Colis perdu - partiel</field>
+        </record>
+
+        <record id="order_state_971" model="crosslog.order.state">
+            <field name="code">971</field>
+            <field name="name">Prise en charge accéptée - partiel</field>
+        </record>
+
+        <record id="order_state_978" model="crosslog.order.state">
+            <field name="code">978</field>
+            <field name="name">Litige clos - partiel</field>
+        </record>
+
+        <record id="order_state_982" model="crosslog.order.state">
+            <field name="code">982</field>
+            <field name="name">Annulé - partiel</field>
+        </record>
+
+        <record id="order_state_41" model="crosslog.order.state">
+            <field name="code">41</field>
+            <field name="name">Changement de point relais</field>
+        </record>
+
+        <record id="order_state_419" model="crosslog.order.state">
+            <field name="code">419</field>
+            <field name="name">Changement de point relais - partiel</field>
+        </record>
+
+        <record id="order_state_917" model="crosslog.order.state">
+            <field name="code">917</field>
+            <field name="name">Message répondeur - partiel</field>
+        </record>
+
+        <record id="order_state_214" model="crosslog.order.state">
+            <field name="code">214</field>
+            <field name="name">Arrivée en plateforme de tri - partiel</field>
+        </record>
+
+        <record id="order_state_18" model="crosslog.order.state">
+            <field name="code">18</field>
+            <field name="name">En acheminement vers l'aéroport</field>
+        </record>
+
+        <record id="order_state_19" model="crosslog.order.state">
+            <field name="code">19</field>
+            <field name="name">En transit aérien</field>
+        </record>
+
+        <record id="order_state_24" model="crosslog.order.state">
+            <field name="code">24</field>
+            <field name="name">En acheminement vers le hub d'expédition</field>
+        </record>
+
+        <record id="order_state_983" model="crosslog.order.state">
+            <field name="code">983</field>
+            <field name="name">Livré avec paiement</field>
+        </record>
+
+        <record id="order_state_25" model="crosslog.order.state">
+            <field name="code">25</field>
+            <field name="name">Arrivé au hub d'expédition</field>
+        </record>
+
+        <record id="order_state_984" model="crosslog.order.state">
+            <field name="code">984</field>
+            <field name="name">Contenu du colis interdit</field>
+        </record>
+
+        <record id="order_state_985" model="crosslog.order.state">
+            <field name="code">985</field>
+            <field name="name">Colis en avarie</field>
+        </record>
+
+        <record id="order_state_986" model="crosslog.order.state">
+            <field name="code">986</field>
+            <field name="name">Livré à un tiers</field>
+        </record>
+
+        <record id="order_state_987" model="crosslog.order.state">
+            <field name="code">987</field>
+            <field name="name">Contenu du colis interdit - partiel</field>
+        </record>
+
+        <record id="order_state_988" model="crosslog.order.state">
+            <field name="code">988</field>
+            <field name="name">Colis en avarie - partiel</field>
+        </record>
+
+        <record id="order_state_989" model="crosslog.order.state">
+            <field name="code">989</field>
+            <field name="name">Livré à un tiers - partiel</field>
+        </record>
+
+        <record id="order_state_975" model="crosslog.order.state">
+            <field name="code">975</field>
+            <field name="name">Retour à l'expediteur livré</field>
+        </record>
+
+        <record id="order_state_42" model="crosslog.order.state">
+            <field name="code">42</field>
+            <field name="name">Non Livré point de retrait fermé</field>
+        </record>
+
+        <record id="order_state_931" model="crosslog.order.state">
+            <field name="code">931</field>
+            <field name="name">Non Livré point de retrait fermé - partiel</field>
+        </record>
+
+        <record id="order_state_45" model="crosslog.order.state">
+            <field name="code">45</field>
+            <field name="name">Colis retiré en point de retrait - partiel</field>
+        </record>
+
+        <record id="order_state_40" model="crosslog.order.state">
+            <field name="code">40</field>
+            <field name="name">Colis retiré en point de retrait</field>
+        </record>
+
+        <record id="order_state_46" model="crosslog.order.state">
+            <field name="code">46</field>
+            <field name="name">Non Livré point de retrait fermé - partiel</field>
+        </record>
+
+        <record id="order_state_47" model="crosslog.order.state">
+            <field name="code">47</field>
+            <field name="name">Durée limite en point de retrait atteinte - partiel</field>
+        </record>
+
+        <record id="order_state_44" model="crosslog.order.state">
+            <field name="code">44</field>
+            <field name="name">Durée limite en point de retrait atteinte</field>
+        </record>
+
+        <record id="order_state_48" model="crosslog.order.state">
+            <field name="code">48</field>
+            <field name="name">Contact destinataire en cours - partiel</field>
+        </record>
+
+        <record id="order_state_43" model="crosslog.order.state">
+            <field name="code">43</field>
+            <field name="name">Contact destinataire en cours</field>
+        </record>
+
+        <record id="order_state_49" model="crosslog.order.state">
+            <field name="code">49</field>
+            <field name="name">Durée limite en point de retrait presque atteint - partiel</field>
+        </record>
+
+        <record id="order_state_50" model="crosslog.order.state">
+            <field name="code">50</field>
+            <field name="name">Durée limite en point de retrait presque atteint</field>
+        </record>
+
+        <record id="order_state_51" model="crosslog.order.state">
+            <field name="code">51</field>
+            <field name="name">Livraison reprogrammée - partiel</field>
+        </record>
+
+        <record id="order_state_52" model="crosslog.order.state">
+            <field name="code">52</field>
+            <field name="name">Livraison reprogrammée</field>
+        </record>
+
+        <record id="order_state_53" model="crosslog.order.state">
+            <field name="code">53</field>
+            <field name="name">Non livré Attente de paiement - partiel</field>
+        </record>
+
+        <record id="order_state_54" model="crosslog.order.state">
+            <field name="code">54</field>
+            <field name="name">Non livré Attente de paiement</field>
+        </record>
+
+        <record id="order_state_55" model="crosslog.order.state">
+            <field name="code">55</field>
+            <field name="name">Non livré Colis réacheminé vers point de retrait - partiel</field>
+        </record>
+
+        <record id="order_state_56" model="crosslog.order.state">
+            <field name="code">56</field>
+            <field name="name">Non livré Colis réacheminé vers point de retrait</field>
+        </record>
+
+        <record id="order_state_57" model="crosslog.order.state">
+            <field name="code">57</field>
+            <field name="name">Problème Douane droits/taxes à régler - partiel</field>
+        </record>
+
+        <record id="order_state_58" model="crosslog.order.state">
+            <field name="code">58</field>
+            <field name="name">Problème Douane droits/taxes à régler</field>
+        </record>
+
+        <record id="order_state_59" model="crosslog.order.state">
+            <field name="code">59</field>
+            <field name="name">Problème d enlèvement - partiel</field>
+        </record>
+
+        <record id="order_state_60" model="crosslog.order.state">
+            <field name="code">60</field>
+            <field name="name">Problème d enlèvement</field>
+        </record>
+
+        <record id="order_state_703" model="crosslog.order.state">
+            <field name="code">703</field>
+            <field name="name">Un ou plusieurs articles sont en cours de retour partiel</field>
+        </record>
+
+        <record id="order_state_702" model="crosslog.order.state">
+            <field name="code">702</field>
+            <field name="name">Un ou plusieurs articles sont en cours de retour</field>
+        </record>
+
+        <record id="order_state_704" model="crosslog.order.state">
+            <field name="code">704</field>
+            <field name="name">Retour livré</field>
+        </record>
+
+        <record id="order_state_705" model="crosslog.order.state">
+            <field name="code">705</field>
+            <field name="name">Retour livré partiel</field>
+        </record>
+
+        <record id="order_state_706" model="crosslog.order.state">
+            <field name="code">706</field>
+            <field name="name">Suspicion de fraude</field>
+        </record>
+
+        <record id="order_state_289" model="crosslog.order.state">
+            <field name="code">289</field>
+            <field name="name">Livraison planifiée</field>
+        </record>
+
+        <record id="order_state_61" model="crosslog.order.state">
+            <field name="code">61</field>
+            <field name="name">Non livre client absent (2eme Tentative)</field>
+        </record>
+
+        <record id="order_state_990" model="crosslog.order.state">
+            <field name="code">990</field>
+            <field name="name">Non livre client absent (2eme Tentative) - partiel</field>
+        </record>
+
+        <record id="order_state_62" model="crosslog.order.state">
+            <field name="code">62</field>
+            <field name="name">Non livre client absent (3eme Tentative)</field>
+        </record>
+
+        <record id="order_state_991" model="crosslog.order.state">
+            <field name="code">991</field>
+            <field name="name">Non livre client absent (3eme Tentative) - partiel</field>
+        </record>
+
+    </data>
+</odoo>

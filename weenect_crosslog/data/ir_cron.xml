@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!-- Cleaning -->
+        <record id="cron_remove_crosslog_older_logs" model="ir.cron">
+            <field name="name">CROSSLOG : Removing older logs</field>
+            <field name="model_id" ref="model_crosslog_log"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="state">code</field>
+            <field name="code">model.remove_older_logs()</field>
+        </record>
+
+        <!-- Synchronizations -->
+        <record id="synchronize_crosslog_products_cron" model="ir.cron">
+            <field name="name">CROSSLOG : Synchronize products</field>
+            <field name="model_id" ref="model_crosslog_product_synchronization"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="state">code</field>
+            <field name="code">model.synchronize_products(synchronize_stock=True)</field>
+        </record>
+
+        <record id="synchronize_crosslog_pickings_cron" model="ir.cron">
+            <field name="name">CROSSLOG : Synchronize pickings</field>
+            <field name="model_id" ref="model_crosslog_picking_synchronization"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="state">code</field>
+            <field name="code">model.synchronize_pickings()</field>
+        </record>
+    </data>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crosslog_reception_state_view_tree" model="ir.ui.view">
+        <field name="name">crosslog.reception.state.view.tree</field>
+        <field name="model">crosslog.reception.state</field>
+        <field name="arch" type="xml">
+            <list string="Crosslog receptions state" editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="crosslog_reception_state_action" model="ir.actions.act_window">
+        <field name="name">Crosslog receptions state</field>
+        <field name="res_model">crosslog.reception.state</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

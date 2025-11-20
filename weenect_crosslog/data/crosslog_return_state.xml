@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <record id="order_return_10" model="crosslog.return.state">
+            <field name="code">10</field>
+            <field name="name">En attente de réception</field>
+        </record>
+
+        <record id="order_return_20" model="crosslog.return.state">
+            <field name="code">21</field>
+            <field name="name">Retourné non conforme</field>
+        </record>
+
+        <record id="order_return_30" model="crosslog.return.state">
+            <field name="code">30</field>
+            <field name="name">Retourné conforme</field>
+        </record>
+
+        <record id="order_return_99" model="crosslog.return.state">
+            <field name="code">99</field>
+            <field name="name">Annulé</field>
+        </record>
+
+        <record id="order_return_20" model="crosslog.return.state">
+            <field name="code">20</field>
+            <field name="name">Retourné partiel</field>
+        </record>
+
+        <record id="order_return_31" model="crosslog.return.state">
+            <field name="code">31</field>
+            <field name="name">Retourné complet</field>
+        </record>
+
+        <record id="order_return_15" model="crosslog.return.state">
+            <field name="code">15</field>
+            <field name="name">Réception en cours</field>
+        </record>
+
+    </data>
+
+</odoo>

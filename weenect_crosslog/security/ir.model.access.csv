@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crosslog_connection_manager,access.crosslog.connection.manager,model_crosslog_connection,stock.group_stock_manager,1,1,1,1
+access_crosslog_connection_user,access.crosslog.connection.user,model_crosslog_connection,stock.group_stock_user,0,0,0,0
+access_crosslog_product_synchronization,access.crosslog.product.synchronization,model_crosslog_product_synchronization,stock.group_stock_manager,1,1,1,1
+access_crosslog_order_state_manager,access.crosslog.order.state.manager,model_crosslog_order_state,stock.group_stock_manager,1,1,1,1
+access_crosslog_order_state_user,access.crosslog.order.state.user,model_crosslog_order_state,stock.group_stock_user,1,0,0,0
+access_crosslog_picking_synchronization,access.crosslog.picking.synchronization,model_crosslog_picking_synchronization,stock.group_stock_manager,1,1,1,1
+access_crosslog_log_manager,access.crosslog.log.manager,model_crosslog_log,stock.group_stock_manager,1,0,1,1
+access_crosslog_log_user,access.crosslog.log.user,model_crosslog_log,stock.group_stock_user,1,0,0,0
+access_crosslog_reception_state_manager,access.crosslog.reception.state.manager,model_crosslog_reception_state,stock.group_stock_manager,1,1,1,1
+access_crosslog_reception_state_user,access.crosslog.reception.state.user,model_crosslog_reception_state,stock.group_stock_user,1,0,0,0
+access_crosslog_return_state_manager,access.crosslog.return.state.manager,model_crosslog_return_state,stock.group_stock_manager,1,1,1,1
+access_crosslog_return_state_user,access.crosslog.return.state.user,model_crosslog_return_state,stock.group_stock_user,1,0,0,0
