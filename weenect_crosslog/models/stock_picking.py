@@ -194,7 +194,7 @@ class StockPicking(models.Model):
             return False
         if self.state in ('done', 'cancel'):
             return False
-        if not any(ml.qty_done > 0 for ml in self.move_line_ids):
+        if not any(ml.quantity > 0 for ml in self.move_line_ids):
             return False
 
         self.button_validate()
