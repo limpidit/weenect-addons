@@ -71,17 +71,6 @@ class CrosslogPickingSynchronization(models.TransientModel):
                                     continue
                             else:
                                 unvalid_pickings.append(order_number)
-                    else:
-                        if picking:
-                            continue
-                        else:
-                            new_picking = picking_object.create_delivery(delivery, warehouse, partner)
-                            if new_picking:
-                                if not new_picking.try_make_picking_ready(order_number):
-                                    unvalid_pickings.append(order_number)
-                                    continue
-                            else:
-                                unvalid_pickings.append(order_number)
                 
                 except Exception as e:
                     log_object.log_error(title=_("Error during synchronisation of Crosslog order %s.") % (order_number), message=str(e))
