@@ -25,12 +25,12 @@ class StockPicking(models.Model):
 
         for line in crosslog_lines:
             crosslog_product_code = line.get('code')
-            sent_qty = float(line.get('sent_qty') or 0.0)
+            sent_qty = float(line.get('initial_qty') or 0.0)
             if sent_qty == 0:
                 continue
             product = product_product_object.search([('default_code', '=', crosslog_product_code), ('available_on_crosslog', '=', True)], limit=1)
             if not product:
-                log_object.log_warning(title=_(f"Order {order_number} not synchronised."), message= _(f"The product {crosslog_product_code} does not exist in Odoo or is not synchronised with Crosslog."))
+                log_object.log_warning(title=_("Order %s not synchronised.") % (order_number), message= _("The product %s does not exist in Odoo or is not synchronised with Crosslog.") % (crosslog_product_code))
                 error = True
                 break
 
@@ -43,7 +43,7 @@ class StockPicking(models.Model):
                     exist_lot = lot_object.search([('name', '=', lot_code), ('product_id', '=', product.id), ('available_on_crosslog', '=', True)], limit=1)
                     qty = float(lot.get('quantity') or 0.0)
                     if not exist_lot:
-                        log_object.log_warning(title=_(f"Order {order_number} not synchronised."), message=_(f"The lot {lot_code} for the product {line['code']} does not exist in Odoo or is not synchronised with Crosslog."))
+                        log_object.log_warning(title=_("Order %s not synchronised.") % (order_number), message=_("The lot %s for the product %s does not exist in Odoo or is not synchronised with Crosslog.") % (lot_code, line['code']))
                         error = True
                         break
                     move_line_vals.append(Command.create({
@@ -52,11 +52,11 @@ class StockPicking(models.Model):
                         'qty_done': qty,
                     }))
             elif not lots and product_tracking_by_lot:
-                log_object.log_warning(title=_(f"Order {order_number} not synchronised."), message=_(f"Product {crosslog_product_code} managed without lot in Crosslog while managed with lot in Odoo for order {order_number}."))
+                log_object.log_warning(title=_("Order %s not synchronised.") % (order_number), message=_("Product %s managed without lot in Crosslog while managed with lot in Odoo for order %s.") % (crosslog_product_code, order_number))
                 error = True
                 break
             elif lots and not product_tracking_by_lot:
-                log_object.log_warning(title=_(f"Order {order_number} not synchronised."), message=_(f"Product {crosslog_product_code} managed with lot in Crosslog while managed without lot in Odoo for order {order_number}."))
+                log_object.log_warning(title=_("Order %s not synchronised.") % (order_number), message=_("Product %s managed with lot in Crosslog while managed without lot in Odoo for order %s.") % (crosslog_product_code, order_number))
                 error = True
                 break    
             else:
@@ -68,7 +68,7 @@ class StockPicking(models.Model):
             if error:
                 break
         
-        if not error:
+        if not error and move_line_vals:
             new_shipment = picking_object.create({
                 'partner_id': partner.id,
                 'picking_type_id': warehouse.out_type_id.id,
@@ -76,6 +76,13 @@ class StockPicking(models.Model):
                 'crosslog_code': delivery.get('order_number'),
                 'move_line_ids': move_line_vals,
             })
+        else:
+            if not move_line_vals:
+                log_object.log_warning(
+                    title=_("Order %s not synchronised.") % (order_number),
+                    message=_("No shippable lines found for order %s.") % (order_number),
+                )
+            new_shipment = False
         return new_shipment
 
 
@@ -92,13 +99,13 @@ class StockPicking(models.Model):
             if receipt_qty > 0:
                 product = product_product_object.search([('default_code', '=', line['code']), ('available_on_crosslog', '=', True)], limit=1)
                 if not product:
-                    log_object.log_warning(title=_(f"Return {return_number} not synchronized"), message=_(f"Product {line['code']} not found in Odoo or is not synchronized."))
+                    log_object.log_warning(title=_("Return %s not synchronized") % (return_number), message=_("Product %s not found in Odoo or is not synchronized.") % (line['code']))
                     return_picking = False
                     break
 
                 move = delivery.move_ids.filtered(lambda m: m.product_id.id == product.id)
                 if not move:
-                    log_object.log_warning(title=_(f"Return {return_number} not synchronized"), message=_(f"No line on delivery {order_number} with product {line['code']} matched."))
+                    log_object.log_warning(title=_("Return %s not synchronized") % (return_number), message=_("No line on delivery %s with product %s matched.") % (order_number, line['code']))
                     return_picking = False
                     break
                 
@@ -145,7 +152,7 @@ class StockPicking(models.Model):
                                     'lot_id': orig_ml.lot_id.id,
                                 })
                             else:
-                                log_object.log_warning(title=_(f"Return {return_number} not synchronized"), message=_(f"Product {line['code']} requires lot/serial number but none found on original move line."))
+                                log_object.log_warning(title=_("Return %s not synchronized") % (return_number), message=_("Product %s requires lot/serial number but none found on original move line.") % (line['code']))
                                 return_picking = False
                                 break
                     else:
@@ -163,7 +170,7 @@ class StockPicking(models.Model):
                             })
                             ml_vals['lot_id'] = orig_ml.lot_id.id
                         else:
-                            log_object.log_warning(title=_(f"Return {return_number} not synchronized"), message=_(f"Product {line['code']} requires lot/serial number but none found on original move line."))
+                            log_object.log_warning(title=_("Return %s not synchronized") % (return_number), message=_("Product %s requires lot/serial number but none found on original move line.") % (line['code']))
                             return_picking = False
                             break
 
@@ -171,8 +178,48 @@ class StockPicking(models.Model):
         return return_picking
 
     def make_picking_ready(self):
+        self.ensure_one()
+        if not self.move_ids:
+            return False
+        if self.state in ('done', 'cancel'):
+            return False
+
         self.action_confirm()
         self.action_assign()
+        return True
             
     def validate_picking(self):
+        self.ensure_one()
+        if not self.move_ids:
+            return False
+        if self.state in ('done', 'cancel'):
+            return False
+        if not any(ml.qty_done > 0 for ml in self.move_line_ids):
+            return False
+
         self.button_validate()
+        return True
+
+    def try_make_picking_ready(self, order_number):
+        log_object = self.env['crosslog.log']
+
+        ready_ok = self.make_picking_ready()
+        if not ready_ok:
+            log_object.log_warning(
+                title=_("Transfer %s not synchronised.") % (order_number),
+                message=_("Unable to prepare transfer for Crosslog order %s: no stock moves found or picking not in a valid state.") % (order_number),
+            )
+            return False
+        return True
+
+    def try_validate_picking(self, order_number):
+        log_object = self.env['crosslog.log']
+
+        validate_ok = self.validate_picking()
+        if not validate_ok:
+            log_object.log_warning(
+                title=_("Transfer %s not synchronised.") % (order_number),
+                message=_("Unable to validate transfer for Crosslog order %s: empty picking or no done quantities.") % (order_number),
+            )
+            return False
+        return True

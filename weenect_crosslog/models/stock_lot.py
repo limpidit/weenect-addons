@@ -39,7 +39,7 @@ class StockLot(models.Model):
     def action_open_crosslog_lots(self):
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Products lots available on Crosslog',
+            'name': 'Lots des produits disponibles chez Crosslog',
             'res_model': 'stock.lot',
             'view_mode': 'list',
             'domain': [('available_on_crosslog', '=', True)],

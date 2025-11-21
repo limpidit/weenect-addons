@@ -46,14 +46,14 @@ class CrosslogProductSynchronization(models.TransientModel):
                     if product.tracking == 'lot':
                         lots_data = product_information_result.get('lots') or []
                         if not lots_data:
-                            log_object.log_warning(title=_(f"No lot retrieved for %s (%s), skipping.", product.display_name, product.default_code))
+                            log_object.log_warning(title=_("No lot retrieved for %s (%s), skipping.") % (product.display_name, product.default_code))
                         else:
                             for lot_info in lots_data:
                                 lot_name = (lot_info.get('lot_number') or '').strip()
                                 qty = float(lot_info.get('quantity') or 0.0)
 
                                 if not lot_name:
-                                    log_object.log_warning(title=_(f"Lot without name for %s, ignored.", product.default_code))
+                                    log_object.log_warning(title=_("Lot without name for %s, ignored.") % (product.default_code))
                                     continue
 
                                 lot = lot_object.search([('name', '=', lot_name), ('product_id', '=', product.id)], limit=1)
