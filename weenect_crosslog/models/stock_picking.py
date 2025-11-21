@@ -25,7 +25,7 @@ class StockPicking(models.Model):
 
         for line in crosslog_lines:
             crosslog_product_code = line.get('code')
-            sent_qty = float(line.get('initial_qty') or 0.0)
+            sent_qty = float(line.get('sent_qty') or 0.0)
             if sent_qty == 0:
                 continue
             product = product_product_object.search([('default_code', '=', crosslog_product_code), ('available_on_crosslog', '=', True)], limit=1)
