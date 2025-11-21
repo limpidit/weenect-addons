@@ -87,7 +87,7 @@ class StockPicking(models.Model):
                     continue
                 
                 return_wizard = self.env['stock.return.picking'].with_context({'active_id': delivery.id, 'active_model': 'stock.picking'}).create({})
-                return_wizard._onchange_picking_id()
+                return_wizard._compute_moves_locations()
             
                 for return_row in salesupply_json_return['OrderReturnRows']:
                     line = return_wizard.product_return_moves.filtered(lambda m, return_row=return_row: m.product_id.default_code == return_row['ProductCode'])
@@ -95,7 +95,6 @@ class StockPicking(models.Model):
                     
                 backorder_id = return_wizard._create_return()
                 backorder = self.browse(backorder_id)
-                backorder.move_ids._set_quantities_to_reservation()
                 salesupply_date_done = salesupply_json_return['ReceivedDate']
                 date_done = parser.isoparse(salesupply_date_done) if salesupply_date_done else False
                 backorder.with_context(shipping_date_done=date_done).button_validate()
