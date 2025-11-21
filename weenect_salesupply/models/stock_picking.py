@@ -93,7 +93,7 @@ class StockPicking(models.Model):
                     line = return_wizard.product_return_moves.filtered(lambda m, return_row=return_row: m.product_id.default_code == return_row['ProductCode'])
                     line.quantity = return_row['ReturnedQuantity']
                     
-                backorder_id = return_wizard._create_returns()[0]
+                backorder_id = return_wizard._create_return()
                 backorder = self.browse(backorder_id)
                 backorder.move_ids._set_quantities_to_reservation()
                 salesupply_date_done = salesupply_json_return['ReceivedDate']
