@@ -626,7 +626,7 @@ msgstr "La réception avec le code Crosslog %s est introuvable dans Odoo ou déj
 #. module: weenect_crosslog
 #: model:ir.ui.menu,name:weenect_crosslog.crosslog_receptions_menu
 msgid "Receptions"
-msgstr "Réceptions"
+msgstr "Commandes fournisseurs"
 
 #. module: weenect_crosslog
 #. odoo-python
