@@ -77,7 +77,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
             
             log_object.log_info(title=_(f"Orders synchronization successfully completed."))
         
-            self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
+            # self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
 
         except Exception as e:
             log_object.log_error(title=_(f"Error during orders synchronization."), message=str(e))
