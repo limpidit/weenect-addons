@@ -49,7 +49,7 @@ class StockPicking(models.Model):
                     move_line_vals.append(Command.create({
                         'product_id': product.id,
                         'lot_id': exist_lot.id if exist_lot else False,
-                        'qty_done': qty,
+                        'quantity': qty,
                     }))
             elif not lots and product_tracking_by_lot:
                 log_object.log_warning(title=_("Order %s not synchronised.") % (order_number), message=_("Product %s managed without lot in Crosslog while managed with lot in Odoo for order %s.") % (crosslog_product_code, order_number))
@@ -62,7 +62,7 @@ class StockPicking(models.Model):
             else:
                 move_line_vals.append(Command.create({
                     'product_id': product.id,
-                    'qty_done': sent_qty,
+                    'quantity': sent_qty,
                 }))
             
             if error:
@@ -138,7 +138,7 @@ class StockPicking(models.Model):
 
                 if product.tracking in ('lot', 'serial'):
                     if receipt_qty == move.quantity:
-                        orig_mls = move.move_line_ids.filtered(lambda l: l.qty_done > 0)
+                        orig_mls = move.move_line_ids.filtered(lambda l: l.quantity > 0)
                         for orig_ml in orig_mls:
                             if orig_ml.lot_id:
                                 ml_vals.append({
@@ -146,7 +146,7 @@ class StockPicking(models.Model):
                                     'picking_id': return_picking.id,
                                     'product_id': product.id,
                                     'product_uom_id': move.product_uom.id,
-                                    'qty_done': orig_ml.qty_done,
+                                    'quantity': orig_ml.quantity,
                                     'location_id': return_picking.location_id.id,
                                     'location_dest_id': return_picking.location_dest_id.id,
                                     'lot_id': orig_ml.lot_id.id,
@@ -156,14 +156,14 @@ class StockPicking(models.Model):
                                 return_picking = False
                                 break
                     else:
-                        orig_ml = move.move_line_ids.filtered(lambda l: l.qty_done > 0)[:1]
+                        orig_ml = move.move_line_ids.filtered(lambda l: l.quantity > 0)[:1]
                         if orig_ml.lot_id:
                             ml_vals.append({
                                 'move_id': ret_move.id,
                                 'picking_id': return_picking.id,
                                 'product_id': product.id,
                                 'product_uom_id': move.product_uom.id,
-                                'qty_done': receipt_qty,
+                                'quantity': receipt_qty,
                                 'location_id': return_picking.location_id.id,
                                 'location_dest_id': return_picking.location_dest_id.id,
                                 'lot_id': orig_ml.lot_id.id,
