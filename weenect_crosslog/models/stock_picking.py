@@ -68,7 +68,9 @@ class StockPicking(models.Model):
             if error:
                 break
         
-        if not error and move_line_vals:
+        if error:
+            new_shipment = False
+        elif move_line_vals:
             new_shipment = picking_object.create({
                 'partner_id': partner.id,
                 'picking_type_id': warehouse.out_type_id.id,
@@ -77,12 +79,12 @@ class StockPicking(models.Model):
                 'move_line_ids': move_line_vals,
             })
         else:
-            if not move_line_vals:
-                log_object.log_warning(
-                    title=_("Order %s not synchronised.") % (order_number),
-                    message=_("No shippable lines found for order %s.") % (order_number),
-                )
+            log_object.log_warning(
+                title=_("Order %s not synchronised.") % (order_number),
+                message=_("No shippable lines found for order %s.") % (order_number),
+            )
             new_shipment = False
+            
         return new_shipment
 
 
