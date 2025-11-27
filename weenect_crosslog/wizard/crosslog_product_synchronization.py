@@ -3,6 +3,7 @@ from odoo import models, fields, _
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class CrosslogProductSynchronization(models.TransientModel):
     _name = 'crosslog.product.synchronization'
     _description = 'Crosslog Product Synchronization'

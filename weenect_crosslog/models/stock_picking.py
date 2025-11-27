@@ -1,6 +1,7 @@
 
 from odoo import models, fields, Command, _
 
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
@@ -68,7 +69,9 @@ class StockPicking(models.Model):
             if error:
                 break
         
-        if not error and move_line_vals:
+        if error:
+            new_shipment = False
+        elif move_line_vals:
             new_shipment = picking_object.create({
                 'partner_id': partner.id,
                 'picking_type_id': warehouse.out_type_id.id,
@@ -77,12 +80,12 @@ class StockPicking(models.Model):
                 'move_line_ids': move_line_vals,
             })
         else:
-            if not move_line_vals:
-                log_object.log_warning(
-                    title=_("Order %s not synchronised.") % (order_number),
-                    message=_("No shippable lines found for order %s.") % (order_number),
-                )
+            log_object.log_warning(
+                title=_("Order %s not synchronised.") % (order_number),
+                message=_("No shippable lines found for order %s.") % (order_number),
+            )
             new_shipment = False
+            
         return new_shipment
 
 
@@ -131,8 +134,6 @@ class StockPicking(models.Model):
                     'origin_returned_move_id': move.id,
                     'procure_method': 'make_to_stock',
                 })
-                ret_move._action_confirm()
-                ret_move._action_assign()
 
                 ml_vals = []
 
@@ -168,7 +169,6 @@ class StockPicking(models.Model):
                                 'location_dest_id': return_picking.location_dest_id.id,
                                 'lot_id': orig_ml.lot_id.id,
                             })
-                            ml_vals['lot_id'] = orig_ml.lot_id.id
                         else:
                             log_object.log_warning(title=_("Return %s not synchronized") % (return_number), message=_("Product %s requires lot/serial number but none found on original move line.") % (line['code']))
                             return_picking = False

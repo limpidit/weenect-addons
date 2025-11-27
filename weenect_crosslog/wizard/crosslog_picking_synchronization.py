@@ -2,6 +2,7 @@
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 
+
 class CrosslogPickingSynchronization(models.TransientModel):
     _name = 'crosslog.picking.synchronization'
     _description = 'Crosslog Picking Synchronization'
@@ -77,7 +78,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
             
             log_object.log_info(title=_(f"Orders synchronization successfully completed."))
         
-            # self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
+            self.batch_process(unvalid_pickings, unvalid_pickings_limit, deliveries, 'ValidateCustomerOrdersUpdated')
 
         except Exception as e:
             log_object.log_error(title=_(f"Error during orders synchronization."), message=str(e))
@@ -266,7 +267,9 @@ class CrosslogPickingSynchronization(models.TransientModel):
                     if not return_picking:
                         unvalid_pickings.append(return_number)
                         continue
-                    
+                    else:
+                        return_picking.move_ids._action_confirm()
+
                     if not return_picking.try_validate_picking(return_number):
                         unvalid_pickings.append(return_number)
                         continue
@@ -279,7 +282,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
             
             log_object.log_info(title=_(f"Returns synchronization successfully completed."))
 
-            # self.batch_process(unvalid_pickings, unvalid_pickings_limit, returns, 'ValidateCustomerReturnsUpdated')
+            self.batch_process(unvalid_pickings, unvalid_pickings_limit, returns, 'ValidateCustomerReturnsUpdated')
 
         except Exception as e:
             log_object.log_error(title=_(f"Error during returns synchronization."), message=str(e))
@@ -289,7 +292,7 @@ class CrosslogPickingSynchronization(models.TransientModel):
         """Synchronize pickings with Crosslog."""
         self.ensure_one()
         if not self.sync_deliveries and not self.sync_receptions and not self.sync_returns:
-            raise UserError("Please select at least one synchronization option (deliveries, receptions or returns).")
+            raise UserError(_("Please select at least one synchronization option (deliveries, receptions or returns)."))
 
         if self.sync_deliveries:
             self.synchronize_deliveries()
