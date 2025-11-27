@@ -8,18 +8,18 @@
         <field name="code">action = model.action_open_crosslog_products()</field>
     </record>
 
-    <record id="crosslog_product_template_action" model="ir.actions.act_window">
-        <field name="name">Products</field>
-        <field name="res_model">product.template</field>
-        <field name="view_mode">list,kanban,form</field>
-        <field name="domain">[('available_on_crosslog', '=', True)]</field>
-        <field name="context">
-            {
-                'crosslog': True,
-                'search_default_consumable': 1, 
-                'default_detailed_type': 'product'
-            }
-        </field>
+    <record id="crosslog_product_template_list" model="ir.ui.view">
+        <field name="name">crosslog.product.template.list</field>
+        <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                    <field name="default_code"/>
+                    <field name="qty_available"/>
+                    <field name="crosslog_qty" />
+                    <field name="virtual_available" />
+                </list>
+            </field>
     </record>
 
     <record id="crosslog_product_template_view_form" model="ir.ui.view">
@@ -29,7 +29,7 @@
         <field name="arch" type="xml">
             <div name="options" position="inside">
                 <span class="d-inline-block">
-                    <field name="available_on_crosslog" readonly="1"/>
+                    <field name="available_on_crosslog"/>
                     <label for="available_on_crosslog"/>
                 </span>
             </div>

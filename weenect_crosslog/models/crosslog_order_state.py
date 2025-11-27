@@ -1,6 +1,7 @@
 
 from odoo import models, fields
 
+
 class CrosslogOrderState(models.Model):
     _name = 'crosslog.order.state'
     _description = "The state of orders in crosslog"

@@ -1,5 +1,6 @@
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+
 
 class StockLot(models.Model):
     _inherit = 'stock.lot'
@@ -39,7 +40,7 @@ class StockLot(models.Model):
     def action_open_crosslog_lots(self):
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Lots des produits disponibles chez Crosslog',
+            'name': _("Products lots available on Crosslog"),
             'res_model': 'stock.lot',
             'view_mode': 'list',
             'domain': [('available_on_crosslog', '=', True)],

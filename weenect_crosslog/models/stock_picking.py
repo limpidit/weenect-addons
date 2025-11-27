@@ -1,6 +1,7 @@
 
 from odoo import models, fields, Command, _
 
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
@@ -133,8 +134,6 @@ class StockPicking(models.Model):
                     'origin_returned_move_id': move.id,
                     'procure_method': 'make_to_stock',
                 })
-                ret_move._action_confirm()
-                ret_move._action_assign()
 
                 ml_vals = []
 
@@ -170,7 +169,6 @@ class StockPicking(models.Model):
                                 'location_dest_id': return_picking.location_dest_id.id,
                                 'lot_id': orig_ml.lot_id.id,
                             })
-                            ml_vals['lot_id'] = orig_ml.lot_id.id
                         else:
                             log_object.log_warning(title=_("Return %s not synchronized") % (return_number), message=_("Product %s requires lot/serial number but none found on original move line.") % (line['code']))
                             return_picking = False
