@@ -29,7 +29,7 @@
         <field name="arch" type="xml">
             <div name="options" position="inside">
                 <span class="d-inline-block">
-                    <field name="available_on_crosslog"/>
+                    <field name="available_on_crosslog" readonly="1"/>
                     <label for="available_on_crosslog"/>
                 </span>
             </div>
