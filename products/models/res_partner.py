@@ -30,6 +30,7 @@ class ResPartner(models.Model):
         string='Traceurs')
 
     department = fields.Char(string="Département", compute='_compute_department', store="True")
+    gocardless = fields.Boolean("GoCardless")
 
     @api.depends('zip')
     def _compute_department(self):
