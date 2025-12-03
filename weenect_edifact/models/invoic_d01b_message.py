@@ -36,7 +36,7 @@ class InvoicD01BMessage(Message):
         self.add_segment(Segment("NAD", "SU", [company_gln, "", "9"]))
         self.add_segment(Segment("NAD", "BY", ["4333671000007", "", "9"])) # Tout le temps le même GLN pour le client Futterhaus
         self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"]))
-        self.add_segment(Segment("RFF", ["VA", self.invoice.vat]))
+        self.add_segment(Segment("RFF", ["VA", self.invoice.partner_id.vat]))
 
         if date_due:
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
