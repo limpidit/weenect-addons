@@ -119,10 +119,10 @@ class SaleOrder(models.Model):
         return res
 
     def action_confirm(self):
-            res = super().action_confirm()
-            self._create_traceur_demo_activity()
-            self._create_traceur_demo_entry()  # Ajout de la création du traceur
-            return res
+        res = super().action_confirm()
+        self._create_traceur_demo_activity()
+        self._create_traceur_demo_entry()  # Ajout de la création du traceur
+        return res
 
     def _create_traceur_demo_activity(self):
         activity_type = self.env.ref('mail.mail_activity_data_todo')  # Type d'activité TODO
