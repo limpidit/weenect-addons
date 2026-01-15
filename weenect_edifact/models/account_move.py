@@ -15,7 +15,7 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     edifact_attachment_id = fields.Many2one(comodel_name='ir.attachment', string="Edifact attachment")
-    has_been_sent = fields.Boolean(string="Has been sent", default=False, tracking=True)
+    has_been_sent = fields.Boolean(string="Has been sent", default=False, copy=False, tracking=True)
 
     def cron_send_sagaflor_edifact_attachments(self):
         _logger.info("Cron job to send EDIFACT attachments started.")
