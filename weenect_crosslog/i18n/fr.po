@@ -1,0 +1,940 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* weenect_crosslog
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0+e-20251021\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-27 10:20+0000\n"
+"PO-Revision-Date: 2025-11-27 10:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__api_connection_id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__api_connection_id
+msgid "API Connection"
+msgstr "Connexion API"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_api_connection_menu
+msgid "API Connections"
+msgstr "Connexions API"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_connection_view_form
+msgid "API connection"
+msgstr "Connexion API"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__password
+msgid "API password"
+msgstr "Mot de passe API"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__api_url
+msgid "API url"
+msgstr "URL API"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__username
+msgid "API username"
+msgstr "Identifiant API"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__message
+msgid "Additional information"
+msgstr "Informations supplémentaires"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_product_product__available_on_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_product_template__available_on_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_lot__available_on_crosslog
+msgid "Available on Crosslog"
+msgstr "Disponible chez Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Batch validation failed with status code %s."
+msgstr "Validation du batch échouée. Code erreur %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"Batch validation skipped. %s %s were not validated, exceeding the limit of "
+"%s."
+msgstr ""
+"Validation du batch ignorée. %s %s n'ont pas été validé(e)(s), ce qui "
+"dépasse la limite de %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Batch validation successful. %s %s were not validated."
+msgstr "Validation du batch avec succès. %s %s n'ont pas été validés."
+
+#. module: weenect_crosslog
+#: model:ir.actions.server,name:weenect_crosslog.cron_remove_crosslog_older_logs_ir_actions_server
+msgid "CROSSLOG : Removing older logs"
+msgstr "CROSSLOG : Supprimer les anciens logs"
+
+#. module: weenect_crosslog
+#: model:ir.actions.server,name:weenect_crosslog.synchronize_crosslog_pickings_cron_ir_actions_server
+msgid "CROSSLOG : Synchronize pickings"
+msgstr "CROSSLOG : Synchroniser les commandes"
+
+#. module: weenect_crosslog
+#: model:ir.actions.server,name:weenect_crosslog.synchronize_crosslog_products_cron_ir_actions_server
+msgid "CROSSLOG : Synchronize products"
+msgstr "CROSSLOG : Synchroniser les produits"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_picking_synchronization_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_product_synchronization_wizard_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,help:weenect_crosslog.field_crosslog_product_synchronization__synchronize_stock
+msgid "Check this box to synchronize stock levels with Crosslog."
+msgstr ""
+"Cochez cette case pour synchroniser les niveaux de stock avec Crosslog."
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__code
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__code
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__code
+msgid "Code"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_configuration_menu
+msgid "Configuration"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__create_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__create_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__create_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__create_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__create_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__create_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__create_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__create_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__create_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__create_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__create_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__create_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_menu_root
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_stock_picking_view_form
+msgid "Crosslog"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_connection_view_tree
+msgid "Crosslog API configs"
+msgstr "Configuration API Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_connection_action
+msgid "Crosslog Connection"
+msgstr "Connexion Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_picking_synchronization
+msgid "Crosslog Picking Synchronization"
+msgstr "Synchronisation des commandes Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_product_synchronization
+msgid "Crosslog Product Synchronization"
+msgstr "Synchronisation des produits Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.actions.server,name:weenect_crosslog.crosslog_product_template_action_server
+msgid "Crosslog Products Action"
+msgstr "Action produits Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.actions.server,name:weenect_crosslog.crosslog_stock_lot_action_server
+msgid "Crosslog Stock Lots Action"
+msgstr "Action lots Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__crosslog_code
+msgid "Crosslog code"
+msgstr "Code Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__crosslog_order_id
+msgid "Crosslog order id"
+msgstr "ID commande Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__crosslog_order_state_ids
+msgid "Crosslog order states corresponding to 'shipped'"
+msgstr "Statuts des commandes clients Crosslog correspondant à 'expédié'"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_order_state_action
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_order_state_menu
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_order_state_view_tree
+msgid "Crosslog orders state"
+msgstr "Statuts des commandes clients Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_product_product__crosslog_qty
+#: model:ir.model.fields,field_description:weenect_crosslog.field_product_template__crosslog_qty
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_lot__crosslog_qty
+msgid "Crosslog quantity"
+msgstr "Quantité chez Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_reception_state_action
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_reception_state_menu
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_reception_state_view_tree
+msgid "Crosslog receptions state"
+msgstr "Statut des commandes fournisseurs Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__crosslog_reception_state_ids
+msgid "Crosslog receptions status corresponding to 'receveid'"
+msgstr "Statuts des commandes fournisseurs Crosslog correspondant à 'reçu'"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_return_state_action
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_return_state_menu
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_return_state_view_tree
+msgid "Crosslog returns state"
+msgstr "Statuts des retours Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__crosslog_return_state_ids
+msgid "Crosslog returns status corresponding to 'receveid'"
+msgstr "Statuts des retours Crosslog correspondant à 'reçu'"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_log_action
+msgid "Data retrieving from Crosslog history"
+msgstr "Récupération des données depuis l’historique Crosslog"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.salesupply_log_view_tree
+msgid "Data retrieving from crosslog history"
+msgstr "Récupération des données depuis l’historique Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__default_delivery_partner_id
+msgid "Default delivery user"
+msgstr "Utilisateur par défaut pour les commandes clients"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_deliveries_menu
+msgid "Deliveries"
+msgstr "Commandes clients"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_deliveries_action
+msgid "Deliveries from Crosslog warehouses"
+msgstr "Commandes clients depuis l'entrepôt Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Delivery state is missing in the response for Crosslog order %s."
+msgstr ""
+"L’état de livraison est manquant dans la réponse pour la commande Crosslog "
+"%s."
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_product_template__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_lot__display_name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields.selection,name:weenect_crosslog.selection__crosslog_log__type__error
+msgid "Error"
+msgstr "Erreur"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Error during orders synchronization."
+msgstr "Erreur durant la synchronisation des commandes clients."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Error during receptions synchronization."
+msgstr "Erreur durant la synchronisation des commandes fournisseurs."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Error during returns synchronization."
+msgstr "Erreur durant la synchronisation des retours."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Error during synchronisation of Crosslog order %s."
+msgstr "Erreur lors de la synchronisation de la commande client Crosslog %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Error during synchronization of Crosslog reception %s."
+msgstr ""
+"Erreur lors de la synchronisation de la commande fournisseur Crosslog %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Error during synchronization of return %s."
+msgstr "Erreur lors de la synchronisation du retour Crosslog %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/crosslog_connection.py:0
+msgid "Failed to connect to Crosslog API"
+msgstr "Echec de la connexion à l'API Crosslog"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_picking_synchronization_wizard_view_form
+msgid "Get Picking from Crosslog"
+msgstr "Récupérer les transferts depuis Crosslog"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_product_synchronization_wizard_view_form
+msgid "Get Products from Crosslog"
+msgstr "Récupérer les produits depuis Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_log
+msgid "History of data retrieving from Crosslog"
+msgstr "Historique de récupération des données depuis Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_product_template__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_lot__id
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__id
+msgid "ID"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.model.fields.selection,name:weenect_crosslog.selection__crosslog_log__type__info
+msgid "Information"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_receptions_action
+msgid "Internal transfers to Crosslog warehouses"
+msgstr "Transferts internes vers l'entrepôt Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/crosslog_connection.py:0
+msgid "Invalid SOAP response format"
+msgstr "Format de réponse SOAP invalide"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_inventory_menu
+msgid "Inventory"
+msgstr "Inventaire"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__is_delivered_from_crosslog
+msgid "Is Delivered From Crosslog"
+msgstr "Est livré depuis Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__is_returned_to_crosslog
+msgid "Is Returned To Crosslog"
+msgstr "Est retourné chez Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__is_transfered_to_crosslog
+msgid "Is Transfered To Crosslog"
+msgstr "Est transféré chez Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__write_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__write_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__write_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__write_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__write_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__write_uid
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__write_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__write_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__write_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__write_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__write_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__write_date
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_product_synchronization.py:0
+msgid "Lot without name for %s, ignored."
+msgstr "Lot sans nom pour %s, ignoré."
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_stock_lot
+msgid "Lot/Serial"
+msgstr "Lot/série"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_lots_menu
+msgid "Lots"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,help:weenect_crosslog.field_crosslog_connection__batch_threshold
+msgid ""
+"Maximum number of unprocessed deliveries/receptions/returns allowed for "
+"batch validation"
+msgstr ""
+"Nombre maximal de livraisons/réceptions/retours non traités autorisé pour la"
+" validation des batchs"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__batch_threshold
+msgid "Maximum unprocessed pickings"
+msgstr "Nombre maximal de transferts non traités"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_order_state__name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_reception_state__name
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_return_state__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid "No line on delivery %s with product %s matched."
+msgstr "Aucune ligne du transfert %s ne correspond au produit %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"No line on transfer %s with product %s matched.\n"
+"Crosslog origin : %s."
+msgstr ""
+"Aucune ligne du transfert %s ne correspond au produit %s.\n"
+"Origine Crosslog : %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_product_synchronization.py:0
+msgid "No lot retrieved for %s (%s), skipping."
+msgstr "Aucun lot récupéré pour %s (%s), ignoré."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "No order lines from Crosslog"
+msgstr "Aucune lignes de commande récupérées de Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"No order lines from Crosslog.\n"
+"Crosslog origin : %s."
+msgstr ""
+"Aucune ligne de commande provenant de Crosslog.\n"
+"Origine Crosslog : %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid "No shippable lines found for order %s."
+msgstr "Aucune ligne expédiable trouvée pour la commande %s."
+
+#. module: weenect_crosslog
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_deliveries_action
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_receptions_action
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_returns_action
+msgid "No transfer found. Let's create one!"
+msgstr "Aucun transfert trouvé. Créons-en un !"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Nothing"
+msgstr "Rien"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_operations_menu
+msgid "Operations"
+msgstr "Opérations"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid "Order %s not synchronised."
+msgstr "ECHEC : La commande client %s n’a pas été synchronisée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Order number is missing in the response."
+msgstr "Le numéro de commande est manquant dans la réponse."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Orders synchronization started."
+msgstr "La synchronisation des commandes clients a démarrée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Orders synchronization successfully completed."
+msgstr "La synchronisation des commandes clients s'est terminéee avec succès."
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_connection_view_form
+msgid "Other"
+msgstr "Autre"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"Please select at least one synchronization option (deliveries, receptions or"
+" returns)."
+msgstr "Veuillez sélectionner au moins une option de synchronisation (commandes clients, commandes fournisseurs ou retours)."
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_product_template
+msgid "Product"
+msgstr "Produit"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"Product %s managed with lot in Crosslog while managed without lot in Odoo "
+"for order %s."
+msgstr ""
+"Le produit %s est géré avec lot dans Crosslog alors qu’il est géré sans lot "
+"dans Odoo pour la commande %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"Product %s managed without lot in Crosslog while managed with lot in Odoo "
+"for order %s."
+msgstr ""
+"Le produit %s est géré sans lot dans Crosslog alors qu’il est géré avec lot "
+"dans Odoo pour la commande %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid "Product %s not found in Odoo or is not synchronized."
+msgstr "Le produit %s n’a pas été trouvé dans Odoo ou n’est pas synchronisé."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"Product %s requires lot/serial number but none found on original move line."
+msgstr ""
+"Le produit %s nécessite un numéro de lot/série, mais aucun n’a été trouvé "
+"sur la ligne de mouvement originale."
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_products_menu
+msgid "Products"
+msgstr "Produits"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/product_template.py:0
+msgid "Products available on Crosslog"
+msgstr "Produits disponibles chez Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_lot.py:0
+msgid "Products lots available on Crosslog"
+msgstr "Lots disponibles chez Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_product_synchronization.py:0
+msgid "Products synchronization completed."
+msgstr "La synchronisation des produits est terminée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_product_synchronization.py:0
+msgid "Products synchronization started."
+msgstr "La synchronisation des produits a démarée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"Quantity mismatch for product %s.\n"
+"Expected quantity in Odoo : %s. Received quantity in Crosslog : %s.\n"
+"Crosslog origin : %s."
+msgstr ""
+"Écart de quantité pour le produit %s.\n"
+"Quantité attendue dans Odoo : %s. Quantité reçue depuis Crosslog : %s.\n"
+"Origine Crosslog : %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Reception %s not validated."
+msgstr "ECHEC : La commande fournisseur %s n’a pas été validée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Reception order number is missing in the response."
+msgstr "Le numéro de commande de la réception est manquant dans la réponse."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"Reception state is missing in the response for Crosslog reception number %s."
+msgstr ""
+"L’état de la commande fournisseur est manquant dans la réponse pour la "
+"commande fournisseur Crosslog numéro %s."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Reception with Crosslog code %s already validated."
+msgstr "La réception avec le code Crosslog %s est déjà validée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"Reception with Crosslog code %s not found in Odoo or already validated."
+msgstr ""
+"La réception avec le code Crosslog %s est introuvable dans Odoo ou déjà "
+"validée."
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_receptions_menu
+msgid "Receptions"
+msgstr "Commandes fournisseurs"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Receptions synchronization started."
+msgstr "La synchronisation des commandes fournisseurs a démarée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Receptions synchronization successfully completed."
+msgstr ""
+"La synchronisation des commandes fournisseurs s'est terminée avec succès."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Return %s is already synchronized in Odoo."
+msgstr "Le retour %s est déjà synchronisé dans Odoo."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Return %s not synchronized"
+msgstr "ECHEC : Le retour %s n’a pas été synchronisé."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Return number is missing in the response."
+msgstr "Le numéro de retour est manquant dans la réponse."
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_returns_menu
+msgid "Returns"
+msgstr "Retours"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_returns_action
+msgid "Returns from Crosslog warehouses"
+msgstr "Retours de l'entrepôt Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Returns synchronization started."
+msgstr "La synchronisation des retours a démarée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Returns synchronization successfully completed."
+msgstr "La synchronisation des retours s'est terminée avec succès."
+
+#. module: weenect_crosslog
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_log_action
+msgid ""
+"See there the last executions of data retrieving from Crosslog to Odoo."
+msgstr ""
+"Retrouvez ici les dernières exécutions de récupération des données de "
+"Crosslog vers Odoo."
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,help:weenect_crosslog.field_crosslog_picking_synchronization__api_connection_id
+#: model:ir.model.fields,help:weenect_crosslog.field_crosslog_product_synchronization__api_connection_id
+msgid "Select the API connection to use for synchronization."
+msgstr "Sélectionnez la connexion API à utiliser pour la synchronisation."
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_stock_menu
+msgid "Stock"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__execution_date
+msgid "Synchronization execution date"
+msgstr "Date d'exécution de la synchronisation"
+
+#. module: weenect_crosslog
+#: model:ir.ui.menu,name:weenect_crosslog.salesupply_menu_log
+msgid "Synchronization logs"
+msgstr "Logs de synchronisation"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_product_synchronization__synchronize_stock
+msgid "Synchronize Stock"
+msgstr "Synchroniser le stock"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__sync_deliveries
+msgid "Synchronize deliveries"
+msgstr "Synchroniser les commandes clients"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_picking_synchronization_wizard_view_form
+msgid "Synchronize pickings"
+msgstr "Synchroniser les transferts"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_picking_synchronization_action
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_get_pickings_menu
+msgid "Synchronize pickings from Crosslog"
+msgstr "Synchroniser les transferts depuis Crosslog"
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_product_synchronization_wizard_view_form
+msgid "Synchronize products"
+msgstr "Synchroniser les produits"
+
+#. module: weenect_crosslog
+#: model:ir.actions.act_window,name:weenect_crosslog.crosslog_product_synchronization_action
+#: model:ir.ui.menu,name:weenect_crosslog.crosslog_get_products_menu
+msgid "Synchronize products from Crosslog"
+msgstr "Synchroniser les produits depuis Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__sync_receptions
+msgid "Synchronize receptions"
+msgstr "Synchroniser les commandes fournisseurs"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_picking_synchronization__sync_returns
+msgid "Synchronize returns"
+msgstr "Synchroniser les retours"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Synchronized done delivery %s not found in Odoo."
+msgstr "Le transfert livré synchronisé %s est introuvable dans Odoo."
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_stock_picking__crosslog_synchronized
+msgid "Synchronized with Crosslog"
+msgstr "Synchronisé avec Crosslog"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"The lot %s for the product %s does not exist in Odoo or is not synchronised "
+"with Crosslog."
+msgstr ""
+"Le lot %s pour le produit %s n’existe pas dans Odoo ou n’est pas synchronisé"
+" avec Crosslog."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"The product %s does not exist in Odoo or is not synchronised with Crosslog."
+msgstr ""
+"Le produit %s n’existe pas dans Odoo ou n’est pas synchronisé avec Crosslog."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid ""
+"The product %s does not exist in Odoo or is not synchronised with Crosslog.\n"
+"Crosslog origin : %s."
+msgstr ""
+"Le produit %s n’existe pas dans Odoo ou n’est pas synchronisé avec Crosslog.\n"
+"Origine Crosslog : %s."
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_order_state
+msgid "The state of orders in crosslog"
+msgstr "Le statut des commandes clients dans Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_reception_state
+msgid "The state of receptions in Crosslog"
+msgstr "Le statut des commandes fournisseurs dans Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_return_state
+msgid "The state of returns in Crosslog"
+msgstr "Le statut des retours dans Crosslog"
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_stock_picking
+msgid "Transfer"
+msgstr "Transfert"
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid "Transfer %s not synchronised."
+msgstr "Le transfert %s n’a pas été synchronisé."
+
+#. module: weenect_crosslog
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_deliveries_action
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_receptions_action
+#: model_terms:ir.actions.act_window,help:weenect_crosslog.crosslog_returns_action
+msgid "Transfers allow you to move products from one location to another."
+msgstr ""
+"Les transferts vous permettent de déplacer des produits d’un emplacement à "
+"un autre."
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__type
+msgid "Type"
+msgstr ""
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"Unable to prepare transfer for Crosslog order %s: no stock moves found or "
+"picking not in a valid state."
+msgstr ""
+"Impossible de préparer le transfert pour la commande Crosslog %s : aucun "
+"mouvement de stock trouvé ou le transfert n’est pas dans un état valide."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid ""
+"Unable to validate transfer for Crosslog order %s: empty picking or no done "
+"quantities."
+msgstr ""
+"Impossible de valider le transfert pour la commande Crosslog %s : transfert "
+"vide ou aucune quantité effectuée."
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/wizard/crosslog_picking_synchronization.py:0
+msgid "Unvalidated %s (%s/%s): %s"
+msgstr "%s non validé(e)(s) (%s/%s) : %s"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_connection__warehouse_id
+msgid "Warehouse"
+msgstr "Entrepôt"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields.selection,name:weenect_crosslog.selection__crosslog_log__type__warning
+msgid "Warning"
+msgstr ""
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_lot.py:0
+msgid "available_on_crosslog"
+msgstr ""
+
+#. module: weenect_crosslog
+#. odoo-python
+#: code:addons/weenect_crosslog/models/stock_picking.py:0
+msgid "code"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model:ir.model,name:weenect_crosslog.model_crosslog_connection
+msgid "crosslog.connection"
+msgstr ""
+
+#. module: weenect_crosslog
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_connection_view_form
+#: model_terms:ir.ui.view,arch_db:weenect_crosslog.crosslog_log_view_form
+msgid "e.g. API connection"
+msgstr "par ex. connexion API"
+
+#. module: weenect_crosslog
+#: model:ir.model.fields,field_description:weenect_crosslog.field_crosslog_log__name
+msgid "name"
+msgstr "Nom"

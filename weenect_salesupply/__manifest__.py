@@ -1,7 +1,7 @@
 {
     "name": "Salesupply Weenect LIT",
     "summary": "Salesupply Weenect LIT",
-    "version": "16.0",
+    "version": "19.0.0.1",
     "author": "Limpid IT",
     "depends": [
         'base',

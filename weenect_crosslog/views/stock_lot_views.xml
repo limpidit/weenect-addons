@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="crosslog_stock_lot_action_server" model="ir.actions.server">
+        <field name="name">Crosslog Stock Lots Action</field>
+        <field name="model_id" ref="stock.model_stock_lot"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_crosslog_lots()</field>
+    </record>
+
+    <record id="crosslog_lot_tree" model="ir.ui.view">
+        <field name="name">crosslog.lot.tree</field>
+        <field name="model">stock.lot</field>
+            <field name="arch" type="xml">
+                <list editable="bottom">
+                    <field name="name" />
+                    <field name="product_id"/>
+                    <field name="create_date" optional="show"/>
+                    <field name="crosslog_qty" optional="show"/>
+                    <field name="available_on_crosslog"/>
+                </list>
+            </field>
+    </record>
+
+</odoo>

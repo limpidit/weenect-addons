@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="crosslog_menu_root"
+        name="Crosslog"
+        web_icon="weenect_crosslog,static/description/icon.png"
+        groups="stock.group_stock_manager,stock.group_stock_user"/>
+
+    <menuitem
+        id="crosslog_stock_menu"
+        name="Stock"
+        sequence="10"
+        parent="crosslog_menu_root">
+
+        <menuitem
+            id="crosslog_products_menu"
+            name="Products"
+            action="crosslog_product_template_action_server"/>
+
+        <menuitem
+            id="crosslog_lots_menu"
+            name="Lots"
+            action="crosslog_stock_lot_action_server"/>
+
+    </menuitem>
+
+    <menuitem
+        id="crosslog_operations_menu"
+        name="Operations"
+        sequence="20"
+        parent="crosslog_menu_root"
+        groups="stock.group_stock_manager">
+
+        <menuitem 
+            id="crosslog_get_products_menu" 
+            name="Synchronize products from Crosslog"
+            action="crosslog_product_synchronization_action"
+            sequence="10"/>
+
+        <menuitem 
+            id="crosslog_get_pickings_menu" 
+            name="Synchronize pickings from Crosslog"
+            action="weenect_crosslog.crosslog_picking_synchronization_action"
+            sequence="20"/>
+    
+    </menuitem>
+
+     <menuitem
+        id="crosslog_inventory_menu"
+        name="Inventory"
+        sequence="30"
+        parent="crosslog_menu_root"
+        groups="stock.group_stock_manager">
+
+        <menuitem 
+            id="crosslog_receptions_menu" 
+            name="Receptions"
+            action="crosslog_receptions_action"
+            sequence="10"/>
+
+        <menuitem 
+            id="crosslog_deliveries_menu" 
+            name="Deliveries"
+            action="crosslog_deliveries_action"
+            sequence="20"/>
+
+        <menuitem 
+            id="crosslog_returns_menu" 
+            name="Returns"
+            action="crosslog_returns_action"
+            sequence="30"/>
+    
+    </menuitem>
+
+    <menuitem
+        id="crosslog_configuration_menu"
+        name="Configuration"
+        sequence="90"
+        parent="crosslog_menu_root">
+
+        <menuitem
+            id="crosslog_api_connection_menu"
+            name="API Connections"
+            action="crosslog_connection_action"
+            sequence="10"/>
+
+        <menuitem
+            id="salesupply_menu_log"
+            name="Synchronization logs"
+            action="crosslog_log_action"
+            sequence="20"/>
+
+        <menuitem 
+            id="crosslog_order_state_menu"   
+            name="Crosslog orders state"
+            action="crosslog_order_state_action"
+            sequence="30"/>
+
+        <menuitem 
+            id="crosslog_reception_state_menu"   
+            name="Crosslog receptions state"
+            action="crosslog_reception_state_action"
+            sequence="40"/>
+
+        <menuitem 
+            id="crosslog_return_state_menu"   
+            name="Crosslog returns state"
+            action="crosslog_return_state_action"
+            sequence="50"/>
+
+    </menuitem>
+
+</odoo>

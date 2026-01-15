@@ -31,7 +31,7 @@ class Tournee(models.Model):
             'type': 'ir.actions.act_window',
             'name': f"Plan de tournée : {self.name}",
             'res_model': 'visite.visite',
-            'view_mode': 'map,tree,form',
+            'view_mode': 'map,list,form',
             'domain': [('tournee_id', '=', self.id)],
             'context': {
                 'default_tournee_id': self.id,

@@ -61,10 +61,10 @@ class StockQuant(models.Model):
             if inventory_line:
                 if inventory_line.inventory_quantity == qty_on_hand:
                     continue
-                log_object.log_info(_(f"Updated quantity for {product.name_get()} : {inventory_line.inventory_quantity} -> {qty_on_hand}"))
+                log_object.log_info(_(f"Updated quantity for {product.display_name} : {inventory_line.inventory_quantity} -> {qty_on_hand}"))
                 inventory_line.inventory_quantity = qty_on_hand
             else:
-                log_object.log_info(_(f"Updated quantity for {product.name_get()} : 0 -> {qty_on_hand}"))
+                log_object.log_info(_(f"Updated quantity for {product.display_name} : 0 -> {qty_on_hand}"))
                 inventory_line = self.create({
                     'product_id': product.id,
                     'location_id': location.id,
