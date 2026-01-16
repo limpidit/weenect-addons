@@ -37,7 +37,7 @@ class SaleOrder(models.Model):
                 'product_id': traceur.product_id.id,
                 'name': traceur.product_id.display_name or '',
                 'product_uom_qty': 1,
-                'product_uom': traceur.product_id.uom_id.id,
+                'product_uom_id': traceur.product_id.uom_id.id,
                 'price_unit': traceur.product_id.list_price,
                 'traceur_sav': True,  # Supposition de l'existence de ce champ dans sale.order.line
             }
