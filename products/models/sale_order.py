@@ -51,7 +51,7 @@ class SaleOrder(models.Model):
         if traceurs_sav_a_envoyer:
             message = _("Il y a un ou plusieurs traceurs SAV à envoyer. Ne pas oublier de les ajouter dans la commande.\n")
             for traceur in traceurs_sav_a_envoyer:
-                product_name = traceur.product_id.name_get()[0][1] if traceur.product_id else _('Produit non spécifié')
+                product_name = traceur.product_id.display_name if traceur.product_id else _('Produit non spécifié')
                 message += _("Produit : %s\n" % product_name)
             messages.append(message)
             
