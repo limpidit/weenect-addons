@@ -35,6 +35,7 @@
                             <field name="crosslog_reception_state_ids" widget="many2many_tags"/>
                             <field name="crosslog_return_state_ids" widget="many2many_tags"/>
                             <field name="batch_threshold" />
+                            <field name="is_used_for_cron" />
                         </group>
                     </group>
                 </sheet>
