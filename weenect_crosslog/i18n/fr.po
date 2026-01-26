@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0+e-20251021\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-26 13:34+0000\n"
-"PO-Revision-Date: 2026-01-26 13:34+0000\n"
+"POT-Creation-Date: 2026-01-26 13:57+0000\n"
+"PO-Revision-Date: 2026-01-26 13:57+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -464,6 +464,12 @@ msgstr "Nom"
 
 #. module: weenect_crosslog
 #. odoo-python
+#: code:addons/weenect_crosslog/models/crosslog_connection.py:0
+msgid "No Crosslog connection is configured to be used for cron jobs."
+msgstr "Aucune connexion Crosslog n'est configurée pour être utilisée avec les crons."
+
+#. module: weenect_crosslog
+#. odoo-python
 #: code:addons/weenect_crosslog/models/stock_picking.py:0
 msgid "No line on delivery %s with product %s matched."
 msgstr "Aucune ligne du transfert %s ne correspond au produit %s."
@@ -517,7 +523,9 @@ msgstr "Aucun transfert trouvé. Créons-en un !"
 #. odoo-python
 #: code:addons/weenect_crosslog/models/crosslog_connection.py:0
 msgid "No warehouse/stock location configured on Crosslog connection."
-msgstr "Aucun entrepôt/emplacement de stock n’est configuré sur la connexion Crosslog."
+msgstr ""
+"Aucun entrepôt/emplacement de stock n’est configuré sur la connexion "
+"Crosslog."
 
 #. module: weenect_crosslog
 #. odoo-python

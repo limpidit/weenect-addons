@@ -799,14 +799,22 @@ class CrosslogConnection(models.Model):
     ############# Cron methods ################
 
     def cron_synchronize_pickings(self):
-        for connection in self.search([('is_used_for_cron', '=', True)]):
-            connection.synchronize_pickings(
-                sync_deliveries=True,
-                sync_receptions=True,
-                sync_returns=True,
-            )   
+        if self.search([('is_used_for_cron', '=', True)]):
+            for connection in self.search([('is_used_for_cron', '=', True)]):
+                connection.synchronize_pickings(
+                    sync_deliveries=True,
+                    sync_receptions=True,
+                    sync_returns=True,
+                )
+        else:
+            log_object = self.env['crosslog.log']
+            log_object.log_warning(title=_("No Crosslog connection is configured to be used for cron jobs."))
     
 
     def cron_synchronize_products(self):
-        for conn in self.search([('is_used_for_cron', '=', True)]):
-            conn.synchronize_products(synchronize_stock=True)
+        if self.search([('is_used_for_cron', '=', True)]):
+            for conn in self.search([('is_used_for_cron', '=', True)]):
+                conn.synchronize_products(synchronize_stock=True)
+        else:
+            log_object = self.env['crosslog.log']
+            log_object.log_warning(title=_("No Crosslog connection is configured to be used for cron jobs."))
