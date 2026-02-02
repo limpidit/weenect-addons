@@ -1,5 +1,7 @@
 
 from odoo import models, fields, api, _
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class ProductTemplate(models.Model):
@@ -16,7 +18,7 @@ class ProductTemplate(models.Model):
         return res
 
     def _compute_crosslog_qty(self):
-        print('test1')
+        _logger.info('test')
         Quant = self.env['stock.quant']
 
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
@@ -28,7 +30,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if not roots:
-                print('test')
+                _logger.info('test2')
                 product.crosslog_qty = 0.0
                 continue
 
