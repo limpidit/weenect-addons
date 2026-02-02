@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_deliveryslip_document_inherit_weenect_stock" inherit_id="stock.report_delivery_document">
+        <xpath expr="//table[@name='stock_move_table']" position="replace">
+            <table class="table table-sm table-borderless" t-if="o.state!='done'" name="stock_move_table">
+                <thead>
+                    <tr>
+                        <th name="th_sm_product"><strong>Product</strong></th>
+                        <th name="th_sm_ordered" class="text-end"><strong>Ordered</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
+                    <tr t-foreach="lines" t-as="move">
+                        <td>
+                            <span t-field="move.product_id">Customizable Desk</span>
+                            <p t-if="move.description_picking and move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
+                                <span t-out="move.description_picking" t-options="{'widget': 'text'}">Description on transfer</span>
+                            </p>
+                        </td>
+                        <td class="o_td_quantity text-end">
+                            <span t-out="format_number(move.product_uom_qty)" class="text-nowrap">3.00</span>
+                            <span t-field="move.product_uom" groups="uom.group_uom">units</span>
+                            <t t-if="move.packaging_uom_id != move.product_uom" groups="uom.group_uom">
+                                <br/>
+                                <span class="text-muted" t-field="move.packaging_uom_qty">1.00</span>
+                                <span class="text-muted" t-field="move.packaging_uom_id">Pack of 6</span>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+    
+</odoo>
