@@ -37,9 +37,11 @@ class ProductTemplate(models.Model):
             domain = domain_base + [
                 ('product_id', '=', product.id),
             ]
-
+            _logger.info(domain)
             quants = Quant.search(domain)
+            _logger.info(quants)
             qty = sum(quants.mapped('quantity'))
+            _logger.info(qty)
 
             product.crosslog_qty = qty
 
