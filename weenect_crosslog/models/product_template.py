@@ -16,6 +16,7 @@ class ProductTemplate(models.Model):
         return res
 
     def _compute_crosslog_qty(self):
+        print('test1')
         Quant = self.env['stock.quant']
 
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
@@ -27,6 +28,7 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if not roots:
+                print('test')
                 product.crosslog_qty = 0.0
                 continue
 
