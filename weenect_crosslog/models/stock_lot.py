@@ -5,7 +5,7 @@ from odoo import models, fields, api, _
 class StockLot(models.Model):
     _inherit = 'stock.lot'
 
-    available_on_crosslog = fields.Boolean(string="Available on Crosslog")
+    available_on_crosslog = fields.Boolean(string="Available on Crosslog", readonly=True)
     crosslog_qty = fields.Float(
         string="Crosslog quantity",
         compute='_compute_crosslog_qty',
@@ -21,7 +21,7 @@ class StockLot(models.Model):
 
     def _compute_crosslog_qty(self):
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
-        roots = warehouses.mapped('view_location_id')
+        roots = warehouses.mapped('lot_stock_id')
 
         domain_base = []
         if roots:
