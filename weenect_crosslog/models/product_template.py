@@ -23,7 +23,7 @@ class ProductTemplate(models.Model):
 
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
         _logger.info(warehouses)
-        roots = warehouses.mapped('view_location_id')
+        roots = warehouses.mapped('lot_stock_id')
         _logger.info(roots)
 
         domain_base = []
