@@ -18,13 +18,10 @@ class ProductTemplate(models.Model):
         return res
 
     def _compute_crosslog_qty(self):
-        _logger.info('test')
         Quant = self.env['stock.quant']
 
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
-        _logger.info(warehouses)
         roots = warehouses.mapped('lot_stock_id')
-        _logger.info(roots)
 
         domain_base = []
         if roots:
@@ -32,19 +29,16 @@ class ProductTemplate(models.Model):
 
         for product in self:
             if not roots:
-                _logger.info('test2')
                 product.crosslog_qty = 0.0
                 continue
 
             domain = domain_base + [
+                ('product_id', '=', product.product_variant_ids.ids),
                 ('location_id.usage', '=', 'internal'),
-                ('product_id', '=', product.id),
             ]
-            _logger.info(domain)
+
             quants = Quant.search(domain)
-            _logger.info(quants)
             qty = sum(quants.mapped('quantity'))
-            _logger.info(qty)
 
             product.crosslog_qty = qty
 
