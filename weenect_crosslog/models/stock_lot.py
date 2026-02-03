@@ -21,7 +21,7 @@ class StockLot(models.Model):
 
     def _compute_crosslog_qty(self):
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
-        roots = warehouses.mapped('view_location_id')
+        roots = warehouses.mapped('lot_stock_id')
 
         domain_base = []
         if roots:
