@@ -22,7 +22,9 @@ class ProductTemplate(models.Model):
         Quant = self.env['stock.quant']
 
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
+        _logger.info(warehouses)
         roots = warehouses.mapped('view_location_id')
+        _logger.info(roots)
 
         domain_base = []
         if roots:
@@ -35,6 +37,7 @@ class ProductTemplate(models.Model):
                 continue
 
             domain = domain_base + [
+                ('location_id.usage', '=', 'internal')
                 ('product_id', '=', product.id),
             ]
             _logger.info(domain)
