@@ -1,5 +1,7 @@
 
 from odoo import models, fields, api, _
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class ProductTemplate(models.Model):
@@ -19,7 +21,7 @@ class ProductTemplate(models.Model):
         Quant = self.env['stock.quant']
 
         warehouses = self.env['crosslog.connection'].search([]).mapped('warehouse_id')
-        roots = warehouses.mapped('view_location_id')
+        roots = warehouses.mapped('lot_stock_id')
 
         domain_base = []
         if roots:
@@ -31,7 +33,8 @@ class ProductTemplate(models.Model):
                 continue
 
             domain = domain_base + [
-                ('product_id', '=', product.id),
+                ('product_id', '=', product.product_variant_ids.ids),
+                ('location_id.usage', '=', 'internal'),
             ]
 
             quants = Quant.search(domain)
