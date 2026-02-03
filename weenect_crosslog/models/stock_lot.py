@@ -5,7 +5,7 @@ from odoo import models, fields, api, _
 class StockLot(models.Model):
     _inherit = 'stock.lot'
 
-    available_on_crosslog = fields.Boolean(string="Available on Crosslog")
+    available_on_crosslog = fields.Boolean(string="Available on Crosslog", readonly=True)
     crosslog_qty = fields.Float(
         string="Crosslog quantity",
         compute='_compute_crosslog_qty',
