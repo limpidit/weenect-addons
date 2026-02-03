@@ -37,7 +37,7 @@ class ProductTemplate(models.Model):
                 continue
 
             domain = domain_base + [
-                ('location_id.usage', '=', 'internal')
+                ('location_id.usage', '=', 'internal'),
                 ('product_id', '=', product.id),
             ]
             _logger.info(domain)
