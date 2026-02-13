@@ -37,7 +37,7 @@ class ResPartner(models.Model):
             record.department = record.zip[:2] if record.zip else ''
 
     @api.model
-    def _field_to_sql(self, alias, fname, query):
+    def _field_to_sql(self, alias, fname, query=None):
         # Si l'ORM essaie de transformer ce champ en SQL (ce qu'il ne peut pas faire)
         # on intercepte l'erreur ici pour éviter le crash.
         if fname == 'property_product_pricelist':
