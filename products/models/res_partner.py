@@ -35,3 +35,13 @@ class ResPartner(models.Model):
     def _compute_department(self):
         for record in self:
             record.department = record.zip[:2] if record.zip else ''
+
+    @api.model
+    def _field_to_sql(self, alias, fname, query):
+        # Si l'ORM essaie de transformer ce champ en SQL (ce qu'il ne peut pas faire)
+        # on intercepte l'erreur ici pour éviter le crash.
+        if fname == 'property_product_pricelist':
+            # On retourne une expression vide ou None selon le besoin de l'ORM
+            # pour stopper la recherche SQL sur ce champ virtuel.
+            return None
+        return super()._field_to_sql(alias, fname, query)
