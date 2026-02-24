@@ -19,3 +19,4 @@ class SaleReport(models.Model):
         _group_by += """
             ,partner.groupe_retailer
         """
+        return _group_by
