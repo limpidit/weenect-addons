@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="amazon_account_view_form_fbm_warehouses" model="ir.ui.view">
+        <field name="name">amazon.account.form.fbm.warehouses</field>
+        <field name="model">amazon.account</field>
+        <field name="inherit_id" ref="sale_amazon.amazon_account_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Ajout d'un groupe dédié aux entrepôts FBM après le groupe droite existant -->
+            <xpath expr="//field[@name='location_id']" position="after">
+                <field name="fbm_warehouse_eu_id"
+                    options="{'no_create': True, 'no_open': True}"
+                    string="Entrepôt FBM Europe"
+                />
+                <field name="fbm_warehouse_uk_id"
+                    options="{'no_create': True, 'no_open': True}"
+                    string="Entrepôt FBM UK"
+                />
+                <field name="fbm_warehouse_us_id"
+                    options="{'no_create': True, 'no_open': True}"
+                    string="Entrepôt FBM USA"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
