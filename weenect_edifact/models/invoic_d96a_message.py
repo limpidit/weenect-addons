@@ -45,7 +45,7 @@ class InvoicD96AMessage(Message):
         company = self.invoice.company_id.partner_id
         company_gln = self._get_gln(company)
         if not company_gln:
-            raise ValueError("Company GLN not found")
+            raise ValueError("Le GLN de weenect est introuvable")
         company_names = [company.display_name[i:i+35] for i in range(0, len(company.display_name), 35)]
         self.add_segment(Segment("NAD", "SU", [company_gln, "", "9"], "", company_names, company.street, company.city, "", company.zip, company.country_id.code))
         self.add_segment(Segment("RFF", ["VA", self.invoice.company_id.vat]))
@@ -54,7 +54,7 @@ class InvoicD96AMessage(Message):
         buyer = self.invoice.partner_id.commercial_partner_id
         buyer_gln = self._get_gln(buyer)
         if not buyer_gln:
-            raise ValueError("Buyer GLN not found")
+            raise ValueError("Le GLN du client %s pour la facture %s est introuvable" % (buyer.display_name, self.invoice.name))
         buyer_names = [buyer.display_name[i:i+35] for i in range(0, len(buyer.display_name), 35)]
         self.add_segment(Segment("NAD", "BY", [buyer_gln, "", "9"], "", buyer_names, buyer.street, buyer.city, "", buyer.zip, buyer.country_id.code))
         self.add_segment(Segment("RFF", ["VA", buyer.vat]))
