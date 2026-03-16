@@ -76,6 +76,9 @@ class InvoicD96AMessage(Message):
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
             product = line.product_id
 
+            if not product.ean_weenect:
+                raise ValueError("Le code EAN du produit %s pour la facture %s est introuvable" % (product.display_name, self.invoice.name))
+
             line_pdf_description = (product.client_friendly_name or "") + " " + (line.name or "")
             libelle_part1 = line_pdf_description[:35]
             libelle_part2 = line_pdf_description[35:70] if len(line_pdf_description) > 35 else ""
