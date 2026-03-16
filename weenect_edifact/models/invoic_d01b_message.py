@@ -52,6 +52,7 @@ class InvoicD01BMessage(Message):
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
             self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70]]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
+            self.add_segment(Segment("PRI", ["AAA", f"{line.price_unit:.2f}", "", "", "1", "PCE"]))
             self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
 
