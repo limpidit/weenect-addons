@@ -17,8 +17,13 @@ class InvoicD01BMessage(Message):
         delivery_date = self._get_delivery_date()
 
         company_gln = self._get_gln(self.invoice.company_id.partner_id)
+        if not company_gln:
+            raise ValueError("Le GLN de weenect est introuvable")
+
         delivery = self.invoice.partner_shipping_id or self.invoice.partner_id.parent_id or self.invoice.partner_id
         delivery_gln = self._get_gln(delivery)
+        if not delivery_gln:
+            raise ValueError(f"Le partenaire de livraison '{delivery.name}' doit avoir un numéro GLN pour générer le message EDIFACT.")
 
         self.add_segment(self.get_header_segment())
 
@@ -53,8 +58,8 @@ class InvoicD01BMessage(Message):
             self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70]]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
             self.add_segment(Segment("PRI", ["AAA", f"{line.price_unit:.2f}", "", "", "1", "PCE"]))
-            self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
+            self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
 
         self.add_segment(Segment("UNS", ["S"]))
 
