@@ -194,12 +194,13 @@ class EdifactMessage(models.Model):
             lang = mail_template._render_lang(self.ids)[self.id]
 
         mail_template.email_from = self.env.user.email
+        clean_content = self.message_content.replace('\n', '').replace('\r', '')
 
         attachments = []
         attachment = self.env['ir.attachment'].create({
-            'name': f"Message_{self.id}.txt",
+            'name': f"Message_{self.id}.edi",  # Changement de l'extension en .edi
             'type': 'binary',
-            'datas': base64.b64encode(self.message_content.encode('utf-8')),
+            'datas': base64.b64encode(clean_content.encode('utf-8')),
             'res_model': 'edifact.message',
             'res_id': self.id,
             'mimetype': 'application/edi'
@@ -215,6 +216,7 @@ class EdifactMessage(models.Model):
             'default_use_template': bool(mail_template),
             'default_template_id': mail_template.id if mail_template else None,
             'default_composition_mode': 'comment',
+            'mark_so_as_sent': True,
             'force_email': True,
             'lang': lang,
         }
