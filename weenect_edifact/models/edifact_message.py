@@ -85,7 +85,7 @@ class EdifactMessage(models.Model):
         partners = self.env['res.partner'].search([('edi_export_format', '=', self.message_type)])
         to_send_moves = self.env['account.move'].search(
             [('state', '=', 'posted'), ('has_been_sent', '=', False), 
-            ('partner_id', 'in', partners.ids), ('move_type', 'in', ['out_invoice', 'out_refund'])]
+            ('partner_id', 'in', partners.ids), ('move_type', 'in', ['out_invoice'])]
         )
         self.write({
             'move_ids': [(6, 0, to_send_moves.ids)],
