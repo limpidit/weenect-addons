@@ -30,6 +30,8 @@ class InvoicD01BMessage(Message):
         doc_code = "380" if self.invoice.move_type == "out_invoice" else "381"
         self.add_segment(Segment("BGM", doc_code, self.invoice.name, "9"))
         self.add_segment(Segment("DTM", ["137", date_invoice.strftime("%Y%m%d"), "102"]))
+        self.add_segment(Segment("FTX", "AAK", "1", "ST1"))
+        self.add_segment(Segment("FTX", "ZZZ", "1", "EEV"))
 
         picking = self._get_picking()
         if picking:
@@ -45,6 +47,9 @@ class InvoicD01BMessage(Message):
 
         if date_due:
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
+
+        self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", "0"], "E"))
+        self.add_segment(Segment("CUX", ["2", "EUR", "4"]))
 
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
             taxes = line.tax_ids
