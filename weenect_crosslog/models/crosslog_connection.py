@@ -446,6 +446,8 @@ class CrosslogConnection(models.Model):
                             ('crosslog_synchronized', '=', False),
                             ('state', '=', 'assigned')
                         ], limit=1)
+                        print(picking)
+                        print(order_number, warehouse.lot_stock_id.id)
 
                         if not picking:
                             picking_synchronized = picking_object.search([
