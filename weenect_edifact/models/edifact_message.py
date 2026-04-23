@@ -190,7 +190,7 @@ class EdifactMessage(models.Model):
             transport = paramiko.Transport((host, port))
             transport.connect(username=user, password=password)
             sftp = paramiko.SFTPClient.from_transport(transport)
-            sftp.putfo(io.BytesIO(self.message_content.encode('utf-8')), filename)
+            sftp.putfo(io.BytesIO(self.message_content.encode('utf-8')), f"/eingang/{filename}")
             sftp.close()
             transport.close()
         except Exception as e:
