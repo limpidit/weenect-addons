@@ -20,6 +20,7 @@
         # Views
         'views/account_move.xml',
         'views/edifact_message.xml',
+        'views/edifact_config.xml',
         'views/res_config_settings.xml',    
         'views/res_partner.xml',
     ],
