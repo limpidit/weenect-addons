@@ -16,79 +16,115 @@ class VisiteMagasin(models.Model):
         domain=[("is_company", "=", True)],
         tracking=True,
     )
-    nouveau_revendeur = fields.Boolean(string="Nouveau revendeur")
-    emplacement = fields.Char(string="Emplacement")
     date_visite = fields.Date(
         string="Date de visite",
         default=fields.Date.today,
         required=True,
         tracking=True,
     )
+    commercial_id = fields.Many2one(
+        "res.users",
+        string="Commercial",
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    emplacement = fields.Char(string="Emplacement")
+    nouveau_revendeur = fields.Boolean(string="Nouveau revendeur")
+
+    # ── Score & Priorité (calculés) ───────────────────────────────────────────
+    score_visite = fields.Integer(
+        string="Score visite",
+        compute="_compute_score_priorite",
+        store=True,
+    )
+    priorite_commerciale = fields.Selection(
+        [("urgent", "Urgent"), ("a_travailler", "À travailler"), ("bon_niveau", "Bon niveau")],
+        string="Priorité commerciale",
+        compute="_compute_score_priorite",
+        store=True,
+        tracking=True,
+    )
+
+    # ── Info générale — Personnes rencontrées ─────────────────────────────────
+    personne_rencontree_ids = fields.Many2many(
+        "res.partner",
+        "visite_magasin_partner_rel",
+        "visite_id",
+        "partner_id",
+        string="Personnes rencontrées",
+    )
+
+    # ── Objectif de visite ────────────────────────────────────────────────────
+    visite_suivi = fields.Boolean(string="Visite suivi")
+    visite_sav = fields.Boolean(string="Visite SAV")
+    visite_formation = fields.Boolean(string="Visite formation")
+    visite_objectif_autre = fields.Char(string="Autre")
+
+    # ── Concurrence ───────────────────────────────────────────────────────────
+    concurrent_kippy = fields.Boolean(string="Kippy")
+    concurrent_tractive = fields.Boolean(string="Tractive")
+    concurrent_garmin = fields.Boolean(string="Garmin")
+    concurrent_dogtra = fields.Boolean(string="Dogtra")
+    concurrent_invoxia = fields.Boolean(string="Invoxia")
+    concurrent_airtag = fields.Boolean(string="Airtag")
+    concurrent_autre = fields.Char(string="Autre")
 
     # ── Visibilité produit ────────────────────────────────────────────────────
-    produit_visible = fields.Boolean(string="Produit visible")
-    presentoir_en_place = fields.Boolean(string="Présentoir en place")
+    produit_visible = fields.Boolean(string="Produit Visible")
+    bon_emplacement = fields.Boolean(string="Bon emplacement")
     plv_visible = fields.Boolean(string="PLV visible")
-    plv_bon_emplacement = fields.Boolean(string="PLV au bon emplacement")
-    traceur_demo_actif = fields.Boolean(string="Traceur démo actif")
-    vendeur_forme = fields.Boolean(string="Vendeur formé")
+    traceur_demo_actif = fields.Boolean(string="Traceur demo actif et utilisé")
+    double_implantation = fields.Boolean(string="Double implantation")
+    vendeur_deja_forme = fields.Boolean(string="Vendeur déjà formé")
+    vendeur_forme_visite = fields.Boolean(string="Vendeur formé pendant la visite")
     vendeur_implique = fields.Boolean(string="Vendeur impliqué")
-    engagement_responsable = fields.Selection(
-        [("faible", "Faible"), ("moyen", "Moyen"), ("fort", "Fort")],
-        string="Engagement du responsable",
-    )
-    volume_ventes_mensuel = fields.Selection(
-        [
-            ("lt10", "Moins de 10"),
-            ("10_30", "10 à 30"),
-            ("30_100", "30 à 100"),
-            ("gt100", "Plus de 100"),
-        ],
-        string="Volume de ventes mensuel",
-    )
 
-    # ── PLV ───────────────────────────────────────────────────────────────────
-    plv_presentoir = fields.Boolean(string="Présentoir")
-    plv_affiche_promo = fields.Boolean(string="Affiche promo")
-    plv_jeu = fields.Boolean(string="Jeu")
-    plv_poster = fields.Boolean(string="Poster")
-    plv_flyers = fields.Boolean(string="Flyers")
+    # ── PLV — Présentoir ──────────────────────────────────────────────────────
+    plv_presentoir_deja = fields.Boolean(string="Déjà installé")
+    plv_presentoir_visite = fields.Boolean(string="Installé pendant la visite")
+    plv_presentoir_envoyer = fields.Boolean(string="À envoyer")
+
+    # ── PLV — Affiche promo ───────────────────────────────────────────────────
+    plv_affiche_deja = fields.Boolean(string="Déjà installée")
+    plv_affiche_visite = fields.Boolean(string="Installée pendant la visite")
+    plv_affiche_envoyer = fields.Boolean(string="À envoyer")
+
+    # ── PLV — Jeu ─────────────────────────────────────────────────────────────
+    plv_jeu_deja = fields.Boolean(string="Déjà installé")
+    plv_jeu_visite = fields.Boolean(string="Installé pendant la visite")
+    plv_jeu_envoyer = fields.Boolean(string="À envoyer")
+
+    # ── PLV — Poster magasin ──────────────────────────────────────────────────
+    plv_poster_deja = fields.Boolean(string="Déjà installé")
+    plv_poster_visite = fields.Boolean(string="Installé pendant la visite")
+    plv_poster_envoyer = fields.Boolean(string="À envoyer")
+
+    # ── PLV — Autres ─────────────────────────────────────────────────────────
+    plv_flyers = fields.Boolean(string="Flyers mag")
     plv_sticker_sol = fields.Boolean(string="Sticker au sol")
-    plv_autre = fields.Char(string="Autre PLV")
+    plv_autre = fields.Char(string="Autre")
 
     # ── Suivi & Actions ───────────────────────────────────────────────────────
+    volume_magasin = fields.Selection(
+        [("faible", "Faible"), ("moyen", "Moyen"), ("fort", "Fort")],
+        string="Volume magasin",
+        help="Faible : < 1 vente/mois | Moyen : 1 à 4 | Fort : + de 4 par mois",
+    )
+    engagement_responsable = fields.Selection(
+        [("faible", "Faible"), ("moyen", "Moyen"), ("fort", "Fort")],
+        string="Engagement responsable",
+    )
     action_calendrier_offres = fields.Boolean(string="Envoyer calendrier des offres")
     action_videos_formation = fields.Boolean(string="Envoyer vidéos de formation")
     action_formation_traceur = fields.Boolean(string="Planifier formation traceur démo")
-    action_autre = fields.Char(string="Autre action")
+    action_autre = fields.Char(string="Autres")
 
-    # ── CR et Ventes ─────────────────────────────────────────────────────────
+    # ── CR de visite ──────────────────────────────────────────────────────────
     cr_de_visite = fields.Text(string="CR de visite", tracking=True)
-    ventes_realisees = fields.Text(string="Ventes réalisées")
+
+    # ── Ventes ────────────────────────────────────────────────────────────────
     expedition_a_prevoir = fields.Boolean(string="Expédition à prévoir")
-
-    # ── Objectif & Concurrence ────────────────────────────────────────────────
-    nature_visite = fields.Selection(
-        [("suivi", "Suivi"), ("sav", "SAV"), ("formation", "Formation"), ("autre", "Autre")],
-        string="Nature de la visite",
-    )
-    concurrent_tractive = fields.Boolean(string="Tractive")
-    concurrent_dogtra = fields.Boolean(string="Dogtra")
-    concurrent_airtag = fields.Boolean(string="AirTag")
-    concurrent_autre = fields.Char(string="Autre concurrent")
-
-    # ── Score & Priorité (calculés) ───────────────────────────────────────────
-    score_qualite = fields.Integer(
-        string="Score qualité",
-        compute="_compute_score_priorite",
-        store=True,
-    )
-    priorite = fields.Selection(
-        [("urgent", "Urgent"), ("a_travailler", "À travailler"), ("bon_niveau", "Bon niveau")],
-        string="Priorité",
-        compute="_compute_score_priorite",
-        store=True,
-    )
+    ventes_realisees = fields.Text(string="Ventes réalisées")
 
     # ── Photos ────────────────────────────────────────────────────────────────
     photo_1 = fields.Binary(string="Photo 1", attachment=True)
@@ -100,40 +136,42 @@ class VisiteMagasin(models.Model):
 
     # ── Compute ───────────────────────────────────────────────────────────────
     @api.depends(
-        "produit_visible", "presentoir_en_place", "plv_visible", "plv_bon_emplacement",
-        "traceur_demo_actif", "vendeur_forme", "vendeur_implique",
-        "engagement_responsable", "volume_ventes_mensuel", "nouveau_revendeur",
+        "produit_visible", "bon_emplacement", "plv_visible", "traceur_demo_actif",
+        "double_implantation", "vendeur_deja_forme", "vendeur_forme_visite", "vendeur_implique",
+        "engagement_responsable", "volume_magasin", "nouveau_revendeur",
     )
     def _compute_score_priorite(self):
         engagement_pts = {"faible": 0, "moyen": 10, "fort": 20}
-        volume_pts = {"lt10": 0, "10_30": 7, "30_100": 15, "gt100": 20}
+        volume_pts = {"faible": 0, "moyen": 10, "fort": 20}
 
         for rec in self:
+            vendeur_forme = rec.vendeur_deja_forme or rec.vendeur_forme_visite
             visuels = sum([
                 rec.produit_visible,
-                rec.presentoir_en_place,
+                rec.bon_emplacement,
                 rec.plv_visible,
-                rec.plv_bon_emplacement,
                 rec.traceur_demo_actif,
-                rec.vendeur_forme,
+                rec.double_implantation,
+                vendeur_forme,
                 rec.vendeur_implique,
             ]) * 5
+
             eng = engagement_pts.get(rec.engagement_responsable, 0)
-            vol = volume_pts.get(rec.volume_ventes_mensuel, 0)
+            vol = volume_pts.get(rec.volume_magasin, 0)
 
             if rec.nouveau_revendeur:
                 score = int(round((visuels + eng) * 100 / 55)) if (visuels + eng) else 0
             else:
                 score = visuels + eng + vol
 
-            rec.score_qualite = score
+            rec.score_visite = score
 
             if score < 50:
-                rec.priorite = "urgent"
+                rec.priorite_commerciale = "urgent"
             elif score < 80:
-                rec.priorite = "a_travailler"
+                rec.priorite_commerciale = "a_travailler"
             else:
-                rec.priorite = "bon_niveau"
+                rec.priorite_commerciale = "bon_niveau"
 
     # ── Automatisations ───────────────────────────────────────────────────────
     @api.model_create_multi
@@ -152,13 +190,14 @@ class VisiteMagasin(models.Model):
             "action_calendrier_offres", "action_videos_formation",
             "action_formation_traceur", "action_autre",
         }
-        plv_fields = {
-            "plv_presentoir", "plv_affiche_promo", "plv_jeu",
-            "plv_poster", "plv_flyers", "plv_sticker_sol", "plv_autre",
+        plv_envoyer_fields = {
+            "plv_presentoir_envoyer", "plv_affiche_envoyer",
+            "plv_jeu_envoyer", "plv_poster_envoyer",
+            "plv_flyers", "plv_sticker_sol", "plv_autre",
         }
         if suivi_fields & set(vals):
             self._handle_suivi_activities()
-        if plv_fields & set(vals):
+        if plv_envoyer_fields & set(vals):
             self._handle_plv_activities()
         if "expedition_a_prevoir" in vals:
             self._handle_expedition_activity()
@@ -201,20 +240,21 @@ class VisiteMagasin(models.Model):
                     self._schedule_activity("res.partner", rec.magasin_id.id, summary)
 
     def _handle_plv_activities(self):
-        plv_map = [
-            ("plv_presentoir", "Envoyer présentoir"),
-            ("plv_affiche_promo", "Envoyer affiche promo"),
-            ("plv_jeu", "Envoyer jeu"),
-            ("plv_poster", "Envoyer poster"),
-            ("plv_flyers", "Envoyer flyers"),
-            ("plv_sticker_sol", "Envoyer sticker au sol"),
-        ]
         for rec in self:
             mag_name = rec.magasin_id.name if rec.magasin_id else ""
             summaries = []
-            for field, label in plv_map:
-                if getattr(rec, field):
-                    summaries.append(f"{label} - {mag_name}")
+            if rec.plv_presentoir_envoyer:
+                summaries.append(f"Envoyer présentoir - {mag_name}")
+            if rec.plv_affiche_envoyer:
+                summaries.append(f"Envoyer affiche promo - {mag_name}")
+            if rec.plv_jeu_envoyer:
+                summaries.append(f"Envoyer jeu - {mag_name}")
+            if rec.plv_poster_envoyer:
+                summaries.append(f"Envoyer poster - {mag_name}")
+            if rec.plv_flyers:
+                summaries.append(f"Envoyer flyers - {mag_name}")
+            if rec.plv_sticker_sol:
+                summaries.append(f"Envoyer sticker au sol - {mag_name}")
             if rec.plv_autre and rec.plv_autre.strip():
                 summaries.append("Envoyer PLV autre : " + rec.plv_autre[:80])
             for summary in summaries:
