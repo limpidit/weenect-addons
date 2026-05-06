@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Vue formulaire ─────────────────────────────────────────────────── -->
+    <record id="view_visite_magasin_form" model="ir.ui.view">
+        <field name="name">weenect.visite.magasin.form</field>
+        <field name="model">weenect.visite.magasin</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="priorite" widget="statusbar"
+                           statusbar_visible="urgent,a_travailler,bon_niveau"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="magasin_id" placeholder="Magasin…" options="{'no_create': True}"/>
+                        </h1>
+                        <div class="o_field_widget">
+                            <field name="score_qualite" widget="progressbar"
+                                   options="{'max_value': 100, 'edit': False}"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_visite"/>
+                            <field name="nouveau_revendeur"/>
+                            <field name="emplacement"/>
+                        </group>
+                        <group>
+                            <field name="nature_visite"/>
+                            <field name="expedition_a_prevoir"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- Onglet Visibilité produit -->
+                        <page string="Visibilité produit" name="visibilite">
+                            <group>
+                                <group string="Présence">
+                                    <field name="produit_visible"/>
+                                    <field name="presentoir_en_place"/>
+                                    <field name="plv_visible"/>
+                                    <field name="plv_bon_emplacement"/>
+                                    <field name="traceur_demo_actif"/>
+                                </group>
+                                <group string="Équipe vente">
+                                    <field name="vendeur_forme"/>
+                                    <field name="vendeur_implique"/>
+                                    <field name="engagement_responsable"/>
+                                    <field name="volume_ventes_mensuel"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Onglet PLV -->
+                        <page string="PLV" name="plv">
+                            <group>
+                                <group string="Articles à envoyer">
+                                    <field name="plv_presentoir"/>
+                                    <field name="plv_affiche_promo"/>
+                                    <field name="plv_jeu"/>
+                                    <field name="plv_poster"/>
+                                    <field name="plv_flyers"/>
+                                    <field name="plv_sticker_sol"/>
+                                </group>
+                                <group>
+                                    <field name="plv_autre"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Onglet Suivi et Actions -->
+                        <page string="Suivi &amp; Actions" name="suivi">
+                            <group>
+                                <field name="action_calendrier_offres"/>
+                                <field name="action_videos_formation"/>
+                                <field name="action_formation_traceur"/>
+                                <field name="action_autre" placeholder="Autre action à réaliser…"/>
+                            </group>
+                        </page>
+
+                        <!-- Onglet CR de visite -->
+                        <page string="CR de visite" name="cr">
+                            <field name="cr_de_visite" placeholder="Compte-rendu de la visite…"
+                                   nolabel="1" colspan="2"/>
+                        </page>
+
+                        <!-- Onglet Ventes -->
+                        <page string="Ventes" name="ventes">
+                            <group>
+                                <field name="ventes_realisees" placeholder="Détail des ventes réalisées…"
+                                       nolabel="1" colspan="2"/>
+                            </group>
+                        </page>
+
+                        <!-- Onglet Objectif et Concurrence -->
+                        <page string="Objectif &amp; Concurrence" name="concurrence">
+                            <group>
+                                <group string="Concurrents présents">
+                                    <field name="concurrent_tractive"/>
+                                    <field name="concurrent_dogtra"/>
+                                    <field name="concurrent_airtag"/>
+                                    <field name="concurrent_autre"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Onglet Photos -->
+                        <page string="Photos" name="photos">
+                            <div class="o_field_widget">
+                                <div style="display:flex;flex-wrap:wrap;gap:16px;">
+                                    <field name="photo_1" widget="image"
+                                           options="{'size': [200, 200]}" nolabel="1"/>
+                                    <field name="photo_2" widget="image"
+                                           options="{'size': [200, 200]}" nolabel="1"/>
+                                    <field name="photo_3" widget="image"
+                                           options="{'size': [200, 200]}" nolabel="1"/>
+                                    <field name="photo_4" widget="image"
+                                           options="{'size': [200, 200]}" nolabel="1"/>
+                                    <field name="photo_5" widget="image"
+                                           options="{'size': [200, 200]}" nolabel="1"/>
+                                    <field name="photo_6" widget="image"
+                                           options="{'size': [200, 200]}" nolabel="1"/>
+                                </div>
+                            </div>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vue liste ──────────────────────────────────────────────────────── -->
+    <record id="view_visite_magasin_list" model="ir.ui.view">
+        <field name="name">weenect.visite.magasin.list</field>
+        <field name="model">weenect.visite.magasin</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_visite"/>
+                <field name="magasin_id"/>
+                <field name="nature_visite"/>
+                <field name="nouveau_revendeur"/>
+                <field name="score_qualite"/>
+                <field name="priorite"
+                       decoration-danger="priorite == 'urgent'"
+                       decoration-warning="priorite == 'a_travailler'"
+                       decoration-success="priorite == 'bon_niveau'"/>
+                <field name="expedition_a_prevoir"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Recherche ──────────────────────────────────────────────────────── -->
+    <record id="view_visite_magasin_search" model="ir.ui.view">
+        <field name="name">weenect.visite.magasin.search</field>
+        <field name="model">weenect.visite.magasin</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="magasin_id"/>
+                <field name="nature_visite"/>
+                <filter name="urgent" string="Urgent"
+                        domain="[('priorite', '=', 'urgent')]"/>
+                <filter name="a_travailler" string="À travailler"
+                        domain="[('priorite', '=', 'a_travailler')]"/>
+                <filter name="bon_niveau" string="Bon niveau"
+                        domain="[('priorite', '=', 'bon_niveau')]"/>
+                <separator/>
+                <filter name="expedition" string="Expédition à prévoir"
+                        domain="[('expedition_a_prevoir', '=', True)]"/>
+                <filter name="nouveaux" string="Nouveaux revendeurs"
+                        domain="[('nouveau_revendeur', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_magasin" string="Magasin"
+                            context="{'group_by': 'magasin_id'}"/>
+                    <filter name="group_priorite" string="Priorité"
+                            context="{'group_by': 'priorite'}"/>
+                    <filter name="group_nature" string="Nature"
+                            context="{'group_by': 'nature_visite'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Action fenêtre ────────────────────────────────────────────────── -->
+    <record id="action_visite_magasin" model="ir.actions.act_window">
+        <field name="name">Visites Magasins</field>
+        <field name="res_model">weenect.visite.magasin</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

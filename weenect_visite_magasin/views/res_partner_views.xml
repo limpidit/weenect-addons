@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Action fenêtre filtrée sur le magasin courant -->
+    <record id="action_visite_magasin_partner" model="ir.actions.act_window">
+        <field name="name">Visites du magasin</field>
+        <field name="res_model">weenect.visite.magasin</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("magasin_id", "=", active_id)]</field>
+        <field name="context">{"default_magasin_id": active_id}</field>
+    </record>
+
+    <!-- Smart button sur la fiche contact (déclaré après l'action pour la ref) -->
+    <record id="view_partner_visite_magasin_button" model="ir.ui.view">
+        <field name="name">res.partner.visite.magasin.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(weenect_visite_magasin.action_visite_magasin_partner)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-map-marker"
+                        invisible="visite_magasin_count == 0">
+                    <field name="visite_magasin_count" widget="statinfo"
+                           string="Visite(s)"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
