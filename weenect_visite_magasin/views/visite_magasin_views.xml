@@ -211,7 +211,7 @@
                         domain="[('expedition_a_prevoir', '=', True)]"/>
                 <filter name="nouveaux" string="Nouveaux revendeurs"
                         domain="[('nouveau_revendeur', '=', True)]"/>
-                <group expand="0" string="Regrouper par">
+                <group>
                     <filter name="group_magasin" string="Magasin"
                             context="{'group_by': 'magasin_id'}"/>
                     <filter name="group_commercial" string="Commercial"
