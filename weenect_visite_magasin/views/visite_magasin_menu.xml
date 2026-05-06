@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_visite_magasin_root"
+              name="Visites Magasins"
+              sequence="80"
+              web_icon="weenect_visite_magasin,static/description/icon.png"/>
+
+    <menuitem id="menu_visite_magasin_list"
+              name="Visites"
+              parent="menu_visite_magasin_root"
+              action="action_visite_magasin"
+              sequence="10"/>
+
+</odoo>
