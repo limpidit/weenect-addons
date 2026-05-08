@@ -19,7 +19,8 @@
                         <group>
                             <field name="date_visite"/>
                             <field name="commercial_id"/>
-                            <field name="emplacement"/>
+                            <field name="emplacement_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color'}"/>
                             <field name="nouveau_revendeur"/>
                         </group>
                         <group>
@@ -187,7 +188,8 @@
                 <field name="magasin_id" string="Magasin"/>
                 <field name="commercial_id" string="Commercial"/>
                 <field name="country_id" string="Pays" optional="show"/>
-                <field name="emplacement" optional="show"/>
+                <field name="emplacement_ids" widget="many2many_tags"
+                       options="{'color_field': 'color'}" optional="show"/>
                 <field name="score_visite" optional="show"/>
                 <field name="priorite_commerciale"
                        decoration-danger="priorite_commerciale == 'urgent'"
@@ -252,7 +254,7 @@
                     <filter name="group_magasin" string="Magasin"
                             context="{'group_by': 'magasin_id'}"/>
                     <filter name="group_emplacement" string="Emplacement"
-                            context="{'group_by': 'emplacement'}"/>
+                            context="{'group_by': 'emplacement_ids'}"/>
                     <filter name="group_mois" string="Mois"
                             context="{'group_by': 'date_visite:month'}"/>
                 </group>

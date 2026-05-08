@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="emplacement_centre_ville" model="weenect.visite.emplacement">
+            <field name="name">Centre-ville</field>
+            <field name="color">1</field>
+        </record>
+        <record id="emplacement_zone_commerciale" model="weenect.visite.emplacement">
+            <field name="name">Zone commerciale</field>
+            <field name="color">2</field>
+        </record>
+        <record id="emplacement_campagne" model="weenect.visite.emplacement">
+            <field name="name">Campagne</field>
+            <field name="color">10</field>
+        </record>
+        <record id="emplacement_visible" model="weenect.visite.emplacement">
+            <field name="name">Visible</field>
+            <field name="color">4</field>
+        </record>
+        <record id="emplacement_isole" model="weenect.visite.emplacement">
+            <field name="name">Isolé</field>
+            <field name="color">9</field>
+        </record>
+    </data>
+</odoo>
