@@ -1,0 +1,41 @@
+<odoo>
+
+    <record id="view_edifact_config_form" model="ir.ui.view">
+        <field name="name">weenect.edifact.config.form</field>
+        <field name="model">weenect.edifact.config</field>
+        <field name="arch" type="xml">
+            <form string="Configuration EDIFACT">
+                <sheet>
+                    <group string="SFTP Futterhaus">
+                        <field name="futterhaus_sftp_host"/>
+                        <field name="futterhaus_sftp_port"/>
+                        <field name="futterhaus_sftp_user"/>
+                        <field name="futterhaus_sftp_password" password="True"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_edifact_config_server" model="ir.actions.server">
+        <field name="name">Configuration EDIFACT</field>
+        <field name="model_id" search="[('model','=','weenect.edifact.config')]"/>
+        <field name="state">code</field>
+        <field name="code">action = model.get_config().action_open_config()</field>
+    </record>
+
+    <menuitem
+        id="edifact_message_list_menu"
+        name="Messages"
+        parent="edifact_message_menu"
+        action="action_edifact_message"
+        sequence="1"/>
+
+    <menuitem
+        id="edifact_config_menu"
+        name="Configuration"
+        parent="edifact_message_menu"
+        action="action_edifact_config_server"
+        sequence="99"/>
+
+</odoo>

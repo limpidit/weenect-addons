@@ -25,6 +25,8 @@ class InvoicD01BMessage(Message):
         doc_code = "380" if self.invoice.move_type == "out_invoice" else "381"
         self.add_segment(Segment("BGM", doc_code, self.invoice.name, "9"))
         self.add_segment(Segment("DTM", ["137", date_invoice.strftime("%Y%m%d"), "102"]))
+        self.add_segment(Segment("FTX", "AAK", "1", "ST1"))
+        self.add_segment(Segment("FTX", "ZZZ", "1", "EEV"))
 
         picking = self._get_picking()
         if picking:
@@ -41,6 +43,9 @@ class InvoicD01BMessage(Message):
         if date_due:
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
 
+        self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", "0"], "E"))
+        self.add_segment(Segment("CUX", ["2", "EUR", "4"]))
+
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
             taxes = line.tax_ids
             if taxes:
@@ -50,10 +55,11 @@ class InvoicD01BMessage(Message):
             else:
                 tax_rate = 0
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
-            self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70]]))
+            self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70].replace('\n', '')]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
-            self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
+            self.add_segment(Segment("PRI", ["AAA", f"{line.price_unit:.2f}", "", "", "1", "PCE"]))
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
+            self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
 
         self.add_segment(Segment("UNS", ["S"]))
 

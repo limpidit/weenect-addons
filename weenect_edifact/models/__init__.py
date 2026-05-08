@@ -1,4 +1,5 @@
 from . import account_move
+from . import edifact_config
 from . import edifact_message
 from . import res_config_settings
 from . import res_partner_id_category

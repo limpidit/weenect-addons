@@ -6,6 +6,7 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 import base64
+import io
 
 from .invoic_d01b_message import InvoicD01BMessage
 from .invoic_d96a_message import InvoicD96AMessage
@@ -164,6 +165,42 @@ class EdifactMessage(models.Model):
                 self.state = 'linked'
             else:
                 self.state = 'draft'
+
+    def action_send_sftp_futterhaus(self):
+        """Envoie le fichier EDIFACT Futterhaus via SFTP."""
+        import paramiko
+
+        self.ensure_one()
+
+        config = self.env['weenect.edifact.config'].get_config()
+        host = config.futterhaus_sftp_host
+        port = config.futterhaus_sftp_port or 22
+        user = config.futterhaus_sftp_user
+        password = config.futterhaus_sftp_password
+
+        if not all([host, user, password]):
+            raise UserError(_("Les paramètres SFTP Futterhaus ne sont pas configurés (Messages EDIFACT > Configuration)."))
+
+        if not self.message_content:
+            raise UserError(_("Le contenu EDIFACT n'a pas encore été généré."))
+
+        filename = f"INVOIC_{fields.Datetime.now().strftime('%Y%m%d_%H%M%S')}_{self.id}.edi"
+
+        try:
+            transport = paramiko.Transport((host, port))
+            transport.connect(username=user, password=password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+            sftp.putfo(io.BytesIO(self.message_content.encode('utf-8')), f"/eingang/{filename}")
+            sftp.close()
+            transport.close()
+        except Exception as e:
+            self.state = 'error'
+            self.error_message = str(e)
+            raise UserError(_("Erreur lors de l'envoi SFTP : %s") % str(e))
+
+        self.move_ids.write({'has_been_sent': True})
+        self.state = 'sent'
+        self.message_post(body=_("Fichier '%s' envoyé via SFTP sur %s.") % (filename, host))
 
     def _edifact_invoice_get_interchange(self):
         """
