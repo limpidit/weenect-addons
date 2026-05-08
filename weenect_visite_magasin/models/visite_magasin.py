@@ -7,6 +7,7 @@ class VisiteMagasin(models.Model):
     _description = "Visite Magasin"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _rec_name = "magasin_id"
+    _order = "date_visite desc, id desc"
 
     # ── Identification ────────────────────────────────────────────────────────
     magasin_id = fields.Many2one(
@@ -15,6 +16,12 @@ class VisiteMagasin(models.Model):
         required=True,
         domain=[("is_company", "=", True)],
         tracking=True,
+    )
+    country_id = fields.Many2one(
+        "res.country",
+        related="magasin_id.country_id",
+        string="Pays",
+        store=True,
     )
     date_visite = fields.Date(
         string="Date de visite",
@@ -28,7 +35,16 @@ class VisiteMagasin(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
     )
-    emplacement = fields.Char(string="Emplacement")
+    emplacement = fields.Selection(
+        [
+            ("centre_ville", "Centre-ville"),
+            ("zone_commerciale", "Zone commerciale"),
+            ("campagne", "Campagne"),
+            ("visible", "Visible"),
+            ("isole", "Isolé"),
+        ],
+        string="Emplacement",
+    )
     nouveau_revendeur = fields.Boolean(string="Nouveau revendeur")
 
     # ── Score & Priorité (calculés) ───────────────────────────────────────────
@@ -89,20 +105,19 @@ class VisiteMagasin(models.Model):
     plv_affiche_visite = fields.Boolean(string="Installée pendant la visite")
     plv_affiche_envoyer = fields.Boolean(string="À envoyer")
 
-    # ── PLV — Jeu ─────────────────────────────────────────────────────────────
-    plv_jeu_deja = fields.Boolean(string="Déjà installé")
-    plv_jeu_visite = fields.Boolean(string="Installé pendant la visite")
-    plv_jeu_envoyer = fields.Boolean(string="À envoyer")
-
     # ── PLV — Poster magasin ──────────────────────────────────────────────────
     plv_poster_deja = fields.Boolean(string="Déjà installé")
     plv_poster_visite = fields.Boolean(string="Installé pendant la visite")
     plv_poster_envoyer = fields.Boolean(string="À envoyer")
 
-    # ── PLV — Autres ─────────────────────────────────────────────────────────
-    plv_flyers = fields.Boolean(string="Flyers mag")
+    # ── PLV — Autres (Jeu/Goodies, Flyers, Sticker…) ─────────────────────────
+    plv_jeu_deja = fields.Boolean(string="Déjà en place")
+    plv_jeu_visite = fields.Boolean(string="Mis en place pendant la visite")
+    plv_jeu_envoyer = fields.Boolean(string="À envoyer")
+    plv_flyers = fields.Boolean(string="Flyers magasin")
+    plv_flyers_promo = fields.Boolean(string="Flyers promotionnels")
     plv_sticker_sol = fields.Boolean(string="Sticker au sol")
-    plv_autre = fields.Char(string="Autre")
+    plv_autre = fields.Char(string="Autre PLV")
 
     # ── Suivi & Actions ───────────────────────────────────────────────────────
     volume_magasin = fields.Selection(
@@ -121,9 +136,17 @@ class VisiteMagasin(models.Model):
 
     # ── CR de visite ──────────────────────────────────────────────────────────
     cr_de_visite = fields.Text(string="CR de visite", tracking=True)
+    cr_tag_ids = fields.Many2many(
+        "res.users",
+        "visite_magasin_cr_tag_rel",
+        "visite_id",
+        "user_id",
+        string="Notifier des collègues",
+    )
 
     # ── Ventes ────────────────────────────────────────────────────────────────
     expedition_a_prevoir = fields.Boolean(string="Expédition à prévoir")
+    a_facturer = fields.Boolean(string="À facturer", tracking=True)
     ventes_realisees = fields.Text(string="Ventes réalisées")
 
     # ── Photos ────────────────────────────────────────────────────────────────
@@ -181,6 +204,7 @@ class VisiteMagasin(models.Model):
             rec._handle_suivi_activities()
             rec._handle_plv_activities()
             rec._handle_expedition_activity()
+            rec._handle_facturation_activity()
             rec._handle_cr_chatter()
         return records
 
@@ -193,7 +217,7 @@ class VisiteMagasin(models.Model):
         plv_envoyer_fields = {
             "plv_presentoir_envoyer", "plv_affiche_envoyer",
             "plv_jeu_envoyer", "plv_poster_envoyer",
-            "plv_flyers", "plv_sticker_sol", "plv_autre",
+            "plv_flyers", "plv_flyers_promo", "plv_sticker_sol", "plv_autre",
         }
         if suivi_fields & set(vals):
             self._handle_suivi_activities()
@@ -201,7 +225,9 @@ class VisiteMagasin(models.Model):
             self._handle_plv_activities()
         if "expedition_a_prevoir" in vals:
             self._handle_expedition_activity()
-        if "cr_de_visite" in vals:
+        if "a_facturer" in vals:
+            self._handle_facturation_activity()
+        if "cr_de_visite" in vals or "cr_tag_ids" in vals:
             self._handle_cr_chatter()
         return res
 
@@ -248,11 +274,13 @@ class VisiteMagasin(models.Model):
             if rec.plv_affiche_envoyer:
                 summaries.append(f"Envoyer affiche promo - {mag_name}")
             if rec.plv_jeu_envoyer:
-                summaries.append(f"Envoyer jeu - {mag_name}")
+                summaries.append(f"Envoyer jeu/goodies - {mag_name}")
             if rec.plv_poster_envoyer:
                 summaries.append(f"Envoyer poster - {mag_name}")
             if rec.plv_flyers:
-                summaries.append(f"Envoyer flyers - {mag_name}")
+                summaries.append(f"Envoyer flyers magasin - {mag_name}")
+            if rec.plv_flyers_promo:
+                summaries.append(f"Envoyer flyers promotionnels - {mag_name}")
             if rec.plv_sticker_sol:
                 summaries.append(f"Envoyer sticker au sol - {mag_name}")
             if rec.plv_autre and rec.plv_autre.strip():
@@ -270,6 +298,16 @@ class VisiteMagasin(models.Model):
             self._schedule_activity("weenect.visite.magasin", rec.id, summary)
             self._schedule_activity("res.partner", rec.magasin_id.id, summary)
 
+    def _handle_facturation_activity(self):
+        for rec in self:
+            if not rec.a_facturer:
+                continue
+            mag_name = rec.magasin_id.name if rec.magasin_id else "magasin"
+            summary = f"À facturer - {mag_name}"
+            self._schedule_activity("weenect.visite.magasin", rec.id, summary)
+            if rec.magasin_id:
+                self._schedule_activity("res.partner", rec.magasin_id.id, summary)
+
     def _handle_cr_chatter(self):
         for rec in self:
             cr = rec.cr_de_visite
@@ -282,4 +320,9 @@ class VisiteMagasin(models.Model):
                 ("subject", "=", subject),
             ], limit=1)
             if not existing:
-                rec.magasin_id.message_post(body=cr, subject=subject)
+                partner_ids = [u.partner_id.id for u in rec.cr_tag_ids if u.partner_id]
+                rec.magasin_id.message_post(
+                    body=cr,
+                    subject=subject,
+                    partner_ids=partner_ids,
+                )

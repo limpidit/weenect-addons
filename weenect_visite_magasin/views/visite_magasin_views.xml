@@ -17,7 +17,6 @@
 
                     <group>
                         <group>
-                            <field name="magasin_id" invisible="True"/>
                             <field name="date_visite"/>
                             <field name="commercial_id"/>
                             <field name="emplacement"/>
@@ -39,9 +38,13 @@
                         <page string="Info générale" name="info_generale">
                             <field name="personne_rencontree_ids"
                                    string="Personnes rencontrées"
+                                   domain="[('parent_id', '=', magasin_id)]"
                                    options="{'no_create_edit': True}">
                                 <list>
                                     <field name="name"/>
+                                    <field name="function"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
                                 </list>
                             </field>
 
@@ -96,18 +99,17 @@
                                 <field name="plv_affiche_visite"/>
                                 <field name="plv_affiche_envoyer"/>
                             </group>
-                            <group string="Joue">
-                                <field name="plv_jeu_deja"/>
-                                <field name="plv_jeu_visite"/>
-                                <field name="plv_jeu_envoyer"/>
-                            </group>
                             <group string="Poster magasin">
                                 <field name="plv_poster_deja"/>
                                 <field name="plv_poster_visite"/>
                                 <field name="plv_poster_envoyer"/>
                             </group>
                             <group string="Autres PLV">
+                                <field name="plv_jeu_deja" string="Jeu/Goodies — déjà en place"/>
+                                <field name="plv_jeu_visite" string="Jeu/Goodies — mis en place pendant la visite"/>
+                                <field name="plv_jeu_envoyer" string="Jeu/Goodies — à envoyer"/>
                                 <field name="plv_flyers"/>
+                                <field name="plv_flyers_promo"/>
                                 <field name="plv_sticker_sol"/>
                                 <field name="plv_autre" placeholder="Autre PLV…"/>
                             </group>
@@ -151,16 +153,22 @@
                                                placeholder="Autre action…"/>
                                     </group>
                                 </page>
+                                <page string="CR de visite" name="cr">
+                                    <group>
+                                        <field name="cr_tag_ids" widget="many2many_tags"
+                                               placeholder="Taguer des collègues à notifier…"/>
+                                    </group>
+                                    <field name="cr_de_visite" nolabel="1"
+                                           placeholder="Compte-rendu de la visite…"/>
+                                </page>
                             </notebook>
-                            <separator string="CR de visite"/>
-                            <field name="cr_de_visite" nolabel="1"
-                                   placeholder="Compte-rendu de la visite…"/>
                         </page>
 
                         <!-- ── Onglet Ventes ── -->
                         <page string="Ventes" name="ventes">
                             <group>
                                 <field name="expedition_a_prevoir"/>
+                                <field name="a_facturer"/>
                             </group>
                             <field name="ventes_realisees" nolabel="1"
                                    placeholder="Ex: 3 x Traceur GPS chat - à expédier 2 x Collier - laissé sur place"/>
@@ -178,17 +186,20 @@
         <field name="name">weenect.visite.magasin.list</field>
         <field name="model">weenect.visite.magasin</field>
         <field name="arch" type="xml">
-            <list>
-                <field name="date_visite" string="Date" optional="show"/>
-                <field name="magasin_id" string="Description"/>
-                <field name="commercial_id" optional="hide"/>
-                <field name="score_visite" optional="hide"/>
+            <list default_order="date_visite desc">
+                <field name="date_visite" string="Date"/>
+                <field name="magasin_id" string="Magasin"/>
+                <field name="commercial_id" string="Commercial"/>
+                <field name="country_id" string="Pays" optional="show"/>
+                <field name="emplacement" optional="show"/>
+                <field name="score_visite" optional="show"/>
                 <field name="priorite_commerciale"
                        decoration-danger="priorite_commerciale == 'urgent'"
                        decoration-warning="priorite_commerciale == 'a_travailler'"
                        decoration-success="priorite_commerciale == 'bon_niveau'"
-                       optional="hide"/>
-                <field name="expedition_a_prevoir" optional="hide"/>
+                       optional="show"/>
+                <field name="expedition_a_prevoir" optional="show"/>
+                <field name="a_facturer" optional="show"/>
             </list>
         </field>
     </record>
@@ -201,23 +212,53 @@
             <search>
                 <field name="magasin_id"/>
                 <field name="commercial_id"/>
+                <field name="country_id"/>
+
+                <!-- Filtres priorité -->
                 <filter name="urgent" string="Urgent"
                         domain="[('priorite_commerciale', '=', 'urgent')]"/>
                 <filter name="a_travailler" string="À travailler"
                         domain="[('priorite_commerciale', '=', 'a_travailler')]"/>
                 <filter name="bon_niveau" string="Bon niveau"
                         domain="[('priorite_commerciale', '=', 'bon_niveau')]"/>
+
+                <!-- Filtres actions -->
                 <filter name="expedition" string="Expédition à prévoir"
                         domain="[('expedition_a_prevoir', '=', True)]"/>
+                <filter name="a_facturer" string="À facturer"
+                        domain="[('a_facturer', '=', True)]"/>
                 <filter name="nouveaux" string="Nouveaux revendeurs"
                         domain="[('nouveau_revendeur', '=', True)]"/>
+
+                <!-- Filtres nature visite -->
+                <filter name="suivi" string="Visite suivi"
+                        domain="[('visite_suivi', '=', True)]"/>
+                <filter name="sav" string="Visite SAV"
+                        domain="[('visite_sav', '=', True)]"/>
+                <filter name="formation" string="Visite formation"
+                        domain="[('visite_formation', '=', True)]"/>
+
+                <!-- Filtres période -->
+                <filter name="ce_mois" string="Ce mois"
+                        domain="[('date_visite', '&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="mois_dernier" string="Mois dernier"
+                        domain="[('date_visite', '&gt;=', (context_today() - relativedelta(months=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_visite', '&lt;', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+
+                <!-- Regroupements -->
                 <group>
-                    <filter name="group_magasin" string="Magasin"
-                            context="{'group_by': 'magasin_id'}"/>
                     <filter name="group_commercial" string="Commercial"
                             context="{'group_by': 'commercial_id'}"/>
+                    <filter name="group_pays" string="Pays"
+                            context="{'group_by': 'country_id'}"/>
                     <filter name="group_priorite" string="Priorité"
                             context="{'group_by': 'priorite_commerciale'}"/>
+                    <filter name="group_magasin" string="Magasin"
+                            context="{'group_by': 'magasin_id'}"/>
+                    <filter name="group_emplacement" string="Emplacement"
+                            context="{'group_by': 'emplacement'}"/>
+                    <filter name="group_mois" string="Mois"
+                            context="{'group_by': 'date_visite:month'}"/>
                 </group>
             </search>
         </field>
