@@ -138,7 +138,7 @@ class VisiteMagasin(models.Model):
     cr_de_visite = fields.Text(string="CR de visite", tracking=True)
     cr_tag_ids = fields.Many2many(
         "res.partner",
-        "visite_magasin_cr_tag_rel",
+        "visite_magasin_cr_partner_rel",
         "visite_id",
         "partner_id",
         string="Mentionner",
