@@ -6,6 +6,7 @@
     "data": [
         "security/groups.xml",
         "security/ir.model.access.csv",
+        "data/emplacement_data.xml",
         "data/server_actions.xml",
         "views/visite_magasin_views.xml",
         "views/res_partner_views.xml",

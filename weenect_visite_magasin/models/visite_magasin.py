@@ -35,15 +35,9 @@ class VisiteMagasin(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
     )
-    emplacement = fields.Selection(
-        [
-            ("centre_ville", "Centre-ville"),
-            ("zone_commerciale", "Zone commerciale"),
-            ("campagne", "Campagne"),
-            ("visible", "Visible"),
-            ("isole", "Isolé"),
-        ],
-        string="Emplacement",
+    emplacement_ids = fields.Many2many(
+        "weenect.visite.emplacement",
+        string="Emplacement(s)",
     )
     nouveau_revendeur = fields.Boolean(string="Nouveau revendeur")
 
