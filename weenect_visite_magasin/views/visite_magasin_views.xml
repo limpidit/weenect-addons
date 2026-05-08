@@ -105,9 +105,9 @@
                                 <field name="plv_poster_envoyer"/>
                             </group>
                             <group string="Autres PLV">
-                                <field name="plv_jeu_deja" string="Jeu/Goodies — déjà en place"/>
-                                <field name="plv_jeu_visite" string="Jeu/Goodies — mis en place pendant la visite"/>
-                                <field name="plv_jeu_envoyer" string="Jeu/Goodies — à envoyer"/>
+                                <field name="plv_jeu_deja" string="Joue — déjà en place"/>
+                                <field name="plv_jeu_visite" string="Joue — mis en place pendant la visite"/>
+                                <field name="plv_jeu_envoyer" string="Joue — à envoyer"/>
                                 <field name="plv_flyers"/>
                                 <field name="plv_flyers_promo"/>
                                 <field name="plv_sticker_sol"/>
@@ -154,10 +154,11 @@
                                     </group>
                                 </page>
                                 <page string="CR de visite" name="cr">
-                                    <group>
-                                        <field name="cr_tag_ids" widget="many2many_tags"
-                                               placeholder="Taguer des collègues à notifier…"/>
-                                    </group>
+                                    <field name="cr_tag_ids"
+                                           widget="many2many_tags"
+                                           string="@ Mentionner"
+                                           options="{'color_field': 'color'}"
+                                           placeholder="Mentionner des collègues…"/>
                                     <field name="cr_de_visite" nolabel="1"
                                            placeholder="Compte-rendu de la visite…"/>
                                 </page>

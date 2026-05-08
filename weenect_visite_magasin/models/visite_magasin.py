@@ -137,11 +137,12 @@ class VisiteMagasin(models.Model):
     # ── CR de visite ──────────────────────────────────────────────────────────
     cr_de_visite = fields.Text(string="CR de visite", tracking=True)
     cr_tag_ids = fields.Many2many(
-        "res.users",
+        "res.partner",
         "visite_magasin_cr_tag_rel",
         "visite_id",
-        "user_id",
-        string="Notifier des collègues",
+        "partner_id",
+        string="Mentionner",
+        help="Les personnes sélectionnées recevront le CR par notification, comme une mention @ dans le chatter.",
     )
 
     # ── Ventes ────────────────────────────────────────────────────────────────
@@ -274,7 +275,7 @@ class VisiteMagasin(models.Model):
             if rec.plv_affiche_envoyer:
                 summaries.append(f"Envoyer affiche promo - {mag_name}")
             if rec.plv_jeu_envoyer:
-                summaries.append(f"Envoyer jeu/goodies - {mag_name}")
+                summaries.append(f"Envoyer joue - {mag_name}")
             if rec.plv_poster_envoyer:
                 summaries.append(f"Envoyer poster - {mag_name}")
             if rec.plv_flyers:
@@ -320,9 +321,8 @@ class VisiteMagasin(models.Model):
                 ("subject", "=", subject),
             ], limit=1)
             if not existing:
-                partner_ids = [u.partner_id.id for u in rec.cr_tag_ids if u.partner_id]
                 rec.magasin_id.message_post(
                     body=cr,
                     subject=subject,
-                    partner_ids=partner_ids,
+                    partner_ids=rec.cr_tag_ids.ids,
                 )
