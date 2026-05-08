@@ -154,11 +154,6 @@
                                     </group>
                                 </page>
                                 <page string="CR de visite" name="cr">
-                                    <field name="cr_tag_ids"
-                                           widget="many2many_tags"
-                                           string="@ Mentionner"
-                                           options="{'color_field': 'color'}"
-                                           placeholder="Mentionner des collègues…"/>
                                     <field name="cr_de_visite" nolabel="1"
                                            placeholder="Compte-rendu de la visite…"/>
                                 </page>

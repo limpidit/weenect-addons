@@ -136,15 +136,6 @@ class VisiteMagasin(models.Model):
 
     # ── CR de visite ──────────────────────────────────────────────────────────
     cr_de_visite = fields.Text(string="CR de visite", tracking=True)
-    cr_tag_ids = fields.Many2many(
-        "res.partner",
-        "visite_magasin_cr_partner_rel",
-        "visite_id",
-        "partner_id",
-        string="Mentionner",
-        help="Les personnes sélectionnées recevront le CR par notification, comme une mention @ dans le chatter.",
-    )
-
     # ── Ventes ────────────────────────────────────────────────────────────────
     expedition_a_prevoir = fields.Boolean(string="Expédition à prévoir")
     a_facturer = fields.Boolean(string="À facturer", tracking=True)
@@ -228,7 +219,7 @@ class VisiteMagasin(models.Model):
             self._handle_expedition_activity()
         if "a_facturer" in vals:
             self._handle_facturation_activity()
-        if "cr_de_visite" in vals or "cr_tag_ids" in vals:
+        if "cr_de_visite" in vals:
             self._handle_cr_chatter()
         return res
 
@@ -324,5 +315,4 @@ class VisiteMagasin(models.Model):
                 rec.magasin_id.message_post(
                     body=cr,
                     subject=subject,
-                    partner_ids=rec.cr_tag_ids.ids,
                 )
