@@ -56,7 +56,7 @@ class EdifactMessage(models.Model):
         if existing_in_progress_message:
             existing_in_progress_message.link_moves()
         else:
-            sender_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.sender_gln'),
+            sender_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.sender_gln')
             receiver_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.futterhaus_gln')
             new_message = self.create({
                 'name': f"Futterhaus_Message_{fields.Date.today().strftime('%Y%m%d')}",
@@ -65,7 +65,7 @@ class EdifactMessage(models.Model):
                 'receiver_id': receiver_id,
             })
             new_message.link_moves()
-        _logger.info(f"Created EDIFACT message for Futterhaus.")
+        _logger.info("EDIFACT Futterhaus : message créé avec les factures de la semaine.")
 
     def link_moves(self):
         """
@@ -166,8 +166,8 @@ class EdifactMessage(models.Model):
             else:
                 self.state = 'draft'
 
-    def action_send_sftp_futterhaus(self):
-        """Envoie le fichier EDIFACT Futterhaus via SFTP."""
+    def _do_send_sftp_futterhaus(self):
+        """Logique SFTP Futterhaus. Appelable depuis le bouton ou le cron."""
         import paramiko
 
         self.ensure_one()
@@ -201,6 +201,11 @@ class EdifactMessage(models.Model):
         self.move_ids.write({'has_been_sent': True})
         self.state = 'sent'
         self.message_post(body=_("Fichier '%s' envoyé via SFTP sur %s.") % (filename, host))
+
+    def action_send_sftp_futterhaus(self):
+        """Envoie le fichier EDIFACT Futterhaus via SFTP (depuis le bouton)."""
+        self.ensure_one()
+        self._do_send_sftp_futterhaus()
 
     def _edifact_invoice_get_interchange(self):
         """
