@@ -55,33 +55,17 @@ class EdifactMessage(models.Model):
         ], limit=1)
         if existing_in_progress_message:
             existing_in_progress_message.link_moves()
-            message = existing_in_progress_message
         else:
             sender_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.sender_gln')
             receiver_id = self.env['ir.config_parameter'].sudo().get_param('weenect_edifact.futterhaus_gln')
-            message = self.create({
+            new_message = self.create({
                 'name': f"Futterhaus_Message_{fields.Date.today().strftime('%Y%m%d')}",
                 'message_type': 'd01b',
                 'sender_id': sender_id,
                 'receiver_id': receiver_id,
             })
-            message.link_moves()
-
-        if not message.move_ids:
-            _logger.info("EDIFACT Futterhaus : aucune facture à envoyer.")
-            return
-
-        message.generate_edifact_content()
-
-        if message.state == 'error':
-            _logger.error(f"EDIFACT Futterhaus : erreur lors de la génération du contenu : {message.error_message}")
-            return
-
-        try:
-            message._do_send_sftp_futterhaus()
-            _logger.info("EDIFACT Futterhaus : message envoyé avec succès via SFTP.")
-        except Exception as e:
-            _logger.error(f"EDIFACT Futterhaus : erreur SFTP : {e}")
+            new_message.link_moves()
+        _logger.info("EDIFACT Futterhaus : message créé avec les factures de la semaine.")
 
     def link_moves(self):
         """
