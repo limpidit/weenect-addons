@@ -88,6 +88,8 @@ class InvoicD01BMessage(Message):
 
     def _get_gln(self, partner):
         gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
+        if not gln and partner.parent_id:
+            gln = partner.parent_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         return gln[0].name if gln else ""
 
     def _get_picking(self):
