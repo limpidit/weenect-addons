@@ -17,8 +17,11 @@ class InvoicD01BMessage(Message):
         delivery_date = self._get_delivery_date()
 
         company_gln = self._get_gln(self.invoice.company_id.partner_id)
-        delivery = self.invoice.partner_shipping_id or self.invoice.partner_id.parent_id or self.invoice.partner_id
+        delivery = self.invoice.partner_shipping_id or self.invoice.partner_id
         delivery_gln = self._get_gln(delivery)
+        if not delivery_gln:
+            # Fallback : GLN du partenaire commercial (BELA FUTTERHAUS)
+            delivery_gln = self._get_gln(self.invoice.partner_id.commercial_partner_id)
 
         self.add_segment(self.get_header_segment())
 
@@ -88,8 +91,6 @@ class InvoicD01BMessage(Message):
 
     def _get_gln(self, partner):
         gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
-        if not gln and partner.parent_id:
-            gln = partner.parent_id.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
         return gln[0].name if gln else ""
 
     def _get_picking(self):
