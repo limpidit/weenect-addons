@@ -23,6 +23,16 @@ class VisiteMagasin(models.Model):
         string="Pays",
         store=True,
     )
+    groupe_retailer = fields.Char(
+        related="magasin_id.groupe_retailer",
+        string="Groupe Retailer",
+        store=True,
+    )
+    num_retailer = fields.Char(
+        related="magasin_id.num_retailer",
+        string="Numéro Retailer",
+        store=True,
+    )
     date_visite = fields.Date(
         string="Date de visite",
         default=fields.Date.today,

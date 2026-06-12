@@ -2,7 +2,7 @@
     "name": "Weenect — Visites Magasins",
     "version": "19.0.1.0.0",
     "author": "Limpid IT",
-    "depends": ["base", "mail"],
+    "depends": ["base", "mail", "products"],
     "data": [
         "security/groups.xml",
         "security/ir.model.access.csv",
