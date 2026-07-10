@@ -1,4 +1,6 @@
 
+from datetime import timedelta
+
 from pydifact.segmentcollection import Message
 from pydifact.segments import Segment
 
@@ -40,7 +42,14 @@ class InvoicD01BMessage(Message):
         self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"]))
         self.add_segment(Segment("RFF", ["VA", self.invoice.partner_id.vat]))
 
+        payment_term = self.invoice.invoice_payment_term_id
+        if payment_term and payment_term.early_discount and payment_term.discount_days:
+            discount_date = date_invoice + timedelta(days=payment_term.discount_days)
+            self.add_segment(Segment("PAT", "22"))
+            self.add_segment(Segment("DTM", ["12", discount_date.strftime("%Y%m%d"), "102"]))
+
         if date_due:
+            self.add_segment(Segment("PAT", "3"))
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
 
         self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", "0"], "E"))
