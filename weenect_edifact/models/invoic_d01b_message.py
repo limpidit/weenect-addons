@@ -19,8 +19,10 @@ class InvoicD01BMessage(Message):
         delivery_date = self._get_delivery_date()
 
         company_gln = self._get_gln(self.invoice.company_id.partner_id)
-        delivery = self.invoice.partner_shipping_id or self.invoice.partner_id.parent_id or self.invoice.partner_id
+        delivery = self.invoice.partner_shipping_id or self.invoice.partner_id
         delivery_gln = self._get_gln(delivery)
+        if not delivery_gln:
+            delivery_gln = self._get_gln(self.invoice.partner_id.commercial_partner_id)
 
         self.add_segment(self.get_header_segment())
 
@@ -40,7 +42,7 @@ class InvoicD01BMessage(Message):
         self.add_segment(Segment("NAD", "SU", [company_gln, "", "9"]))
         self.add_segment(Segment("NAD", "BY", ["4333671000007", "", "9"])) # Tout le temps le même GLN pour le client Futterhaus
         self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"]))
-        self.add_segment(Segment("RFF", ["VA", self.invoice.partner_id.vat]))
+        self.add_segment(Segment("RFF", ["VA", self.invoice.partner_id.vat or ""]))
 
         payment_term = self.invoice.invoice_payment_term_id
         if payment_term and payment_term.early_discount and payment_term.discount_days:
