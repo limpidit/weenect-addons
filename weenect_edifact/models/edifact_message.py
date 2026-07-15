@@ -85,9 +85,14 @@ class EdifactMessage(models.Model):
         self.ensure_one()
         partners = self.env['res.partner'].search([('edi_export_format', '=', self.message_type)])
         to_send_moves = self.env['account.move'].search(
-            [('state', '=', 'posted'), ('has_been_sent', '=', False), 
+            [('state', '=', 'posted'), ('has_been_sent', '=', False),
             ('partner_id', 'in', partners.ids), ('move_type', 'in', ['out_invoice'])]
         )
+        if self.message_type == 'd01b':
+            # Futterhaus : on exclut les factures autrichiennes (non gérées par BELA)
+            to_send_moves = to_send_moves.filtered(
+                lambda m: m.partner_id.country_id.code != 'AT'
+            )
         self.write({
             'move_ids': [(6, 0, to_send_moves.ids)],
             'state': 'linked',
