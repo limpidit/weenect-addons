@@ -46,7 +46,9 @@ class InvoicD96AMessage(Message):
         company_gln = self._get_gln(company)
         if not company_gln:
             raise ValueError("Le GLN de weenect est introuvable")
-        company_names = [company.display_name[i:i+35] for i in range(0, len(company.display_name), 35)]
+        # Sagaflor exige la raison sociale (Firmenname), pas la marque "Weenect"
+        supplier_legal_name = "Hareau SAS"
+        company_names = [supplier_legal_name[i:i+35] for i in range(0, len(supplier_legal_name), 35)]
         self.add_segment(Segment("NAD", "SU", [company_gln, "", "9"], "", company_names, company.street, company.city, "", company.zip, company.country_id.code))
         self.add_segment(Segment("RFF", ["VA", self.invoice.company_id.vat]))
 
