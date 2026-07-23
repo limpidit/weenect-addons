@@ -8,7 +8,7 @@
             <notebook position="inside">
                 <page string="EDI Export">
                     <group>
-                        <field name="edi_export_format" widget="radio"/>
+                        <field name="edi_export_format"/>
                     </group>
                 </page>
             </notebook>
