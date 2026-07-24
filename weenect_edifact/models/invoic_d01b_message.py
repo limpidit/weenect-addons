@@ -44,6 +44,10 @@ class InvoicD01BMessage(Message):
         self.add_segment(Segment("NAD", "DP", [delivery_gln, "", "9"]))
         self.add_segment(Segment("RFF", ["VA", self.invoice.partner_id.vat or ""]))
 
+        self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", "0"], "E"))
+        self.add_segment(Segment("CUX", ["2", "EUR", "4"]))
+
+        # Conditions de paiement : après TAX/CUX (ordre exigé par Futterhaus)
         payment_term = self.invoice.invoice_payment_term_id
         if payment_term and payment_term.early_discount and payment_term.discount_days:
             discount_date = date_invoice + timedelta(days=payment_term.discount_days)
@@ -53,9 +57,6 @@ class InvoicD01BMessage(Message):
         if date_due:
             self.add_segment(Segment("PAT", "3"))
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
-
-        self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", "0"], "E"))
-        self.add_segment(Segment("CUX", ["2", "EUR", "4"]))
 
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
             taxes = line.tax_ids
