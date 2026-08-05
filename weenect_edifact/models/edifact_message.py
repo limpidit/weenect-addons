@@ -165,6 +165,8 @@ class EdifactMessage(models.Model):
 
         self.message_content = interchange.serialize()
 
+        # Génération réussie : on efface l'éventuelle erreur précédente
+        self.error_message = False
         if self.state == 'error':
             if self.move_ids:
                 self.state = 'linked'
