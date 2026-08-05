@@ -1,4 +1,6 @@
 
+from datetime import datetime
+
 from pydifact.segmentcollection import Message
 from pydifact.segments import Segment
 
@@ -136,7 +138,7 @@ class InvoicD96AMessage(Message):
         picking_type = "outgoing" if self.invoice.move_type == "out_invoice" else "incoming"
         return source_order.picking_ids.filtered(
             lambda p: p.state != 'cancel' and p.picking_type_id.code == picking_type
-        ).sorted(key=lambda p: p.date_done)[-1:] or None
+        ).sorted(key=lambda p: p.date_done or datetime.min)[-1:] or None
 
     def _get_gln(self, partner):
         gln = partner.id_numbers.filtered(lambda x: x.category_id.code == "gln_id_number")
