@@ -1,5 +1,5 @@
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from pydifact.segmentcollection import Message
 from pydifact.segments import Segment
@@ -112,7 +112,7 @@ class InvoicD01BMessage(Message):
         picking_type = "outgoing" if self.invoice.move_type == "out_invoice" else "incoming"
         return source_order.picking_ids.filtered(
             lambda p: p.state != 'cancel' and p.picking_type_id.code == picking_type
-        ).sorted(key=lambda p: p.date_done)[-1:] or None
+        ).sorted(key=lambda p: p.date_done or datetime.min)[-1:] or None
 
     def _get_delivery_date(self):
         picking = self._get_picking()
