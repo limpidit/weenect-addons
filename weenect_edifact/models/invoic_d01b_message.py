@@ -66,10 +66,12 @@ class InvoicD01BMessage(Message):
                     tax_rate = int(tax_rate)
             else:
                 tax_rate = 0
+            # Prix unitaire NET (remise incluse) pour que QTY x PRI = MOA+203 (exigé par Futterhaus)
+            net_unit_price = line.price_subtotal / line.quantity if line.quantity else 0.0
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
             self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70].replace('\n', '')]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
-            self.add_segment(Segment("PRI", ["AAA", f"{line.price_unit:.2f}", "", "", "1", "PCE"]))
+            self.add_segment(Segment("PRI", ["AAA", f"{net_unit_price:.2f}", "", "", "1", "PCE"]))
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
             self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
 
