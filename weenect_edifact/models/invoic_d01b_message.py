@@ -66,14 +66,23 @@ class InvoicD01BMessage(Message):
                     tax_rate = int(tax_rate)
             else:
                 tax_rate = 0
-            # Prix unitaire NET (remise incluse) pour que QTY x PRI = MOA+203 (exigé par Futterhaus)
-            net_unit_price = line.price_subtotal / line.quantity if line.quantity else 0.0
+            # Prix BRUT + remise explicite (comme Sagaflor) pour un reflet exact au centime :
+            # QTY x PRI (brut) - MOA+8 (remise) = MOA+203 (net). Le montant de remise est
+            # calculé comme brut - net pour éviter tout écart d'arrondi.
+            gross_line = round(line.quantity * line.price_unit, 2)
+            net_line = round(line.price_subtotal, 2)
+            discount_amount = round(gross_line - net_line, 2)
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
             self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70].replace('\n', '')]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
-            self.add_segment(Segment("PRI", ["AAA", f"{net_unit_price:.2f}", "", "", "1", "PCE"]))
+            self.add_segment(Segment("PRI", ["AAA", f"{line.price_unit:.2f}", "", "", "1", "PCE"]))
+            if discount_amount:
+                self.add_segment(Segment("ALC", "A", "", "", "1", "DI"))
+                if line.discount:
+                    self.add_segment(Segment("PCD", ["3", f"{line.discount:.2f}"]))
+                self.add_segment(Segment("MOA", ["8", f"{discount_amount:.2f}"]))
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
-            self.add_segment(Segment("MOA", ["203", f"{round(line.price_subtotal, 2):.2f}"]))
+            self.add_segment(Segment("MOA", ["203", f"{net_line:.2f}"]))
 
         self.add_segment(Segment("UNS", ["S"]))
 
