@@ -59,6 +59,8 @@ class InvoicD01BMessage(Message):
             self.add_segment(Segment("PAT", "3"))
             self.add_segment(Segment("DTM", ["13", date_due.strftime("%Y%m%d"), "102"]))
 
+        total_net = 0.0
+        net_by_rate = {}
         for idx, line in enumerate(self.invoice.invoice_line_ids.filtered(lambda l: l.product_id), start=1):
             taxes = line.tax_ids
             if taxes:
@@ -67,39 +69,35 @@ class InvoicD01BMessage(Message):
                     tax_rate = int(tax_rate)
             else:
                 tax_rate = 0
-            # Prix BRUT + remise explicite (comme Sagaflor) pour un reflet exact au centime :
-            # QTY x PRI (brut) - MOA+8 (remise) = MOA+203 (net). Le montant de remise est
-            # calculé comme brut - net pour éviter tout écart d'arrondi.
-            gross_line = round(line.quantity * line.price_unit, 2)
-            net_line = round(line.price_subtotal, 2)
-            discount_amount = round(gross_line - net_line, 2)
+            # Bela recalcule la facture à partir du prix unitaire (PRI+AAA) et ne déduit
+            # PAS de remise séparée. La remise doit donc être DANS le prix unitaire (prix
+            # net). On dérive MOA+203 de ce prix pour que QTY x PRI = MOA+203 exactement,
+            # et le résumé est la somme de ces montants de ligne.
+            net_unit_price = round(line.price_subtotal / line.quantity, 2) if line.quantity else 0.0
+            net_line = round(net_unit_price * line.quantity, 2)
+            total_net += net_line
+            net_by_rate[tax_rate] = round(net_by_rate.get(tax_rate, 0.0) + net_line, 2)
             self.add_segment(Segment("LIN", str(idx), "", [line.product_id.ean_weenect or "", "EN"]))
             self.add_segment(Segment("IMD", "A", "", ["", "", "", line.name[:70].replace('\n', '')]))
             self.add_segment(Segment("QTY", ["47", str(line.quantity)]))
-            self.add_segment(Segment("PRI", ["AAA", f"{line.price_unit:.2f}", "", "", "1", "PCE"]))
-            if discount_amount:
-                self.add_segment(Segment("ALC", "A", "", "", "1", "DI"))
-                if line.discount:
-                    self.add_segment(Segment("PCD", ["3", f"{line.discount:.2f}"]))
-                self.add_segment(Segment("MOA", ["8", f"{discount_amount:.2f}"]))
+            self.add_segment(Segment("PRI", ["AAA", f"{net_unit_price:.2f}", "", "", "1", "PCE"]))
             self.add_segment(Segment("TAX", "7", "VAT", "", "", ["", "", "", str(tax_rate)], "S"))
             self.add_segment(Segment("MOA", ["203", f"{net_line:.2f}"]))
 
         self.add_segment(Segment("UNS", ["S"]))
 
-        # Résumé global
-        total = round(self.invoice.amount_total, 2)
-        untaxed = round(self.invoice.amount_untaxed, 2)
-        tax = round(self.invoice.amount_tax, 2)
+        # Résumé global : basé sur les montants de ligne réellement envoyés
+        total_net = round(total_net, 2)
+        total_tax = round(sum(base * rate / 100 for rate, base in net_by_rate.items()), 2)
+        total_ttc = round(total_net + total_tax, 2)
 
-        self.add_segment(Segment("MOA", ["77", f"{total:.2f}"]))     # Total TTC
-        self.add_segment(Segment("MOA", ["79", f"{untaxed:.2f}"]))   # Total HT
-        self.add_segment(Segment("MOA", ["125", f"{untaxed:.2f}"]))  # Base imposable
-        self.add_segment(Segment("MOA", ["124", f"{tax:.2f}"]))      # Montant TVA
+        self.add_segment(Segment("MOA", ["77", f"{total_ttc:.2f}"]))    # Total TTC
+        self.add_segment(Segment("MOA", ["79", f"{total_net:.2f}"]))    # Total HT
+        self.add_segment(Segment("MOA", ["125", f"{total_net:.2f}"]))   # Base imposable
+        self.add_segment(Segment("MOA", ["124", f"{total_tax:.2f}"]))   # Montant TVA
 
         # Détail par taux de taxe
-        taxes = self._get_taxes_by_rate()
-        for rate, base in taxes.items():
+        for rate, base in net_by_rate.items():
             rate_int = int(rate)  # arrondi pour correspondre au format ':::<taux>+E'
             tax_amount = round(base * rate / 100, 2)
 
@@ -128,11 +126,3 @@ class InvoicD01BMessage(Message):
     def _get_delivery_date(self):
         picking = self._get_picking()
         return picking.date_done.date() if picking and picking.date_done else None
-
-    def _get_taxes_by_rate(self):
-        taxes = {}
-        for line in self.invoice.invoice_line_ids:
-            for tax in line.tax_ids.filtered(lambda t: t.amount_type == 'percent'):
-                rate = tax.amount
-                taxes[rate] = taxes.get(rate, 0.0) + line.price_subtotal
-        return taxes
